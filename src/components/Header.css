@@ -1,0 +1,59 @@
+/* Basic reset for footer */
+.footer {
+  background-color: #333;
+  width: 100%;
+  padding: 15px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer icons container */
+.footer-icons {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 430px;
+}
+
+/* Styling each icon container */
+.footer-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* Icon styling */
+.footer-icon i {
+  font-size: 20px; /* Icon size */
+  margin-bottom: 5px;
+}
+
+/* Hover effect */
+.footer-icon:hover {
+  color: #ff6347; /* Highlight color */
+}
+
+/* Media query for screens up to 430px wide */
+@media (max-width: 430px) {
+  .footer-icons {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .footer-icon {
+    font-size: 12px; /* Smaller font size for text labels */
+  }
+
+  .footer-icon i {
+    font-size: 18px; /* Adjust icon size */
+  }
+}

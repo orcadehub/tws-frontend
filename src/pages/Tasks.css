@@ -1,0 +1,161 @@
+/* Basic styles */
+body {
+  background-color: #000;
+  margin: 0; /* Ensures no extra space around the page */
+  padding: 0; /* Removes default padding */
+}
+
+.mobile-container {
+  width: 100%; /* Full width to fit mobile screens */
+  max-width: 375px; /* Set max-width to simulate the mobile screen */
+  height: auto;
+  background-color: #000;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  margin: 20px auto; /* Centers the container with a smaller margin */
+  padding: 20px;
+  color: white;
+}
+
+/* Make the 'Tasks' heading bright */
+.section-title, .header {
+  color: #fb7426; /* Bright color for the title */
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 24px; /* Adjust font size for the main heading */
+}
+
+.scrolling-wrapper {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  scrollbar-width: none; /* For Firefox */
+}
+
+.scrolling-wrapper::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+/* Styling for task sections */
+.earn-section, .task {
+  background-color: #6e6e76;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+  color: #fff;
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.btn-custom, .del-btn {
+  width: 80px; /* Sets a custom width */
+  height: 30px; /* Sets a custom height */
+  padding: 5px 10px; /* Adjusts the space inside the button */
+  font-size: 14px; /* Customizes the font size */
+  border-radius: 5px; /* Optionally rounds the corners */
+  background-color: #fb7426; /* Sets a custom background color */
+  color: white; /* Text color */
+  border: none; /* Removes the default border */
+}
+
+.del-btn {
+  background-color: rgb(235, 44, 44); /* Red color for delete button */
+}
+
+.del-btn:hover {
+  background-color: rgb(235, 44, 44);
+}
+
+.btn-custom:hover {
+  background-color: #ff7320;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.header-link {
+  color: white;
+  text-decoration: none;
+}
+
+/* Task section for different categories */
+.task-section, .weekly-section {
+  margin-top: 20px;
+}
+
+/* Mobile Responsive Styling for screens up to 430px */
+@media (max-width: 430px) {
+  body {
+    margin: 0; /* Ensure no margins */
+  }
+
+  .mobile-container {
+    width: 100%;
+    padding: 10px;
+    margin: 20px auto;
+  }
+
+  .section-title {
+    font-size: 20px;
+    color: #fb7426; /* Make it bright */
+  }
+
+  .header {
+    font-size: 20px; /* Make the task section heading larger and bright */
+    color: #fb7426; /* Bright color */
+    margin-bottom: 10px;
+  }
+
+  .btn-custom {
+    width: 70px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .del-btn {
+    width: 70px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .task {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .earn-section {
+    padding: 12px;
+  }
+
+  .task-info {
+    font-size: 14px;
+  }
+
+  .bottom-nav {
+    padding: 8px 5px;
+    margin-top: 15px;
+  }
+
+  .nav-item {
+    font-size: 10px;
+  }
+
+  .nav-item img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .task-section {
+    margin-top: 10px;
+  }
+}
