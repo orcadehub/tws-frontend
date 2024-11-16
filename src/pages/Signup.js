@@ -53,7 +53,9 @@ const Signup = () => {
         text: "Your account has been created!",
       });
 
-      navigate("/home"); // Redirect to home after successful signup
+      setTimeout(() => {
+        navigate("/home");
+      }, 300); // Redirect to home after successful signup
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
