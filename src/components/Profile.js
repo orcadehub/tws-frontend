@@ -27,7 +27,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3300/profile",
+          `${baseURL}/profile`,
           CONFIG_OBJ
         );
         const user = response.data.user;
@@ -74,7 +74,7 @@ const Profile = () => {
 
   const startFarming = async () => {
     try {
-      await axios.post("http://localhost:3300/start-farming", {}, CONFIG_OBJ);
+      await axios.post(`${baseURL}/start-farming`, {}, CONFIG_OBJ);
       setIsFarming(true);
       setTimer(30); // Reset timer to 30 seconds for testing
       setClaimAvailable(false);
@@ -86,7 +86,7 @@ const Profile = () => {
   const claimCoins = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3300/claim-coins",
+        `${baseURL}/claim-coins`,
         { coinsToAdd: 100 },
         CONFIG_OBJ
       );
