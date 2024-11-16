@@ -13,8 +13,8 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/home" element={<Home />} />
           <Route exact path="/authenticate" element={<Signup />} />
           <Route exact path="/signup/:referralid" element={<Signup />} />{" "}
           {/* Dynamic route for referral ID */}
