@@ -23,7 +23,7 @@ const Tasks = () => {
   const baseURL =
     process.env.NODE_ENV === "development"
       ? config.LOCAL_BASE_URL
-      : config.BASE_URL;
+      : config.BASE_URL.replace(/\/$/, "");
 
   useEffect(() => {
     if (!user) {
