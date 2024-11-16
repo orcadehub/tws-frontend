@@ -53,9 +53,9 @@ const Signup = () => {
         text: "Your account has been created!",
       });
 
-      setTimeout(() => {
-        navigate("/home");
-      }, 300); // Redirect to home after successful signup
+      navigate("/home"); // Primary way
+      window.location.href = "/home"; // Fallback for mobile
+
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
