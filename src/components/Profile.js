@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import config from '../config';
 
 const Profile = () => {
   const [profileData, setProfileData] = useState(null);
@@ -16,6 +17,11 @@ const Profile = () => {
       Authorization: "Bearer " + localStorage.getItem("token"),
     },
   };
+
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL.replace(/\/$/, "");
 
   useEffect(() => {
     const fetchProfileData = async () => {
