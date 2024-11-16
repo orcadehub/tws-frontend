@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Leader from "./pages/Leader";
@@ -25,10 +25,22 @@ function App() {
           <Route exact path="/addtask" element={<AddTask />} />
         </Routes>
 
-        <Header />
+        <ConditionalHeader />
       </Router>
     </>
   );
+}
+
+function ConditionalHeader() {
+  const location = useLocation();
+
+  // Don't show the Header on Signup routes
+  const noHeaderRoutes = ["/authenticate"];
+  const isHeaderHidden = noHeaderRoutes.some((path) =>
+    location.pathname.startsWith(path.split(":")[0])
+  );
+
+  return !isHeaderHidden && <Header />;
 }
 
 export default App;
