@@ -20,7 +20,7 @@ const Signup = () => {
   const baseURL =
     process.env.NODE_ENV === "development"
       ? config.LOCAL_BASE_URL
-      : config.BASE_URL;
+      : config.BASE_URL.replace(/\/$/, "");
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -36,7 +36,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        `${baseURL}authenticate`,
+        `${baseURL}/authenticate`,
         {
           username,
           referralId, // Include referral ID if available
