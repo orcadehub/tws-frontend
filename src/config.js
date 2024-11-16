@@ -7,8 +7,8 @@
 // export default config;
 
 const config = {
-  LOCAL_BASE_URL: "http://localhost:3300", // Development URL
-  BASE_URL: "http://localhost:3300", // Production URL
+  LOCAL_BASE_URL: process.env.REACT_APP_LOCAL_BASE_URL, // Development URL
+  BASE_URL: process.env.REACT_APP_BASE_URL, // Production URL
 };
 
 export default config;
