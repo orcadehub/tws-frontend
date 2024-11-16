@@ -36,7 +36,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        `${baseURL}/authenticate`,
+        `${baseURL}authenticate`,
         {
           username,
           referralId, // Include referral ID if available
