@@ -7,7 +7,7 @@ import config from "../config"; // Import config to get base URLs
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [referralId, setReferralId] = useState("");
-  const [isNewUser, setIsNewUser] = useState(false);
+  // const [isNewUser, setIsNewUser] = useState(false);
   const { referralid } = useParams(); // Capture referral ID from the URL
   const navigate = useNavigate();
 
@@ -44,8 +44,8 @@ const Signup = () => {
         }
       );
 
-      const { user, token } = response.data;
-      setIsNewUser(user.isNewUser);
+      const { user, token,existingUser } = response.data;
+      // setIsNewUser(existingUser);
 
       // Store user data and token in localStorage
       localStorage.setItem("user", JSON.stringify(user));
@@ -53,7 +53,7 @@ const Signup = () => {
 
       Swal.close();
 
-      if (user.isNewUser) {
+      if (!existingUser) {
         // Show onboarding slides
         navigate("/onboarding");
       } else {

@@ -7,7 +7,7 @@ const Onboarding = () => {
 
   const slides = [
     {
-      title: "Welcome to Our App!",
+      title: "Welcome to Sharks!",
       description: "Discover amazing features to enhance your experience.",
     },
     {

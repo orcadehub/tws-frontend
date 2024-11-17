@@ -10,7 +10,7 @@ const Header = () => {
           <span>Leaderboard</span>
         </Link>
         <Link to="/tasks" className="footer-icon">
-          <i className="fas fa-tasks"></i>
+          <i className="fas fa-coins"></i>
           <span>Tasks</span>
         </Link>
         <Link to="/" className="footer-icon">
@@ -22,7 +22,7 @@ const Header = () => {
           <span>Friends</span>
         </Link>
         <Link to="/airdrop" className="footer-icon">
-          <i className="fas fa-gift"></i>
+          <i className="fas fa-parachute-box"></i>
           <span>Airdrop</span>
         </Link>
       </div>

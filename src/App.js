@@ -37,7 +37,7 @@ function ConditionalHeader() {
   const location = useLocation();
 
   // Don't show the Header on Signup routes
-  const noHeaderRoutes = ["/authenticate"];
+  const noHeaderRoutes = ["/authenticate", "/onboarding", "/signup"];
   const isHeaderHidden = noHeaderRoutes.some((path) =>
     location.pathname.startsWith(path.split(":")[0])
   );
