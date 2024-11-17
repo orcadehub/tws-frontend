@@ -7,6 +7,7 @@ import Tasks from "./pages/Tasks";
 import AirDrop from "./pages/Airdrop";
 import Signup from "./pages/Signup";
 import AddTask from "./pages/AddTask";
+import Onboarding from "./pages/Onboarding";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/home" element={<Home />} />
           <Route exact path="/authenticate" element={<Signup />} />
+          <Route exact path="/onboarding" element={<Onboarding />} />
           <Route exact path="/signup/:referralid" element={<Signup />} />{" "}
           {/* Dynamic route for referral ID */}
           <Route exact path="/toplist" element={<Leader />} />

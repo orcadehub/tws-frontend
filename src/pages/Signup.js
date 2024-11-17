@@ -7,6 +7,7 @@ import config from "../config"; // Import config to get base URLs
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [referralId, setReferralId] = useState("");
+  const [isNewUser, setIsNewUser] = useState(false);
   const { referralid } = useParams(); // Capture referral ID from the URL
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ const Signup = () => {
   // Determine base URL based on environment (development or production)
   const baseURL =
     process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL
+      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
       : config.BASE_URL.replace(/\/$/, "");
 
   const handleSignup = async (e) => {
@@ -43,19 +44,22 @@ const Signup = () => {
         }
       );
 
+      const { user, token } = response.data;
+      setIsNewUser(user.isNewUser);
+
       // Store user data and token in localStorage
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
 
-      await Swal.fire({
-        icon: "success",
-        title: "Signup Successful",
-        text: "Your account has been created!",
-      });
+      Swal.close();
 
-      navigate("/home"); // Primary way
-      window.location.href = "/home"; // Fallback for mobile
-
+      if (user.isNewUser) {
+        // Show onboarding slides
+        navigate("/onboarding");
+      } else {
+        // Navigate to home directly for existing users
+        navigate("/home");
+      }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||

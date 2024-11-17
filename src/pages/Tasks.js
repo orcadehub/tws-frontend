@@ -22,7 +22,7 @@ const Tasks = () => {
   // Determine base URL based on environment (development or production)
   const baseURL =
     process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL
+      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
       : config.BASE_URL.replace(/\/$/, "");
 
   useEffect(() => {

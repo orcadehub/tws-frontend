@@ -16,7 +16,7 @@ const AddTask = () => {
   // Get the base URL depending on the environment
   const baseURL =
     process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL
+      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
       : config.BASE_URL.replace(/\/$/, "");
 
   // Function to check if the user is an admin based on the JWT token

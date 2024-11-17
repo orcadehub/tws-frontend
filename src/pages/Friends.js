@@ -16,7 +16,7 @@ const Friends = () => {
   // Get the base URL depending on the environment
   const baseURL =
     process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL
+      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
       : config.BASE_URL.replace(/\/$/, "");
 
   const CONFIG_OBJ = {
