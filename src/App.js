@@ -8,6 +8,7 @@ import AirDrop from "./pages/Airdrop";
 import Signup from "./pages/Signup";
 import AddTask from "./pages/AddTask";
 import Onboarding from "./pages/Onboarding";
+import Demo from "./pages/Demo";
 
 function App() {
   return (
@@ -15,11 +16,14 @@ function App() {
       <Router>
         <Routes>
           <Route exact path="/" element={<Home />} />
+          <Route exact path="/demo" element={<Demo />} />
           <Route exact path="/home" element={<Home />} />
-          <Route exact path="/authenticate" element={<Signup />} />
+          {/* <Route exact path="/authenticate" element={<Signup />} /> */}
           <Route exact path="/onboarding" element={<Onboarding />} />
-          <Route exact path="/signup/:referralid" element={<Signup />} />{" "}
+          {/* <Route exact path="/authenticate/:referralid" element={<Signup />} />  */}
           {/* Dynamic route for referral ID */}
+          <Route exact path="/verify-chatid/:chatid" element={<Signup />} /> 
+          {/* New route for chatid */}
           <Route exact path="/toplist" element={<Leader />} />
           <Route exact path="/friends" element={<Friends />} />
           <Route exact path="/tasks" element={<Tasks />} />
@@ -36,8 +40,8 @@ function App() {
 function ConditionalHeader() {
   const location = useLocation();
 
-  // Don't show the Header on Signup routes
-  const noHeaderRoutes = ["/authenticate", "/onboarding", "/signup"];
+  // Don't show the Header on certain routes
+  const noHeaderRoutes = [ "/onboarding", "/verify-chatid"];
   const isHeaderHidden = noHeaderRoutes.some((path) =>
     location.pathname.startsWith(path.split(":")[0])
   );

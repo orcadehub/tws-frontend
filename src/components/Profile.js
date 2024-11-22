@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import config from '../config';
-
+import config from "../config";
+import Back from "../assets/homeblack.jpg";
+import Coin from '../assets/coin.png'
 const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const [timer, setTimer] = useState(30);
@@ -26,10 +27,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(
-          `${baseURL}/profile`,
-          CONFIG_OBJ
-        );
+        const response = await axios.get(`${baseURL}/profile`, CONFIG_OBJ);
         const user = response.data.user;
         setProfileData(user);
 
@@ -107,8 +105,20 @@ const Profile = () => {
     <div style={styles.container}>
       <div style={styles.profileContainer}>
         <div style={styles.userInfo}>
+          <div style={styles.profileIcon}>
+            {profileData?.profileImage ? (
+              <img
+                src={profileData.profileImage}
+                alt="Profile"
+                style={styles.profileImage}
+              />
+            ) : (
+              <span style={styles.profileInitial}>
+                {profileData?.username?.charAt(0).toUpperCase() || "U"}
+              </span>
+            )}
+          </div>
           <h2 style={styles.name}>{profileData?.username || "User Name"}</h2>
-          <p style={styles.userId}>ID: {profileData?.referralId || "N/A"}</p>
         </div>
         {profileData?.role === "admin" && (
           <div style={styles.taskButtons}>
@@ -128,9 +138,10 @@ const Profile = () => {
         )}
         {profileData?.role === "user" && (
           <div style={styles.balanceBox}>
-            <h3 style={styles.balanceTitle}>Coin Balance</h3>
+            {/* <h3 style={styles.balanceTitle}>Coin Balance</h3> */}
+            <img src={Coin} alt="coin" style={{height:'50px'}}/>
             <p style={styles.balanceAmount}>
-              ${profileData?.walletAmount || "0.00"}
+              {profileData?.walletAmount || "0.00"} Sharks
             </p>
           </div>
         )}
@@ -138,10 +149,7 @@ const Profile = () => {
       {profileData?.role === "user" && (
         <>
           <div style={styles.box3}>
-            <video width="100%" height="auto" autoPlay loop muted>
-              <source src="path/to/animated-video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+           <img src={Back} alt="image" style={{height:'100%',width:'100%'}}/>
           </div>
           <div style={styles.box4}>
             <div
@@ -174,7 +182,7 @@ const styles = {
   container: {
     backgroundColor: "#000",
     color: "#fff",
-    height: "auto",
+    height: "83%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -186,37 +194,6 @@ const styles = {
     padding: "20px",
     marginBottom: "10px",
     borderRadius: "10px",
-  },
-  userInfo: {
-    textAlign: "left",
-    marginBottom: "15px",
-  },
-  name: {
-    fontSize: "18px",
-    marginBottom: "5px",
-    color: "#fff",
-  },
-  userId: {
-    fontSize: "14px",
-    color: "#bbb",
-  },
-  balanceBox: {
-    backgroundColor: "#FFA500",
-    width: "100%",
-    padding: "10px",
-    textAlign: "center",
-    borderRadius: "5px",
-    marginTop: "10px",
-  },
-  balanceTitle: {
-    fontSize: "16px",
-    color: "#fff",
-    marginBottom: "5px",
-  },
-  balanceAmount: {
-    fontSize: "24px",
-    color: "#fff",
-    fontWeight: "bold",
   },
   taskButtons: {
     marginBottom: "10px",
@@ -233,23 +210,55 @@ const styles = {
     flex: 1,
     margin: "5px 2px",
   },
+  userInfo: {
+    textAlign: "left",
+    marginBottom: "15px",
+  },
+  name: {
+    fontSize: "18px",
+    marginBottom: "5px",
+    color: "#fff",
+  },
+  userId: {
+    fontSize: "14px",
+    color: "#bbb",
+  },
+  balanceBox: {
+    width: "100%",
+    padding: "10px",
+    textAlign: "center",
+    borderRadius: "5px",
+    marginTop: "10px",
+  },
+  balanceTitle: {
+    fontSize: "25px",
+    color: "#fff",
+    marginBottom: "5px",
+  },
+  balanceAmount: {
+    fontSize: "40px",
+    color: "#fff",
+    fontWeight: "bold",
+  },
   box3: {
     backgroundColor: "#222",
     width: "80%",
+    height:'270px',
     maxWidth: "400px",
     borderRadius: "8px",
-    overflow: "hidden",
-    margin: "10px 0",
+    margin: "-45px 0",
   },
   box4: {
-    backgroundColor: "#333",
+    backgroundColor: "#000",
     width: "80%",
+    border:'2px solid skyblue',
     maxWidth: "400px",
     padding: "15px",
     textAlign: "center",
     borderRadius: "8px",
     margin: "10px 0",
     position: "relative",
+    bottom: "-10%",
     overflow: "hidden",
   },
   progressBar: {
@@ -257,12 +266,12 @@ const styles = {
     top: 0,
     left: 0,
     height: "100%",
-    backgroundColor: "#FFA50088", // Slightly transparent orange
+    backgroundColor: "skyblue", // Slightly transparent orange
     zIndex: 0,
   },
   startButton: {
-    backgroundColor: "#FFA500",
-    color: "#fff",
+    backgroundColor: "skyblue",
+    color: "#000",
     padding: "10px 20px",
     borderRadius: "5px",
     border: "none",
@@ -271,7 +280,7 @@ const styles = {
     zIndex: 1,
   },
   timer: {
-    color: "#bbb",
+    color: "#fff",
     fontSize: "18px",
     position: "relative",
     zIndex: 1,
@@ -285,6 +294,32 @@ const styles = {
     cursor: "pointer",
     position: "relative",
     zIndex: 1,
+  },
+  userInfo: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "15px",
+  },
+  profileIcon: {
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    backgroundColor: "#ccc",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: "10px",
+    overflow: "hidden", // Ensures image fits within the circle
+  },
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  profileInitial: {
+    color: "#000",
+    fontWeight: "bold",
+    fontSize: "20px",
   },
 };
 

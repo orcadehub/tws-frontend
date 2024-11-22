@@ -9,6 +9,7 @@ const AddTask = () => {
   const [taskName, setTaskName] = useState("");
   const [points, setPoints] = useState("");
   const [category, setCategory] = useState("");
+  const [image, setImage] = useState(null); // New state for the image file
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // State to track form submission
   const navigate = useNavigate();
@@ -45,6 +46,14 @@ const AddTask = () => {
     checkAdminStatus();
   }, []);
 
+  // Function to handle image change
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
   const handleAddTask = async (e) => {
     e.preventDefault();
 
@@ -61,17 +70,22 @@ const AddTask = () => {
 
     setIsSubmitting(true); // Set submitting state to true
 
+    const formData = new FormData();
+    formData.append("taskName", taskName);
+    formData.append("points", points);
+    formData.append("category", category);
+    if (image) {
+      formData.append("image", image); // Append the image to the form data
+    }
+
     try {
       await axios.post(
         `${baseURL}/tasks`, // Use dynamic base URL
-        {
-          taskName,
-          points,
-          category,
-        },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`, // Send token in request header
+            "Content-Type": "multipart/form-data", // Set header for file upload
           },
         }
       );
@@ -88,6 +102,7 @@ const AddTask = () => {
       setTaskName("");
       setPoints("");
       setCategory("");
+      setImage(null); // Reset image state
     } catch (error) {
       console.error("Error adding task:", error);
 
@@ -133,7 +148,16 @@ const AddTask = () => {
           <option value="">Select Category</option>
           <option value="Available">Available</option>
           <option value="Advanced">Advanced</option>
+          <option value="Airdrop">Airdrop</option> {/* Added Airdrop category */}
         </select>
+
+        {/* New image upload input */}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="task-input"
+        />
 
         {/* Submit Button */}
         <button type="submit" className="task-submit-btn" disabled={isSubmitting}>

@@ -64,7 +64,7 @@ const Tasks = () => {
 
     fetchTasks();
     fetchProfileData();
-  }, [navigate, userData, baseURL]);
+  }, [navigate]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -168,29 +168,6 @@ const Tasks = () => {
     }
   };
 
-  const handleOpenTaskLink = async (taskId, socialMediaLink, opensCount, points) => {
-    try {
-      if (opensCount < 1) {
-        await axios.put(`${baseURL}/task/${taskId}/open`, {}, CONFIG_OBJ);
-      }
-
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task._id === taskId ? { ...task, opensCount: opensCount + 1 } : task
-        )
-      );
-
-      if (opensCount === 1) {
-        setTimeout(async () => {
-          await handleTaskClaim(taskId, points);
-        }, 3000);
-      }
-
-      window.open(socialMediaLink, "_blank");
-    } catch (error) {
-      console.error("Error opening task:", error);
-    }
-  };
 
   const handleDeleteTask = async (taskId) => {
     try {
@@ -206,7 +183,10 @@ const Tasks = () => {
       });
 
       if (result.isConfirmed) {
-        const response = await axios.delete(`${baseURL}/task/${taskId}`, CONFIG_OBJ);
+        const response = await axios.delete(
+          `${baseURL}/task/${taskId}`,
+          CONFIG_OBJ
+        );
         Swal.fire({
           icon: "success",
           title: "Task Deleted",
@@ -226,13 +206,15 @@ const Tasks = () => {
 
   return (
     <div className="mobile-container">
-      <h2>Tasks</h2>
+      <h1>Tasks</h1>
       <div className="task-section">
         <div className="header-container">
           {["Available", "Advanced"].map((category) => (
             <div className="header" key={category}>
               <p
-                className={`header-link ${selectedCategory === category ? "active" : ""}`}
+                className={`header-link ${
+                  selectedCategory === category ? "active" : ""
+                }`}
                 onClick={() => handleCategoryClick(category)}
               >
                 {category}
@@ -245,42 +227,56 @@ const Tasks = () => {
           {tasks
             .filter((task) => task.category === selectedCategory)
             .map((task) => (
-              <div className="task" key={task._id}>
-                <div className="task-info">
-                  <span>{task.taskName}</span>
-                  <div>
-                    <small>+{task.points} BP</small>
+              <div className="user-profile" key={task._id}>
+                <div className="profile-info">
+                  <div className="profile-pic">{/* Add user image here */}</div>
+                  <div className="profile-details">
+                    <span className="user-name">{task.taskName}</span>{" "}
+                    {/* Task Name */}
+                    <span className="coins">+{task.points} COINS</span>{" "}
+                    {/* Task Points */}
                   </div>
                 </div>
-                {user?.role === "admin" ? (
-                  <button className="btn del-btn" onClick={() => handleDeleteTask(task._id)}>
-                    Delete
-                  </button>
-                ) : (
-                  <>
-                    {task.taskCompletion === "start" && (
-                      <button
-                        className="btn btn-custom"
-                        onClick={() => handleTaskStart(task._id, task.points)}
-                      >
-                        Start
-                      </button>
-                    )}
-                    {task.taskCompletion === "claim" && (
-                      <button
-                        className="btn btn-custom"
-                        onClick={() => handleTaskClaim(task._id, task.points)}
-                      >
-                        Claim
-                      </button>
-                    )}
-                    {task.taskCompletion === "complete" && (
-                      <button className="btn btn-custom" disabled>
-                        Completed
-                      </button>
-                    )}
-                  </>
-                )}
+                <div className="user-ranking">
+                  {/* For Normal Users (Display Start, Claim, Completed buttons) */}
+                  {user?.role !== "admin" && (
+                    <>
+                      {task.taskCompletion === "start" && (
+                        <button
+                          className="btn btn-custom"
+                          onClick={() => handleTaskStart(task._id, task.points)}
+                        >
+                          Start
+                        </button>
+                      )}
+
+                      {task.taskCompletion === "claim" && (
+                        <button
+                          className="btn btn-custom"
+                          onClick={() => handleTaskClaim(task._id, task.points)}
+                        >
+                          Claim
+                        </button>
+                      )}
+
+                      {task.taskCompletion === "complete" && (
+                        <button className="btn btn-custom" disabled>
+                          Completed
+                        </button>
+                      )}
+                    </>
+                  )}
+
+                  {/* For Admin (Display Delete button only) */}
+                  {user?.role === "admin" && (
+                    <button
+                      className="btn del-btn"
+                      onClick={() => handleDeleteTask(task._id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
         </div>

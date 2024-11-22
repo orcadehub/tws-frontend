@@ -57,7 +57,7 @@ const Leader = () => {
     };
 
     fetchLeaderboard();
-  }, [user, navigate, baseURL]); // Add baseURL to dependency array
+  }, [navigate]); // Add baseURL to dependency array
 
   return (
     <div className="whole">

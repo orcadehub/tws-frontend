@@ -6,12 +6,12 @@ const Header = () => {
     <footer className="footer">
       <div className="footer-icons">
         <Link to="/toplist" className="footer-icon">
-          <i className="fas fa-trophy"></i>
-          <span>Leaderboard</span>
+        <i className="fa-solid fa-ranking-star " ></i>
+          <span>Ranking</span>
         </Link>
         <Link to="/tasks" className="footer-icon">
           <i className="fas fa-coins"></i>
-          <span>Tasks</span>
+          <span>Earn</span>
         </Link>
         <Link to="/" className="footer-icon">
           <i className="fas fa-home"></i>

@@ -1,6 +1,3 @@
-/* body {
-  background-color: rgb(62, 4, 124);
-} */
 
 .lead {
   color: white;
@@ -12,9 +9,9 @@ h1 {
 }
 
 .circle {
-  color: white;
+  color: black;
   padding-top: 13px;
-  background-color: rgb(103, 31, 175);
+  background-color: skyblue;
   padding-bottom: 6px;
   margin-top: 20px;
   padding-left: 15px;
@@ -24,6 +21,8 @@ h1 {
   margin-right: 30px;
   border-radius: 18px;
   align-items: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2), /* Soft shadow */
+              0px 0px 20px rgba(0, 255, 255, 0.6); /* Glow effect */
 }
 
 .board {
@@ -76,33 +75,20 @@ h1 {
 
 .whole {
   width: 430px;
-  height: auto;
-  margin: auto;
+  height: 85vh;
+  overflow-y:scroll;
+  margin:auto;
 }
 
-/* Media query for screens up to 430px wide */
-@media (max-width: 430px) {
-  body {
-    background-color: rgb(62, 4, 124);
-  }
 
-  .whole {
-    width: 100%;
-    padding: 0 15px;
-  }
-
-  .lead h1 {
-    font-size: 32px;
-  }
-
-  .circle,
-  .board {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-
-  .hold {
-    font-size: 24px;
-    margin-left: 10px;
-  }
+/* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+.whole::-webkit-scrollbar {
+  display: none;
 }
+
+/* Hide scrollbar for Firefox */
+.whole {
+  scrollbar-width: none;
+}
+
+

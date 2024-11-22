@@ -1,71 +1,74 @@
+/* Basic styles */
+
+
 .airdrop-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  width: 100%; /* Full width to fit mobile screens */
+  max-width: 375px; /* Set max-width to simulate the mobile screen */
+  height: 100vh;
+  background-color: #000;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  margin: 20px auto; /* Centers the container with a smaller margin */
   padding: 20px;
+  color: white;
 }
 
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
 
-.connect-wallet-btn {
-  background-color: #0088cc;
-  color: #fff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-bottom: 30px;
-}
 
-.connect-wallet-btn:hover {
-  background-color: #0077bb;
-}
 
-.icon-container {
+
+
+
+
+
+.user-profile {
+  background-color: skyblue;  /* Purple background */
+  color: black;
+  border-radius: 8px;
+  padding: 10px;
   display: flex;
-  justify-content: space-around;
-  width: 100%;
-  max-width: 400px;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 300px; /* Adjust the width */
+  margin: 10px;
 }
 
-.icon-box {
+.profile-info {
+  display: flex;
+  align-items: center;
+}
+
+.profile-pic {
+  background-color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.profile-details {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 70px;
 }
 
-.icon {
-  font-size: 40px;
-  color: #333;
-  margin-bottom: 8px;
+.user-name {
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.icon-box span {
+.coins {
   font-size: 14px;
-  color: #333;
+  margin-top: 5px;
 }
 
-/* Responsive styling */
-@media (max-width: 600px) {
-  .connect-wallet-btn {
-    width: 100%;
-    font-size: 14px;
-    padding: 10px;
-  }
+.header-link {
+  cursor: pointer;
+  padding: 10px;
+  font-weight: bold;
+  text-decoration: none;
+}
 
-  .icon {
-    font-size: 30px;
-  }
-
-  .icon-box span {
-    font-size: 12px;
-  }
+.header-link.active {
+  border-bottom: 2px solid #007bff; /* Blue underline */
+  color: skyblue; /* Change text color to blue */
 }

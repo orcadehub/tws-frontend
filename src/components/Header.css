@@ -1,6 +1,6 @@
 /* Basic reset for footer */
 .footer {
-  background-color: #333;
+  background-color:black;
   width: 100%;
   padding: 15px 0;
   display: flex;
@@ -19,6 +19,11 @@
   justify-content: space-around;
   width: 100%;
   max-width: 430px;
+  border: 3px solid skyblue;
+  padding: 20px;
+  border-radius:30%;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2), /* Soft shadow */
+              0px 0px 20px rgba(0, 255, 255, 0.6); /* Glow effect */
 }
 
 /* Styling each icon container */
@@ -39,21 +44,7 @@
 
 /* Hover effect */
 .footer-icon:hover {
-  color: #ff6347; /* Highlight color */
+  color: skyblue; /* Highlight color */
 }
 
-/* Media query for screens up to 430px wide */
-@media (max-width: 430px) {
-  .footer-icons {
-    width: 100%;
-    padding: 0 15px;
-  }
 
-  .footer-icon {
-    font-size: 12px; /* Smaller font size for text labels */
-  }
-
-  .footer-icon i {
-    font-size: 18px; /* Adjust icon size */
-  }
-}

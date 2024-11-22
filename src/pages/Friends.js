@@ -104,7 +104,16 @@ const Friends = () => {
           </li>
         </ul>
       </div>
-
+      <div className="button">
+        <div className="btn">
+          <button onClick={handleShare}>Invite Friends!</button>
+        </div>
+        <div className="btn2" onClick={handleCopyLink}>
+          <h1>
+            <i className="bx bxs-copy"></i>
+          </h1>
+        </div>
+      </div>
       <div className="name">
         <h4>
           <span className="span2">No.</span> Friend's name
@@ -128,16 +137,7 @@ const Friends = () => {
         </p>
       </div>
 
-      <div className="button">
-        <div className="btn">
-          <button onClick={handleShare}>Invite Friends!</button>
-        </div>
-        <div className="btn2" onClick={handleCopyLink}>
-          <h1>
-            <i className="bx bxs-copy"></i>
-          </h1>
-        </div>
-      </div>
+      
     </div>
   );
 };

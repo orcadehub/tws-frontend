@@ -1,18 +1,29 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-body {
-  background-color: black;
-  color: white;
-}
+  body {
+    background-color: black;
+    color: white;
+  }
 
 .mobile {
   width: 400px;
-  height: auto;
-  margin: 50px auto;
+  height: 82vh;
+  margin:  auto;
+  overflow-y: scroll;
+}
+
+/* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+.mobile::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.mobile {
+  scrollbar-width: none;
 }
 
 .content {
@@ -89,8 +100,10 @@ body {
 
 .ol {
   font-size: 18px;
-  margin: 5px;
+  margin-left: 25px;
   list-style-type: none;
+  
+ 
 }
 
 .ol ol li {
@@ -114,10 +127,12 @@ body {
   display: flex;
   flex-direction: row;
   margin: 12px;
+  position: sticky;
+  top:2%;
 }
 
 .btn button {
-  background-color: rgb(243, 243, 13);
+  background-color: skyblue;
   font-size: 20px;
   border-radius: 25px;
   border: none;
@@ -126,7 +141,7 @@ body {
 }
 
 .btn2 h1 i {
-  background-color: yellow;
+  background-color: skyblue;
   border-radius: 25px;
   padding: 10px;
   outline: black;
