@@ -11,6 +11,8 @@ const Tasks = () => {
   const [selectedCategory, setSelectedCategory] = useState("Available"); // Default category "Available"
   const [tasks, setTasks] = useState([]);
   const [userData, setUserData] = useState(user);
+  const [referrals, setReferrals] = useState([]);
+  const [totalReferrals, setTotalReferrals] = useState(0);
 
   const CONFIG_OBJ = {
     headers: {
@@ -30,7 +32,6 @@ const Tasks = () => {
       navigate("/authenticate");
       return;
     }
-
     // Fetch Tasks
     const fetchTasks = async () => {
       try {
@@ -47,6 +48,7 @@ const Tasks = () => {
           };
         });
         setTasks(tasksWithCompletion);
+        console.log(tasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -65,6 +67,29 @@ const Tasks = () => {
     fetchTasks();
     fetchProfileData();
   }, [navigate]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/authenticate");
+      return;
+    }
+
+    const fetchReferralData = async () => {
+      try {
+        const response = await axios.get(
+          `${baseURL}/profile/referrals`, // Use dynamic baseURL
+          CONFIG_OBJ
+        );
+        setReferrals(response.data.referrals);
+        setTotalReferrals(response.data.totalReferrals);
+      } catch (error) {
+        console.error("Error fetching referral data:", error);
+        navigate("/authenticate");
+      }
+    };
+
+    fetchReferralData();
+  }, [user]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -121,8 +146,69 @@ const Tasks = () => {
     }
   };
 
-  const handleTaskClaim = async (taskId, points) => {
+  const handleDeleteTask = async (taskId) => {
     try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This task will be deleted permanently!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF6347",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios.delete(
+          `${baseURL}/task/${taskId}`,
+          CONFIG_OBJ
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Task Deleted",
+          text: response.data.message,
+          confirmButtonColor: "#FFA500",
+        });
+        setTasks((tasks) => tasks.filter((task) => task._id !== taskId));
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong. Please try again later.",
+      });
+    }
+  };
+
+  const handleTaskClaim = async (taskId, points, isMilestone = false) => {
+    try {
+      if (isMilestone) {
+        // Handle milestone claim
+        if (totalReferrals < parseInt(taskId.split("-")[1])) {
+          Swal.fire({
+            icon: "error",
+            title: "Not Eligible",
+            text: "You have not reached the milestone yet.",
+          });
+        }
+
+        // Update user data for milestone
+        const updatedUserData = { ...userData };
+        updatedUserData.walletAmount += points;
+
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+        setUserData(updatedUserData);
+
+        Swal.fire({
+          icon: "success",
+          title: "Milestone Claimed",
+          text: `You have successfully claimed the milestone reward of ${points} points.`,
+          confirmButtonColor: "#FFA500",
+        });
+      }
+
+      // Regular task claim
       const response = await axios.put(
         `${baseURL}/task/${taskId}/claim`,
         {},
@@ -168,42 +254,6 @@ const Tasks = () => {
     }
   };
 
-
-  const handleDeleteTask = async (taskId) => {
-    try {
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "This task will be deleted permanently!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#FF6347",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel",
-      });
-
-      if (result.isConfirmed) {
-        const response = await axios.delete(
-          `${baseURL}/task/${taskId}`,
-          CONFIG_OBJ
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Task Deleted",
-          text: response.data.message,
-          confirmButtonColor: "#FFA500",
-        });
-        setTasks((tasks) => tasks.filter((task) => task._id !== taskId));
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
-      });
-    }
-  };
-
   return (
     <div className="mobile-container">
       <h1>Tasks</h1>
@@ -225,49 +275,103 @@ const Tasks = () => {
 
         <div className="task-list">
           {tasks
-            .filter((task) => task.category === selectedCategory)
+            .filter((task) => {
+              // Show "Friends" tasks under "Available"
+              if (selectedCategory === "Available") {
+                return (
+                  task.category === "Available" || task.category === "Friends"
+                );
+              }
+              return task.category === selectedCategory;
+            })
             .map((task) => (
               <div className="user-profile" key={task._id}>
                 <div className="profile-info">
                   <div className="profile-pic">{/* Add user image here */}</div>
                   <div className="profile-details">
-                    <span className="user-name">{task.taskName}</span>{" "}
-                    {/* Task Name */}
-                    <span className="coins">+{task.points} COINS</span>{" "}
-                    {/* Task Points */}
+                    <span className="user-name">{task.taskName}</span>
+                    <span className="coins">+{task.points} COINS</span>
+
+                    {task.category === "Friends" && (
+                      <span className="referrals">
+                        {totalReferrals}/{task.milestoneCount} Referrals
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="user-ranking">
-                  {/* For Normal Users (Display Start, Claim, Completed buttons) */}
                   {user?.role !== "admin" && (
                     <>
-                      {task.taskCompletion === "start" && (
-                        <button
-                          className="btn btn-custom"
-                          onClick={() => handleTaskStart(task._id, task.points)}
-                        >
-                          Start
-                        </button>
-                      )}
-
-                      {task.taskCompletion === "claim" && (
-                        <button
-                          className="btn btn-custom"
-                          onClick={() => handleTaskClaim(task._id, task.points)}
-                        >
-                          Claim
-                        </button>
-                      )}
-
-                      {task.taskCompletion === "complete" && (
-                        <button className="btn btn-custom" disabled>
-                          Completed
-                        </button>
+                      {task.category === "Advanced" ? (
+                        // Advanced-specific logic with lock symbol and description
+                        <>
+                          {totalReferrals < 1 ? (
+                            <div className="pending-container">
+                              <button className="btn btn-custom" disabled>
+                                <i className="fa-solid fa-lock"></i> Invite 1 friend
+                              </button>
+                              {/* <small className="description">
+                                This task will unlock after 1 successful
+                                referral.
+                              </small> */}
+                            </div>
+                          ) : task.taskCompletion === "claim" ? (
+                            <button
+                              className="btn btn-custom"
+                              onClick={() =>
+                                handleTaskClaim(task._id, task.points, true)
+                              }
+                            >
+                              Claim
+                            </button>
+                          ) : task.taskCompletion === "complete" ? (
+                            <button className="btn btn-custom" disabled>
+                              Completed
+                            </button>
+                          ) : (
+                            <button
+                              className="btn btn-custom"
+                              onClick={() =>
+                                handleTaskStart(task._id, task.points)
+                              }
+                            >
+                              Start
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        // Available and Friends-specific logic
+                        <>
+                          {task.taskCompletion === "start" && (
+                            <button
+                              className="btn btn-custom"
+                              onClick={() =>
+                                handleTaskStart(task._id, task.points)
+                              }
+                            >
+                              Start
+                            </button>
+                          )}
+                          {task.taskCompletion === "claim" && (
+                            <button
+                              className="btn btn-custom"
+                              onClick={() =>
+                                handleTaskClaim(task._id, task.points, false)
+                              }
+                            >
+                              Claim
+                            </button>
+                          )}
+                          {task.taskCompletion === "complete" && (
+                            <button className="btn btn-custom" disabled>
+                              Completed
+                            </button>
+                          )}
+                        </>
                       )}
                     </>
                   )}
 
-                  {/* For Admin (Display Delete button only) */}
                   {user?.role === "admin" && (
                     <button
                       className="btn del-btn"

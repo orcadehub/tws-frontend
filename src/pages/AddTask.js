@@ -47,12 +47,12 @@ const AddTask = () => {
   }, []);
 
   // Function to handle image change
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-    }
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setImage(file);
+  //   }
+  // };
 
   const handleAddTask = async (e) => {
     e.preventDefault();
@@ -74,9 +74,9 @@ const AddTask = () => {
     formData.append("taskName", taskName);
     formData.append("points", points);
     formData.append("category", category);
-    if (image) {
-      formData.append("image", image); // Append the image to the form data
-    }
+    // if (image) {
+    //   formData.append("image", image); // Append the image to the form data
+    // }
 
     try {
       await axios.post(
@@ -85,7 +85,7 @@ const AddTask = () => {
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`, // Send token in request header
-            "Content-Type": "multipart/form-data", // Set header for file upload
+            "Content-Type": "application/json", // Set header for file upload
           },
         }
       );
@@ -152,12 +152,12 @@ const AddTask = () => {
         </select>
 
         {/* New image upload input */}
-        <input
+        {/* <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
           className="task-input"
-        />
+        /> */}
 
         {/* Submit Button */}
         <button type="submit" className="task-submit-btn" disabled={isSubmitting}>

@@ -47,7 +47,7 @@ const Friends = () => {
     };
 
     fetchReferralData();
-  }, [user, navigate, baseURL]);
+  }, [user]);
 
   const handleShare = () => {
     if (navigator.share) {
