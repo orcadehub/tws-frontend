@@ -39,7 +39,7 @@ const Airdrop = () => {
         const airdropTasks = response.data.filter(
           (task) => task.category === "Airdrop"
         );
-        
+
         const tasksWithCompletion = airdropTasks.map((task) => {
           const userCompletedTask = userData?.completedTasks.find(
             (userTask) => userTask.taskId === task._id
@@ -210,63 +210,65 @@ const Airdrop = () => {
 
   return (
     <div className="mobile-container">
+      <div className="walletBox">
+        <button>Connect Wallet</button>
+      </div>
       <h1>Airdrop Tasks</h1>
       <div className="task-section">
         <div className="task-list">
-          {tasks
-            .map((task) => (
-              <div className="user-profile" key={task._id}>
-                <div className="profile-info">
-                  <div className="profile-pic">{/* Add user image here */}</div>
-                  <div className="profile-details">
-                    <span className="user-name">{task.taskName}</span>{" "}
-                    {/* Task Name */}
-                    <span className="coins">{task.points} COINS</span>{" "}
-                    {/* Task Points */}
-                  </div>
-                </div>
-                <div className="user-ranking">
-                  {/* For Normal Users (Display Start, Claim, Completed buttons) */}
-                  {user?.role !== "admin" && (
-                    <>
-                      {task.taskCompletion === "start" && (
-                        <button
-                          className="btn btn-custom"
-                          onClick={() => handleTaskStart(task._id, task.points)}
-                        >
-                          Start
-                        </button>
-                      )}
-
-                      {task.taskCompletion === "claim" && (
-                        <button
-                          className="btn btn-custom"
-                          onClick={() => handleTaskClaim(task._id, task.points)}
-                        >
-                          Claim
-                        </button>
-                      )}
-
-                      {task.taskCompletion === "complete" && (
-                        <button className="btn btn-custom" disabled>
-                          Completed
-                        </button>
-                      )}
-                    </>
-                  )}
-
-                  {/* For Admin (Display Delete button only) */}
-                  {user?.role === "admin" && (
-                    <button
-                      className="btn del-btn"
-                      onClick={() => handleDeleteTask(task._id)}
-                    >
-                      Delete
-                    </button>
-                  )}
+          {tasks.map((task) => (
+            <div className="user-profile" key={task._id}>
+              <div className="profile-info">
+                <div className="profile-pic">{/* Add user image here */}</div>
+                <div className="profile-details">
+                  <span className="user-name">{task.taskName}</span>{" "}
+                  {/* Task Name */}
+                  <span className="coins">{task.points} COINS</span>{" "}
+                  {/* Task Points */}
                 </div>
               </div>
-            ))}
+              <div className="user-ranking">
+                {/* For Normal Users (Display Start, Claim, Completed buttons) */}
+                {user?.role !== "admin" && (
+                  <>
+                    {task.taskCompletion === "start" && (
+                      <button
+                        className="btn btn-custom"
+                        onClick={() => handleTaskStart(task._id, task.points)}
+                      >
+                        Start
+                      </button>
+                    )}
+
+                    {task.taskCompletion === "claim" && (
+                      <button
+                        className="btn btn-custom"
+                        onClick={() => handleTaskClaim(task._id, task.points)}
+                      >
+                        Claim
+                      </button>
+                    )}
+
+                    {task.taskCompletion === "complete" && (
+                      <button className="btn btn-custom" disabled>
+                        Completed
+                      </button>
+                    )}
+                  </>
+                )}
+
+                {/* For Admin (Display Delete button only) */}
+                {user?.role === "admin" && (
+                  <button
+                    className="btn del-btn"
+                    onClick={() => handleDeleteTask(task._id)}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

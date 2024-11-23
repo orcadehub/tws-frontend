@@ -9,6 +9,8 @@ import Signup from "./pages/Signup";
 import AddTask from "./pages/AddTask";
 import Onboarding from "./pages/Onboarding";
 import Demo from "./pages/Demo";
+// import { Buffer } from 'buffer';  // Polyfill for Buffer
+// global.Buffer = Buffer; // Make Buffer available globally
 
 function App() {
   return (

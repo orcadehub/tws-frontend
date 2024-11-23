@@ -1,168 +1,94 @@
-import React, { useState, useEffect } from "react";
-import "./Demo.css"; // Include the styles
-import Video from "../assets/shark.mp4"; // Import the video file
-import Slide1 from "../assets/slide1.jpg";
-import ProfileImage1 from "../assets/home.jpg"; // Profile image for slide 1
-import ProfileImage2 from "../assets/home.jpg"; // Profile image for slide 2
-import ProfileImage3 from "../assets/home.jpg"; // Profile image for slide 3
+import { useState, useEffect, useCallback } from 'react';
+import { useTonConnectUI, TonConnectUIProvider } from '@tonconnect/ui-react';
+import { Address } from '@ton/core';
 
 const Demo = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [animatedDays, setAnimatedDays] = useState(0);
-  const [animatedCoins, setAnimatedCoins] = useState(0);
+  const [tonConnectUI] = useTonConnectUI();
+  const [tonWalletAddress, setTonWalletAddress] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const accountCreatedDate = new Date("2023-05-01"); // Replace with actual account creation date
+  const handleWalletConnection = useCallback((address) => {
+    setTonWalletAddress(address);
+    console.log('Wallet connected successfully!');
+    setIsLoading(false);
+  }, []);
 
-  const calculateDaysOnTelegram = () => {
-    const currentDate = new Date();
-    const timeDifference = currentDate - accountCreatedDate; // Time difference in milliseconds
-    const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24)); // Convert milliseconds to days
-    return daysDifference;
-  };
-
-  const calculateBonusCoins = (days) => {
-    if (days < 365) {
-      return 100;
-    } else if (days < 500) {
-      return 200;
-    } else {
-      return 300;
-    }
-  };
-
-  const daysOnTelegram = calculateDaysOnTelegram();
-  const bonusCoins = calculateBonusCoins(daysOnTelegram);
-
-  const slides = [
-    {
-      title: "Welcome to the White Sharks!",
-      image: Slide1,
-    },
-    {
-      title: "Telegram OG ERA",
-      description: "You are a loyal telegram user",
-      animation: Video,
-      coins: 100,
-    },
-    {
-      progress: 75,
-      daysOnTelegram: daysOnTelegram,
-      bonusCoins: bonusCoins,
-      profileImage: ProfileImage1,
-      profileImage2: ProfileImage2,
-      profileImage3: ProfileImage3,
-    },
-  ];
-
-  const handleNext = () => {
-    if (currentSlide < slides.length - 1) {
-      setCurrentSlide((prev) => prev + 1);
-    }
-  };
+  const handleWalletDisconnection = useCallback(() => {
+    setTonWalletAddress(null);
+    console.log('Wallet disconnected successfully!');
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
-    if (currentSlide === 2) {
-      let daysInterval, coinsInterval;
+    const checkWalletConnection = async () => {
+      if (tonConnectUI.account?.address) {
+        handleWalletConnection(tonConnectUI.account.address);
+      } else {
+        handleWalletDisconnection();
+      }
+    };
 
-      // Animate days
-      daysInterval = setInterval(() => {
-        setAnimatedDays((prev) => {
-          if (prev < daysOnTelegram) return prev + 1;
-          clearInterval(daysInterval);
-          return prev;
-        });
-      }, 1);
+    checkWalletConnection();
 
-      // Animate coins
-      coinsInterval = setInterval(() => {
-        setAnimatedCoins((prev) => {
-          if (prev < bonusCoins) return prev + 1;
-          clearInterval(coinsInterval);
-          return prev;
-        });
-      }, 1);
+    const unsubscribe = tonConnectUI.onStatusChange((wallet) => {
+      if (wallet) {
+        handleWalletConnection(wallet.account.address);
+      } else {
+        handleWalletDisconnection();
+      }
+    });
 
-      return () => {
-        clearInterval(daysInterval);
-        clearInterval(coinsInterval);
-      };
+    return () => {
+      unsubscribe();
+    };
+  }, [tonConnectUI, handleWalletConnection, handleWalletDisconnection]);
+
+  const handleWalletAction = async () => {
+    if (tonConnectUI.connected) {
+      setIsLoading(true);
+      await tonConnectUI.disconnect();
+    } else {
+      await tonConnectUI.openModal();
     }
-  }, [currentSlide, daysOnTelegram, bonusCoins]);
+  };
+
+  const formatAddress = (address) => {
+    try {
+      const parsedAddress = Address.parse(address).toString();
+      return `${parsedAddress.slice(0, 4)}...${parsedAddress.slice(-4)}`;
+    } catch (error) {
+      console.error('Error parsing address:', error);
+      return address;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center">
+        <div className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded">
+          Loading...
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <div className="carousel-container">
-      <div
-        className="carousel-track"
-        style={{
-          transform: `translateX(-${currentSlide * 400}px)`, // Move the track
-          transition: "transform 0.5s ease-in-out",
-        }}
-      >
-        {slides.map((slide, index) => (
-          <div className="carousel-slide" key={index}>
-            <h1>{slide.title}</h1>
-            <p>{slide.description}</p>
-            {/* <img src={slide.image} alt="image" style={{height:'300px'}}/>  */}
-            {index === 2 && (
-              <div className="slide-content">
-                {/* Rating Section */}
-                <div className="left-section">
-                  <div className="profile-image">
-                    <img src={slide.profileImage} alt="Profile" />
-                  </div>
-                  <div className="rating">
-                    <h4>Rating Your Username</h4>
-                  </div>
-                </div>
-                <div className="progress-1"></div>
-
-                {/* Days on Telegram Section */}
-                <div className="center-section">
-                  <div className="profile-image">
-                    <img src={slide.profileImage} alt="Profile" />
-                  </div>
-                  <div className="days-on-telegram">
-                    <h4>Days on Telegram: {animatedDays}</h4>
-                  </div>
-                </div>
-                <div className="progress-1"></div>
-
-                {/* Bonus Coins Section */}
-                <div className="right-section">
-                  <div className="profile-image">
-                    <img src={slide.profileImage} alt="Profile" />
-                  </div>
-                  <div className="bonus-coins">
-                    <h4>Coins Earned : {animatedCoins}</h4>
-                  </div>
-                </div>
-                <div className="progress-1"></div>
-              </div>
-            )}
-
-            {slide.animation && (
-              <div className="animation-container">
-                <video width="320" height="240" autoPlay loop muted>
-                  <source src={slide.animation} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            )}
-
-            {slide.coins && (
-              <div className="coins-earned">
-                <p>Days on Telegram: {slide.coins}</p>
-              </div>
-            )}
+    <TonConnectUIProvider manifestUrl="https://violet-traditional-rabbit-103.mypinata.cloud/ipfs/QmQJJAdZ2qSwdepvb5evJq7soEBueFenHLX3PoM6tiBffm">
+      <div>
+        <h1>TON Wallet Connection</h1>
+        {tonWalletAddress ? (
+          <div>
+            <p>Connected to Wallet: {formatAddress(tonWalletAddress)}</p>
+            <button onClick={handleWalletAction}>Disconnect</button>
           </div>
-        ))}
+        ) : (
+          <div>
+            <p>Not connected</p>
+            <button onClick={handleWalletAction}>Connect Wallet</button>
+          </div>
+        )}
       </div>
-      <div className="controls">
-        <button onClick={handleNext} style={{ backgroundColor: "skyblue" }}>
-          {currentSlide < slides.length - 1 ? "Next" : "Get Started"}
-        </button>
-      </div>
-    </div>
+    </TonConnectUIProvider>
   );
 };
 
