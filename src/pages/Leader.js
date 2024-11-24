@@ -62,7 +62,7 @@ const Leader = () => {
   return (
     <div className="whole">
       <div className="lead">
-        <h1>Leader Board</h1>
+        <h1>Ranking</h1>
       </div>
 
       <div className="circle">

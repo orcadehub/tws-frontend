@@ -1,3 +1,5 @@
+// import { Buffer } from 'buffer';  // Polyfill for Buffer
+// global.Buffer = Buffer; // Make Buffer available globally
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
@@ -8,9 +10,7 @@ import AirDrop from "./pages/Airdrop";
 import Signup from "./pages/Signup";
 import AddTask from "./pages/AddTask";
 import Onboarding from "./pages/Onboarding";
-import Demo from "./pages/Demo";
-// import { Buffer } from 'buffer';  // Polyfill for Buffer
-// global.Buffer = Buffer; // Make Buffer available globally
+// import Demo from "./pages/Demo";
 
 function App() {
   return (
@@ -18,9 +18,8 @@ function App() {
       <Router>
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route exact path="/demo" element={<Demo />} />
+          {/* <Route exact path="/demo" element={<Demo />} /> */}
           <Route exact path="/home" element={<Home />} />
-          {/* <Route exact path="/authenticate" element={<Signup />} /> */}
           <Route exact path="/onboarding" element={<Onboarding />} />
           {/* <Route exact path="/authenticate/:referralid" element={<Signup />} />  */}
           {/* Dynamic route for referral ID */}

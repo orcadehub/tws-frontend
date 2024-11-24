@@ -73,19 +73,11 @@
   color: skyblue; /* Change text color to blue */
 }
 
-.walletBox{
-  text-align: center;
+.wallet{
+  display: flex;
+  justify-content: center;
 }
-.walletBox button {
-  color: black;
-  padding: 4px;
-  margin: 1rem 0;
-  border-radius: 20% 20%;
-  background-color: skyblue;
-  font-weight: bolder;
-  position: relative;
-  overflow: hidden; /* Ensures the animation doesn't overflow the button */
-}
+
 
 .walletBox button::before {
   content: '';

@@ -272,7 +272,6 @@ const Tasks = () => {
             </div>
           ))}
         </div>
-
         <div className="task-list">
           {tasks
             .filter((task) => {
@@ -303,17 +302,14 @@ const Tasks = () => {
                   {user?.role !== "admin" && (
                     <>
                       {task.category === "Advanced" ? (
-                        // Advanced-specific logic with lock symbol and description
+                        // Advanced-specific logic
                         <>
                           {totalReferrals < 1 ? (
                             <div className="pending-container">
                               <button className="btn btn-custom" disabled>
-                                <i className="fa-solid fa-lock"></i> Invite 1 friend
+                                <i className="fa-solid fa-lock"></i> Invite 1
+                                friend
                               </button>
-                              {/* <small className="description">
-                                This task will unlock after 1 successful
-                                referral.
-                              </small> */}
                             </div>
                           ) : task.taskCompletion === "claim" ? (
                             <button
@@ -326,7 +322,7 @@ const Tasks = () => {
                             </button>
                           ) : task.taskCompletion === "complete" ? (
                             <button className="btn btn-custom" disabled>
-                              Completed
+                            <i class="fa-solid fa-check"></i>
                             </button>
                           ) : (
                             <button
@@ -342,30 +338,76 @@ const Tasks = () => {
                       ) : (
                         // Available and Friends-specific logic
                         <>
-                          {task.taskCompletion === "start" && (
-                            <button
-                              className="btn btn-custom"
-                              onClick={() =>
-                                handleTaskStart(task._id, task.points)
-                              }
-                            >
-                              Start
-                            </button>
-                          )}
-                          {task.taskCompletion === "claim" && (
-                            <button
-                              className="btn btn-custom"
-                              onClick={() =>
-                                handleTaskClaim(task._id, task.points, false)
-                              }
-                            >
-                              Claim
-                            </button>
-                          )}
-                          {task.taskCompletion === "complete" && (
-                            <button className="btn btn-custom" disabled>
-                              Completed
-                            </button>
+                          {task.category === "Friends" ? (
+                            <>
+                              {task.taskCompletion === "complete" ? (
+                                <button className="btn btn-custom" disabled>
+                                <i class="fa-solid fa-check"></i>
+                                </button>
+                              ) : task.taskCompletion === "claim" ? (
+                                <button
+                                  className="btn btn-custom"
+                                  onClick={() =>
+                                    handleTaskClaim(
+                                      task._id,
+                                      task.points,
+                                      false
+                                    )
+                                  }
+                                >
+                                  Claim
+                                </button>
+                              ) : totalReferrals >= task.milestoneCount ? (
+                                <button
+                                  className="btn btn-custom"
+                                  onClick={() => {
+                                    handleTaskClaim(
+                                      task._id,
+                                      task.points,
+                                      false
+                                    );
+                                  }}
+                                >
+                                  Claim
+                                </button>
+                              ) : (
+                                <button className="btn btn-custom" disabled>
+                                  Pending
+                                </button>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {task.taskCompletion === "start" && (
+                                <button
+                                  className="btn btn-custom"
+                                  onClick={() =>
+                                    handleTaskStart(task._id, task.points)
+                                  }
+                                >
+                                  Start
+                                </button>
+                              )}
+                              {task.taskCompletion === "claim" && (
+                                <button
+                                  className="btn btn-custom"
+                                  onClick={() =>
+                                    handleTaskClaim(
+                                      task._id,
+                                      task.points,
+                                      false
+                                    )
+                                  }
+                                >
+                                  Claim
+                                </button>
+                              )}
+                              {task.taskCompletion === "complete" && (
+                                <button className="btn btn-custom" disabled>
+                                <i class="fa-solid fa-check"></i>
+                                </button>
+                              )}
+                            </>
                           )}
                         </>
                       )}

@@ -1,94 +1,59 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useTonConnectUI, TonConnectUIProvider } from '@tonconnect/ui-react';
-import { Address } from '@ton/core';
+import React, { useEffect, useState } from "react";
+import { TonConnect, TonConnectButton } from "@tonconnect/ui-react";
+
+// Initialize TonConnect with an optional manifest URL
+const tonConnect = new TonConnect({ manifestUrl: "https://your-domain.com/tonconnect-manifest.json" });
 
 const Demo = () => {
-  const [tonConnectUI] = useTonConnectUI();
-  const [tonWalletAddress, setTonWalletAddress] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const handleWalletConnection = useCallback((address) => {
-    setTonWalletAddress(address);
-    console.log('Wallet connected successfully!');
-    setIsLoading(false);
-  }, []);
-
-  const handleWalletDisconnection = useCallback(() => {
-    setTonWalletAddress(null);
-    console.log('Wallet disconnected successfully!');
-    setIsLoading(false);
-  }, []);
+  const [walletAddress, setWalletAddress] = useState(null);
 
   useEffect(() => {
-    const checkWalletConnection = async () => {
-      if (tonConnectUI.account?.address) {
-        handleWalletConnection(tonConnectUI.account.address);
-      } else {
-        handleWalletDisconnection();
-      }
-    };
+    // Log the initial wallet state for debugging
+    console.log("Initial TonConnect Wallet Info:", tonConnect.wallet);
 
-    checkWalletConnection();
-
-    const unsubscribe = tonConnectUI.onStatusChange((wallet) => {
-      if (wallet) {
-        handleWalletConnection(wallet.account.address);
-      } else {
-        handleWalletDisconnection();
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [tonConnectUI, handleWalletConnection, handleWalletDisconnection]);
-
-  const handleWalletAction = async () => {
-    if (tonConnectUI.connected) {
-      setIsLoading(true);
-      await tonConnectUI.disconnect();
+    // Check if the wallet is already connected on app load
+    const walletInfo = tonConnect.wallet;
+    if (walletInfo) {
+      console.log("Wallet connected on load:", walletInfo);
+      const address = walletInfo.account.address;
+      setWalletAddress(address);
     } else {
-      await tonConnectUI.openModal();
+      console.log("No wallet connected on load.");
     }
-  };
 
-  const formatAddress = (address) => {
-    try {
-      const parsedAddress = Address.parse(address).toString();
-      return `${parsedAddress.slice(0, 4)}...${parsedAddress.slice(-4)}`;
-    } catch (error) {
-      console.error('Error parsing address:', error);
-      return address;
-    }
-  };
+    // Define the handler for connection changes
+    const handleConnectionChange = (walletInfo) => {
+      if (walletInfo) {
+        const address = walletInfo.account.address;
+        console.log("Wallet connected:", walletInfo);
+        setWalletAddress(address);
+      } else {
+        console.log("Wallet disconnected.");
+        setWalletAddress(null);
+      }
+    };
 
-  if (isLoading) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded">
-          Loading...
-        </div>
-      </main>
-    );
-  }
+    // Subscribe to connection state changes
+    tonConnect.onStatusChange(handleConnectionChange);
+
+    // Cleanup on component unmount
+    return () => {
+      tonConnect.offStatusChange(handleConnectionChange);
+    };
+  }, []);
 
   return (
-    <TonConnectUIProvider manifestUrl="https://violet-traditional-rabbit-103.mypinata.cloud/ipfs/QmQJJAdZ2qSwdepvb5evJq7soEBueFenHLX3PoM6tiBffm">
-      <div>
-        <h1>TON Wallet Connection</h1>
-        {tonWalletAddress ? (
-          <div>
-            <p>Connected to Wallet: {formatAddress(tonWalletAddress)}</p>
-            <button onClick={handleWalletAction}>Disconnect</button>
-          </div>
-        ) : (
-          <div>
-            <p>Not connected</p>
-            <button onClick={handleWalletAction}>Connect Wallet</button>
-          </div>
-        )}
-      </div>
-    </TonConnectUIProvider>
+    <div style={{ textAlign: "center", marginTop: "20px" }}>
+      <TonConnectButton />
+      {walletAddress ? (
+        <div style={{ marginTop: "20px" }}>
+          <h3>Connected Wallet Address:</h3>
+          <p style={{ wordBreak: "break-word" }}>{walletAddress}</p>
+        </div>
+      ) : (
+        <p style={{ marginTop: "20px", color: "red" }}>No wallet connected</p>
+      )}
+    </div>
   );
 };
 

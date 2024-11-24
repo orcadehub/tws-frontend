@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "./Airdrop.css";
 import config from "../config";
+import Demo from "./Demo";
 
 const Airdrop = () => {
   const navigate = useNavigate();
@@ -210,8 +211,8 @@ const Airdrop = () => {
 
   return (
     <div className="mobile-container">
-      <div className="walletBox">
-        <button>Connect Wallet</button>
+      <div className="wallet">
+        <Demo/>
       </div>
       <h1>Airdrop Tasks</h1>
       <div className="task-section">
@@ -251,7 +252,7 @@ const Airdrop = () => {
 
                     {task.taskCompletion === "complete" && (
                       <button className="btn btn-custom" disabled>
-                        Completed
+                      <i class="fa-solid fa-check"></i>
                       </button>
                     )}
                   </>
