@@ -254,6 +254,95 @@ const Tasks = () => {
     }
   };
 
+  const handleTaskClaimSocial = async (taskId, points, isMilestone = false) => {
+    try {
+      window.open("https://www.youtube.com/", "_blank");
+      // Regular task claim
+      const response = await axios.put(
+        `${baseURL}/task/${taskId}/claim`,
+        {},
+        CONFIG_OBJ
+      );
+
+      if (response.status === 200) {
+        const updatedUserData = { ...userData };
+        updatedUserData.walletAmount += points;
+
+        const updatedCompletedTasks = [...updatedUserData.completedTasks];
+        const taskIndex = updatedCompletedTasks.findIndex(
+          (task) => task.taskId === taskId
+        );
+        if (taskIndex !== -1) {
+          updatedCompletedTasks[taskIndex].status = "complete";
+        }
+
+        updatedUserData.completedTasks = updatedCompletedTasks;
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task._id === taskId ? { ...task, taskCompletion: "complete" } : task
+          )
+        );
+
+        setUserData(updatedUserData);
+      }
+    } catch (error) {
+      console.error("Error claiming the task:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong. Please try again later.",
+      });
+    }
+  };
+
+  const handleTaskStartSocial = async (taskId, points) => {
+    try {
+      window.open("https://www.youtube.com/", "_blank");
+      // Send start request to the backend
+      const response = await axios.put(
+        `${baseURL}/task/${taskId}/start`,
+        {},
+        CONFIG_OBJ
+      );
+
+      if (response.status === 200) {
+        const updatedTask = response.data.task;
+        const updatedUserData = { ...userData };
+        updatedUserData.walletAmount += points;
+
+        const updatedCompletedTasks = [...updatedUserData.completedTasks];
+        const taskIndex = updatedCompletedTasks.findIndex(
+          (task) => task.taskId === taskId
+        );
+        if (taskIndex !== -1) {
+          updatedCompletedTasks[taskIndex].status = "claim";
+        } else {
+          updatedCompletedTasks.push({ taskId, status: "claim" });
+        }
+
+        updatedUserData.completedTasks = updatedCompletedTasks;
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task._id === taskId ? { ...task, taskCompletion: "claim" } : task
+          )
+        );
+
+        setUserData(updatedUserData);
+      }
+    } catch (error) {
+      console.error("Error starting the task:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong. Please try again later.",
+      });
+    }
+  };
+
   return (
     <div className="mobile-container">
       <h1>Tasks</h1>
@@ -272,13 +361,16 @@ const Tasks = () => {
             </div>
           ))}
         </div>
+
         <div className="task-list">
           {tasks
             .filter((task) => {
-              // Show "Friends" tasks under "Available"
+              // Show "Friends" and "Social" tasks under "Available"
               if (selectedCategory === "Available") {
                 return (
-                  task.category === "Available" || task.category === "Friends"
+                  task.category === "Available" ||
+                  task.category === "Friends" ||
+                  task.category === "Social"
                 );
               }
               return task.category === selectedCategory;
@@ -286,10 +378,16 @@ const Tasks = () => {
             .map((task) => (
               <div className="user-profile" key={task._id}>
                 <div className="profile-info">
-                  <div className="profile-pic">{/* Add user image here */}</div>
+                  <div className="profile-pic">
+                    <img
+                      src={task.imageURL}
+                      alt="image"
+                      style={{ height: "100%", borderRadius: "50%" }}
+                    />
+                  </div>
                   <div className="profile-details">
                     <span className="user-name">{task.taskName}</span>
-                    <span className="coins">+{task.points} COINS</span>
+                    <span className="coins">+{task.points} SHARKS</span>
 
                     {task.category === "Friends" && (
                       <span className="referrals">
@@ -302,7 +400,6 @@ const Tasks = () => {
                   {user?.role !== "admin" && (
                     <>
                       {task.category === "Advanced" ? (
-                        // Advanced-specific logic
                         <>
                           {totalReferrals < 1 ? (
                             <div className="pending-container">
@@ -322,7 +419,7 @@ const Tasks = () => {
                             </button>
                           ) : task.taskCompletion === "complete" ? (
                             <button className="btn btn-custom" disabled>
-                            <i class="fa-solid fa-check"></i>
+                              <i class="fa-solid fa-check"></i>
                             </button>
                           ) : (
                             <button
@@ -336,13 +433,13 @@ const Tasks = () => {
                           )}
                         </>
                       ) : (
-                        // Available and Friends-specific logic
+                        // Logic for Available and Friends tasks
                         <>
-                          {task.category === "Friends" ? (
+                          {task.category === "Friends" && (
                             <>
                               {task.taskCompletion === "complete" ? (
                                 <button className="btn btn-custom" disabled>
-                                <i class="fa-solid fa-check"></i>
+                                  <i class="fa-solid fa-check"></i>
                                 </button>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
@@ -376,7 +473,41 @@ const Tasks = () => {
                                 </button>
                               )}
                             </>
-                          ) : (
+                          )}
+
+                          {task.category === "Social" && (
+                            <>
+                              {task.taskCompletion === "complete" ? (
+                                <button className="btn btn-custom" disabled>
+                                  <i class="fa-solid fa-check"></i>
+                                </button>
+                              ) : task.taskCompletion === "claim" ? (
+                                <button
+                                  className="btn btn-custom"
+                                  onClick={() =>
+                                    handleTaskClaimSocial(
+                                      task._id,
+                                      task.points,
+                                      false
+                                    )
+                                  }
+                                >
+                                  start
+                                </button>
+                              ) : (
+                                <button
+                                  className="btn btn-custom"
+                                  onClick={() =>
+                                    handleTaskStartSocial(task._id, task.points)
+                                  }
+                                >
+                                  Start
+                                </button>
+                              )}
+                            </>
+                          )}
+
+                          {task.category === "Available" && (
                             <>
                               {task.taskCompletion === "start" && (
                                 <button
@@ -404,7 +535,7 @@ const Tasks = () => {
                               )}
                               {task.taskCompletion === "complete" && (
                                 <button className="btn btn-custom" disabled>
-                                <i class="fa-solid fa-check"></i>
+                                  <i class="fa-solid fa-check"></i>
                                 </button>
                               )}
                             </>

@@ -78,7 +78,7 @@ const Leader = () => {
             <circle cx="8" cy="8" r="8" />
           </svg>
           <div className="pin" id="user">
-            <h4>{userData?.username || "UserLead"}</h4>
+            <h5>{userData?.username || "UserLead"}</h5>
             <p>{userData?.walletAmount || "0"} COINS</p>
           </div>
         </div>

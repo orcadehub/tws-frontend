@@ -7,7 +7,7 @@ import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <TonConnectUIProvider manifestUrl='https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmbbuLAFcHTzDQxt9ApiJo2kEjk1fAM1B1cQ24jUa1GfiA'>
+  <TonConnectUIProvider manifestUrl='https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmWUrnKMyMhAociQcbyAFUUPkLNkBRLXFdiPGVwEmX1zuv'>
     <App />
   </TonConnectUIProvider>
 );

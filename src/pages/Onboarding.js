@@ -1,278 +1,295 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Swal from "sweetalert2";
-import "./Airdrop.css";
-import config from "../config";
+import React, { useState, useEffect} from "react";
+import "./Onboarding.css"; // Include the styles
+// import Video from "../assets/shark.mp4"; // Import the video file
+// import Slide1 from "../assets/slide1.jpg";
+import ProfileImage1 from "../assets/home.jpg"; // Profile image for slide 1
+import ProfileImage2 from "../assets/home.jpg"; // Profile image for slide 2
+import ProfileImage3 from "../assets/home.jpg"; // Profile image for slide 3
+import ProfileImage4 from "../assets/home.jpg"; // Profile image for slide 4
+import Lottie from "lottie-react";
+import ConfettiAnimation from "../assets/confetti.json";
 
-const Airdrop = () => {
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
-  const [selectedCategory, setSelectedCategory] = useState("Available"); // Default category "Available"
-  const [tasks, setTasks] = useState([]);
-  const [userData, setUserData] = useState(user);
+const Onboarding = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [animatedDays, setAnimatedDays] = useState(0);
+  const [animatedCoins, setAnimatedCoins] = useState(0);
+  const [showCelebration, setShowCelebration] = useState(false);
 
-  const CONFIG_OBJ = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
+  // const videoRef = useRef(null);
+
+  const accountCreatedDate = new Date("2023-05-01"); // Replace with actual account creation date
+
+  const calculateDaysOnTelegram = () => {
+    const currentDate = new Date();
+    const timeDifference = currentDate - accountCreatedDate; // Time difference in milliseconds
+    const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24)); // Convert milliseconds to days
+    return daysDifference;
   };
 
-  // Determine base URL based on environment (development or production)
-  const baseURL =
-    process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
-      : config.BASE_URL.replace(/\/$/, "");
+  const calculateBonusCoins = (days) => {
+    if (days < 365) {
+      return 100;
+    } else if (days < 500) {
+      return 200;
+    } else {
+      return 300;
+    }
+  };
+
+  const daysOnTelegram = calculateDaysOnTelegram();
+  const bonusCoins = calculateBonusCoins(daysOnTelegram);
+
+  const slides = [
+    {
+      title: "Welcome to the White Sharks!",
+    },
+    {
+      progress: 75,
+      daysOnTelegram: daysOnTelegram,
+      bonusCoins: bonusCoins,
+      profileImage: ProfileImage1,
+      profileImage2: ProfileImage2,
+      profileImage3: ProfileImage3,
+      profileImage4: ProfileImage4,
+    },
+    {
+      // title: "Telegram OG ERA",
+      description: "You are a loyal telegram user",
+      days: 10,
+    },
+  ];
+
+  const handleNext = () => {
+    if (currentSlide < slides.length - 1) {
+      setCurrentSlide((prev) => prev + 1);
+    } else {
+      // Trigger celebration animation
+      setShowCelebration(true);
+      setTimeout(() => setShowCelebration(false), 4000); // Hide confetti after 4 seconds
+    }
+  };
 
   useEffect(() => {
-    if (!user) {
-      navigate("/authenticate");
-      return;
-    }
+    if (currentSlide === 1) {
+      let daysInterval, coinsInterval;
 
-    // Fetch Tasks
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/tasks`, CONFIG_OBJ);
-        // Filter tasks based on "Airdrop" category
-        const airdropTasks = response.data.filter(
-          (task) => task.category === "Airdrop"
-        );
-
-        const tasksWithCompletion = airdropTasks.map((task) => {
-          const userCompletedTask = userData?.completedTasks.find(
-            (userTask) => userTask.taskId === task._id
-          );
-          return {
-            ...task,
-            taskCompletion: userCompletedTask
-              ? userCompletedTask.status
-              : "start",
-          };
+      // Animate days
+      daysInterval = setInterval(() => {
+        setAnimatedDays((prev) => {
+          if (prev < daysOnTelegram) return prev + 1;
+          clearInterval(daysInterval);
+          return prev;
         });
-        setTasks(tasksWithCompletion);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
+      }, 1);
 
-    // Fetch Profile Data
-    const fetchProfileData = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/profile`, CONFIG_OBJ);
-        setUserData(response.data.user);
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-      }
-    };
+      // Animate coins
+      coinsInterval = setInterval(() => {
+        setAnimatedCoins((prev) => {
+          if (prev < bonusCoins) return prev + 1;
+          clearInterval(coinsInterval);
+          return prev;
+        });
+      }, 1);
 
-    fetchTasks();
-    fetchProfileData();
-  }, [navigate]);
+      return () => {
+        clearInterval(daysInterval);
+        clearInterval(coinsInterval);
+      };
+    }
+  }, [currentSlide, daysOnTelegram, bonusCoins]);
 
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
+  // useEffect(() => {
+  //   const video = videoRef.current;
 
-  const handleTaskStart = async (taskId, points) => {
-    try {
-      // Send start request to the backend
-      const response = await axios.put(
-        `${baseURL}/task/${taskId}/start`,
-        {},
-        CONFIG_OBJ
-      );
+  //   if (currentSlide === 2 || video) {
+  //     video.currentTime = 0; // Reset video to the start
+  //     // Only play if the video isn't already playing
+  //     if (video.paused || video.ended) {
+  //       video.play().catch((error) => {
+  //         console.error("Error playing video:", error); // Catch any play errors
+  //       });
+  //     }
+  //     // Set timeout to pause after the video has played for 2 seconds
+  //     const timeout = setTimeout(() => {
+  //       if (!video.paused && !video.ended) {
+  //         video.pause();
+  //       }
+  //     }, 2000);
 
-      if (response.status === 200) {
-        const updatedTask = response.data.task;
-        const updatedUserData = { ...userData };
-        updatedUserData.walletAmount += points;
+  //     return () => {
+  //       clearTimeout(timeout);
+  //       if (!video.paused && !video.ended) {
+  //         video.pause(); // Ensure the video is paused when the component unmounts or slide changes
+  //       }
+  //     };
+  //   }
+  // }, [currentSlide]);
 
-        const updatedCompletedTasks = [...updatedUserData.completedTasks];
-        const taskIndex = updatedCompletedTasks.findIndex(
-          (task) => task.taskId === taskId
-        );
-        if (taskIndex !== -1) {
-          updatedCompletedTasks[taskIndex].status = "claim";
-        } else {
-          updatedCompletedTasks.push({ taskId, status: "claim" });
+  useEffect(() => {
+    if (currentSlide === 1) {
+      const progressBars = document.querySelectorAll(".progress-1");
+      let currentBar = 0;
+
+      const animateBar = () => {
+        if (currentBar < progressBars.length) {
+          const progressBar = progressBars[currentBar];
+          const fill = progressBar.querySelector(".fill");
+
+          progressBar.style.visibility = "visible"; // Make the progress bar visible
+          fill.style.width = "100%"; // Start the filling animation
+
+          setTimeout(() => {
+            currentBar += 1;
+            animateBar(); // Proceed to the next bar
+          }, 2000); // Matches the 2s duration of the CSS transition
         }
+      };
 
-        updatedUserData.completedTasks = updatedCompletedTasks;
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
+      animateBar();
 
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === taskId ? { ...task, taskCompletion: "claim" } : task
-          )
-        );
-
-        setUserData(updatedUserData);
-        Swal.fire({
-          icon: "success",
-          title: "Task Started",
-          text: `You have successfully started the task. Now you can claim the reward.`,
-          confirmButtonColor: "#FFA500",
+      // Cleanup: Reset progress bars when the slide changes
+      return () => {
+        progressBars.forEach((bar) => {
+          const fill = bar.querySelector(".fill");
+          fill.style.width = "0%";
+          bar.style.visibility = "hidden";
         });
-      }
-    } catch (error) {
-      console.error("Error starting the task:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
+      };
+    }
+  }, [currentSlide]);
+
+  useEffect(() => {
+    if (currentSlide === 1) {
+      const headings = document.querySelectorAll("h4");
+      const images = document.querySelectorAll(".profile-image");
+
+      headings.forEach((heading, index) => {
+        heading.classList.add("visible");
+        heading.setAttribute("data-index", index + 1);
+      });
+
+      images.forEach((image, index) => {
+        image.classList.add("visible");
+        image.setAttribute("data-index", index + 1);
       });
     }
-  };
-
-  const handleTaskClaim = async (taskId, points) => {
-    try {
-      const response = await axios.put(
-        `${baseURL}/task/${taskId}/claim`,
-        {},
-        CONFIG_OBJ
-      );
-
-      if (response.status === 200) {
-        const updatedUserData = { ...userData };
-        updatedUserData.walletAmount += points;
-
-        const updatedCompletedTasks = [...updatedUserData.completedTasks];
-        const taskIndex = updatedCompletedTasks.findIndex(
-          (task) => task.taskId === taskId
-        );
-        if (taskIndex !== -1) {
-          updatedCompletedTasks[taskIndex].status = "complete";
-        }
-
-        updatedUserData.completedTasks = updatedCompletedTasks;
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
-
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === taskId ? { ...task, taskCompletion: "complete" } : task
-          )
-        );
-
-        setUserData(updatedUserData);
-        Swal.fire({
-          icon: "success",
-          title: "Task Claimed",
-          text: `You have successfully claimed the task and earned ${points} points.`,
-          confirmButtonColor: "#FFA500",
-        });
-      }
-    } catch (error) {
-      console.error("Error claiming the task:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
-      });
-    }
-  };
-
-  const handleDeleteTask = async (taskId) => {
-    try {
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "This task will be deleted permanently!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#FF6347",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel",
-      });
-
-      if (result.isConfirmed) {
-        const response = await axios.delete(
-          `${baseURL}/task/${taskId}`,
-          CONFIG_OBJ
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Task Deleted",
-          text: response.data.message,
-          confirmButtonColor: "#FFA500",
-        });
-        setTasks((tasks) => tasks.filter((task) => task._id !== taskId));
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
-      });
-    }
-  };
+  }, [currentSlide]);
 
   return (
-    <div className="mobile-container">
-      <div className="walletBox">
-        <button>Connect Wallet</button>
-      </div>
-      <h1>Airdrop Tasks</h1>
-      <div className="task-section">
-        <div className="task-list">
-          {tasks.map((task) => (
-            <div className="user-profile" key={task._id}>
-              <div className="profile-info">
-                <div className="profile-pic">{/* Add user image here */}</div>
-                <div className="profile-details">
-                  <span className="user-name">{task.taskName}</span>{" "}
-                  {/* Task Name */}
-                  <span className="coins">{task.points} COINS</span>{" "}
-                  {/* Task Points */}
+    <div className="carousel-container">
+      {/* <video
+        ref={videoRef}
+        className="video-background"
+        src={Video}
+        muted
+        playsInline
+        loop={false}
+      /> */}
+      {showCelebration && (
+        <div className="confetti-overlay">
+          <Lottie
+            animationData={ConfettiAnimation}
+            loop={false}
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              zIndex: 10,
+              pointerEvents: "none",
+            }}
+          />
+        </div>
+      )}
+      <div
+        className="carousel-track"
+        style={{
+          transform: `translateX(-${currentSlide * 400}px)`, // Move the track
+          transition: "transform 0.5s ease-in-out",
+        }}
+      >
+        {slides.map((slide, index) => (
+          <div className="carousel-slide" key={index}>
+            <h1 style={{ display: "flex" }}>{slide.title}</h1>
+            <p style={{ display: "flex" }}>{slide.description}</p>
+            {/* <img src={slide.image} alt="image" style={{height:'300px'}}/>  */}
+            {index === 1 && (
+              <div className="slide-content">
+                {/* Rating Section */}
+                <div className="left-section">
+                  <div className="profile-image">
+                    <img src={slide.profileImage} alt="Profile" />
+                  </div>
+                  <div className="rating">
+                    <h4>Rating Your Username</h4>
+                  </div>
+                </div>
+                <div className="progress-1">
+                  <div className="fill"></div>
+                </div>
+
+                {/* Days on Telegram Section */}
+                <div className="center-section">
+                  <div className="profile-image">
+                    <img src={slide.profileImage} alt="Profile" />
+                  </div>
+                  <div className="days-on-telegram">
+                    <h4>Calculating your TG days</h4>
+                  </div>
+                </div>
+                <div className="progress-1">
+                  <div className="fill"></div>
+                </div>
+                {/* MiniGame Section */}
+                <div className="right-section">
+                  <div className="profile-image">
+                    <img src={slide.profileImage} alt="Profile" />
+                  </div>
+                  <div className="bonus-coins">
+                    <h4 className="text-start">Contribution to TG minigame </h4>
+                  </div>
+                </div>
+                <div className="progress-1">
+                  <div className="fill"></div>
+                </div>
+                {/* Bonus Coins Section */}
+                <div className="right-section">
+                  <div className="profile-image">
+                    <img src={slide.profileImage} alt="Profile" />
+                  </div>
+                  <div className="bonus-coins">
+                    <h4>Calculating Coins</h4>
+                  </div>
+                </div>
+                <div className="progress-1">
+                  <div className="fill"></div>
                 </div>
               </div>
-              <div className="user-ranking">
-                {/* For Normal Users (Display Start, Claim, Completed buttons) */}
-                {user?.role !== "admin" && (
-                  <>
-                    {task.taskCompletion === "start" && (
-                      <button
-                        className="btn btn-custom"
-                        onClick={() => handleTaskStart(task._id, task.points)}
-                      >
-                        Start
-                      </button>
-                    )}
+            )}
 
-                    {task.taskCompletion === "claim" && (
-                      <button
-                        className="btn btn-custom"
-                        onClick={() => handleTaskClaim(task._id, task.points)}
-                      >
-                        Claim
-                      </button>
-                    )}
-
-                    {task.taskCompletion === "complete" && (
-                      <button className="btn btn-custom" disabled>
-                        Completed
-                      </button>
-                    )}
-                  </>
-                )}
-
-                {/* For Admin (Display Delete button only) */}
-                {user?.role === "admin" && (
-                  <button
-                    className="btn del-btn"
-                    onClick={() => handleDeleteTask(task._id)}
-                  >
-                    Delete
-                  </button>
-                )}
+            {slide.animation && (
+              <div className="animation-container">
+                <video width="320" height="240" autoPlay loop muted>
+                  <source src={slide.animation} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
-            </div>
-          ))}
-        </div>
+            )}
+
+            {slide.days && (
+              <div className="coins-earned" style={{ display: "flex" }}>
+                <p>Days on Telegram: {slide.days}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="controls">
+        <button onClick={handleNext} style={{ backgroundColor: "skyblue" }}>
+          {currentSlide < slides.length - 1 ? "Next" : "Get Started"}
+        </button>
       </div>
     </div>
   );
 };
 
-export default Airdrop;
+export default Onboarding;

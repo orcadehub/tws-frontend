@@ -1,58 +1,80 @@
-import React, { useEffect, useState } from "react";
-import { TonConnect, TonConnectButton } from "@tonconnect/ui-react";
-
-// Initialize TonConnect with an optional manifest URL
-const tonConnect = new TonConnect({ manifestUrl: "https://your-domain.com/tonconnect-manifest.json" });
+import React, { useState, useEffect, useCallback } from "react";
+import { TonConnectButton } from "@tonconnect/ui-react";
+import axios from "axios"; // To make API calls
+import config from "../config";
 
 const Demo = () => {
   const [walletAddress, setWalletAddress] = useState(null);
+  const [isConnected, setIsConnected] = useState(false); // Track wallet connection status
 
-  useEffect(() => {
-    // Log the initial wallet state for debugging
-    console.log("Initial TonConnect Wallet Info:", tonConnect.wallet);
+  const CONFIG_OBJ = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  };
 
-    // Check if the wallet is already connected on app load
-    const walletInfo = tonConnect.wallet;
-    if (walletInfo) {
-      console.log("Wallet connected on load:", walletInfo);
-      const address = walletInfo.account.address;
-      setWalletAddress(address);
-    } else {
-      console.log("No wallet connected on load.");
+  // Determine base URL based on environment (development or production)
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
+      : config.BASE_URL.replace(/\/$/, "");
+
+  // Use useCallback to avoid re-creating the update function on each render
+  const updateWalletAddress = useCallback(async (address) => {
+    // Get the chatid from localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
+    const chatid = user ? user.chatid : null;
+
+    if (!chatid) {
+      console.error("Chat ID not found in localStorage");
+      return;
     }
 
-    // Define the handler for connection changes
-    const handleConnectionChange = (walletInfo) => {
-      if (walletInfo) {
-        const address = walletInfo.account.address;
-        console.log("Wallet connected:", walletInfo);
-        setWalletAddress(address);
-      } else {
-        console.log("Wallet disconnected.");
-        setWalletAddress(null);
+    try {
+      const response = await axios.put(
+        `${baseURL}/update-wallet`,
+        {
+          chatid,
+          walletAddress: address, // Update the wallet address or set null
+        },
+        CONFIG_OBJ
+      );
+
+      if (response.status === 200) {
+        console.log("Wallet address updated successfully");
       }
-    };
-
-    // Subscribe to connection state changes
-    tonConnect.onStatusChange(handleConnectionChange);
-
-    // Cleanup on component unmount
-    return () => {
-      tonConnect.offStatusChange(handleConnectionChange);
-    };
+    } catch (error) {
+      console.error("Error updating wallet address:", error);
+    }
   }, []);
 
+  useEffect(() => {
+    const data = JSON.parse(
+      localStorage.getItem("ton-connect-storage_bridge-connection")
+    );
+
+    if (data && data.connectEvent) {
+      const rawHexAddress = data.connectEvent.payload.items[0].address;
+
+      try {
+        setWalletAddress(rawHexAddress);
+        setIsConnected(true); // Set connection state
+        updateWalletAddress(rawHexAddress); // Call the API to update wallet address
+      } catch (error) {
+        console.error("Error parsing address:", error);
+      }
+    } else {
+      // Wallet is disconnected, set null and call API
+      setWalletAddress(null);
+      setIsConnected(false);
+      updateWalletAddress(null); // Update wallet address to null
+    }
+  }, [isConnected, updateWalletAddress]);
+
   return (
-    <div style={{ textAlign: "center", marginTop: "20px" }}>
+    <div style={{ textAlign: "center", margin: "20px 0" }}>
       <TonConnectButton />
-      {walletAddress ? (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Connected Wallet Address:</h3>
-          <p style={{ wordBreak: "break-word" }}>{walletAddress}</p>
-        </div>
-      ) : (
-        <p style={{ marginTop: "20px", color: "red" }}>No wallet connected</p>
-      )}
     </div>
   );
 };

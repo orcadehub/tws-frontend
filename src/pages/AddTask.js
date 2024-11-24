@@ -9,7 +9,8 @@ const AddTask = () => {
   const [taskName, setTaskName] = useState("");
   const [points, setPoints] = useState("");
   const [category, setCategory] = useState("");
-  const [image, setImage] = useState(null); // New state for the image file
+  const [imageURL, setImageURL] = useState(""); // New state for image URL
+  const [socialMediaURL, setSocialMediaURL] = useState(""); // State for social media profile URL
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // State to track form submission
   const navigate = useNavigate();
@@ -46,14 +47,6 @@ const AddTask = () => {
     checkAdminStatus();
   }, []);
 
-  // Function to handle image change
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setImage(file);
-  //   }
-  // };
-
   const handleAddTask = async (e) => {
     e.preventDefault();
 
@@ -74,9 +67,12 @@ const AddTask = () => {
     formData.append("taskName", taskName);
     formData.append("points", points);
     formData.append("category", category);
-    // if (image) {
-    //   formData.append("image", image); // Append the image to the form data
-    // }
+    if (imageURL) {
+      formData.append("imageURL", imageURL); // Add image URL to the form data
+    }
+    if (category === "Social" && socialMediaURL) {
+      formData.append("socialMediaURL", socialMediaURL); // Add social media URL if available
+    }
 
     try {
       await axios.post(
@@ -102,7 +98,8 @@ const AddTask = () => {
       setTaskName("");
       setPoints("");
       setCategory("");
-      setImage(null); // Reset image state
+      setImageURL(""); // Reset image URL state
+      setSocialMediaURL(""); // Reset social media URL state if any
     } catch (error) {
       console.error("Error adding task:", error);
 
@@ -146,18 +143,31 @@ const AddTask = () => {
           required
         >
           <option value="">Select Category</option>
+          <option value="Social">Social Media</option>
           <option value="Available">Available</option>
           <option value="Advanced">Advanced</option>
-          <option value="Airdrop">Airdrop</option> {/* Added Airdrop category */}
+          <option value="Airdrop">Airdrop</option>
         </select>
 
-        {/* New image upload input */}
-        {/* <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
+        {/* Image URL Input */}
+        <input
+          type="url"
+          placeholder="Logo URL"
+          value={imageURL}
+          onChange={(e) => setImageURL(e.target.value)}
           className="task-input"
-        /> */}
+        />
+
+        {/* Conditionally render social media URL input */}
+        {category === "Social" && (
+          <input
+            type="url"
+            placeholder="Social Media Profile URL"
+            value={socialMediaURL}
+            onChange={(e) => setSocialMediaURL(e.target.value)}
+            className="task-input"
+          />
+        )}
 
         {/* Submit Button */}
         <button type="submit" className="task-submit-btn" disabled={isSubmitting}>
