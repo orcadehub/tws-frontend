@@ -3,15 +3,19 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import config from "../config"; // Import config for environment URLs
 import "./Friends.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet";
+import image from "../assets/slide1.jpg"
 
 const Friends = () => {
   const [referrals, setReferrals] = useState([]);
   const [totalReferrals, setTotalReferrals] = useState(0);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user"));
   const referralId = user?.referralId;
-  const shareLink = `${config.BASE_URL}/signup/${referralId}`;
+  const shareLink = `https://t.me/thewhiteshark_bot?start=${referralId}`;
 
   // Get the base URL depending on the environment
   const baseURL =
@@ -38,27 +42,35 @@ const Friends = () => {
           `${baseURL}/profile/referrals`, // Use dynamic baseURL
           CONFIG_OBJ
         );
+        console.log("Referral Data:", response.data);
         setReferrals(response.data.referrals);
         setTotalReferrals(response.data.totalReferrals);
       } catch (error) {
         console.error("Error fetching referral data:", error);
         navigate("/authenticate");
+      } finally {
+        setLoading(false); // Ensure loading is set to false once the request finishes
       }
     };
 
     fetchReferralData();
-  }, [user]);
+  }, [user, navigate, baseURL]);
+
+  // const coinsEarned = Math.min(totalReferrals * 150, 50000);
 
   const handleShare = () => {
+     const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: ${shareLink}`;
     if (navigator.share) {
-      navigator
-        .share({
-          title: "Join me on this platform!",
-          text: "Invite friends and earn rewards! Use my referral link to sign up.",
-          url: shareLink,
-        })
-        .then(() => console.log("Successful share"))
-        .catch((error) => console.error("Error sharing:", error));
+       navigator
+         .share({
+           title: "Invite Friends!",
+           text: shareText,
+           url: shareLink,
+         })
+         .then(() => console.log("Referral link shared successfully"))
+         .catch((error) =>
+           console.error("Error sharing referral link:", error)
+         );
     } else {
       alert("Sharing is not supported on this device.");
     }
@@ -68,39 +80,55 @@ const Friends = () => {
     navigator.clipboard
       .writeText(shareLink)
       .then(() => {
-        alert("Referral link copied to clipboard!");
+        toast.success("Referral link copied to clipboard!");
       })
       .catch((error) => console.error("Error copying link:", error));
   };
 
   return (
     <div className="mobile">
+      <Helmet>
+        <meta
+          property="og:title"
+          content="Join the Rewards Program with The White Shark Bot!"
+        />
+        <meta
+          property="og:description"
+          content="Sign up with this link to start earning rewards. Get 1000 points as a bonus, and help your inviter earn up to 50,000 points!"
+        />
+        <meta property="og:image" content={image} />
+        <meta property="og:url" content={shareLink} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="content">
-        <h3>Invite friends 🤝 and get rewards</h3>
-        <p>Earn up to 50,000 points from your friends!</p>
+        <h3>
+          Invite friends <i class="fa-solid fa-handshake"></i> and get rewards
+        </h3>
+        <p>Earn up to 50,000 Sharks from your friends!</p>
       </div>
-
       <div className="col">
         <div className="friends">
           <p>Friends invited</p>
-          <h4>🤝 X {totalReferrals}</h4>
+          <i class="fa-solid fa-handshake"></i> X {totalReferrals}
+          {/* <h4>🤝 X {totalReferrals}</h4> */}
         </div>
         <div className="friends1">
-          <p>Coins earned</p>
-          <h4>💰 X {totalReferrals * 150}</h4>
+          <p>Sharks earned</p>
+          <i class="fa-solid fa-sack-dollar"></i> X {totalReferrals * 150}
+          {/* <h4>💰 X {totalReferrals * 150}</h4> */}
         </div>
       </div>
 
       <div className="col2">
         <ul>
           <li>
-            You could earn <span className="span">10%</span> of all points
+            You could earn <span className="span">10%</span> of all Sharks
             earned by players you have invited, capped at{" "}
-            <span className="span">50,000</span> points.
+            <span className="span">50,000</span> Sharks.
           </li>
           <li>
             Invited friends will receive a gift of{" "}
-            <span className="span">1000</span> points.
+            <span className="span">1000</span> Sharks.
           </li>
         </ul>
       </div>
@@ -122,11 +150,15 @@ const Friends = () => {
 
       <div className="ol">
         <ol>
-          {referrals.map((referral, index) => (
-            <li key={index}>
-              <span className="span3"></span> {referral.username}
-            </li>
-          ))}
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            referrals.map((referral, index) => (
+              <li key={index}>
+                <span className="span3"></span> {referral.username}
+              </li>
+            ))
+          )}
         </ol>
       </div>
 
@@ -136,10 +168,17 @@ const Friends = () => {
           only
         </p>
       </div>
-
-      
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+      />
     </div>
   );
 };
 
-export default Friends;
+export default Friends;

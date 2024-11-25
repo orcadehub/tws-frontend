@@ -8,8 +8,10 @@ import ProfileImage3 from "../assets/home.jpg"; // Profile image for slide 3
 import ProfileImage4 from "../assets/home.jpg"; // Profile image for slide 4
 import Lottie from "lottie-react";
 import ConfettiAnimation from "../assets/confetti.json";
+import {  useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
+  const navigate=useNavigate()
   const [currentSlide, setCurrentSlide] = useState(0);
   const [animatedDays, setAnimatedDays] = useState(0);
   const [animatedCoins, setAnimatedCoins] = useState(0);
@@ -65,7 +67,9 @@ const Onboarding = () => {
     } else {
       // Trigger celebration animation
       setShowCelebration(true);
-      setTimeout(() => setShowCelebration(false), 4000); // Hide confetti after 4 seconds
+      setTimeout(() => {setShowCelebration(false)
+        navigate('/home')
+      }, 4000); // Hide confetti after 4 seconds
     }
   };
 

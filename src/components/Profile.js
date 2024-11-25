@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import config from "../config";
 import Back from "../assets/homeblack.jpg";
-import Coin from '../assets/coin.png'
+// import Coin from '../assets/coin.png';
+import {  toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Profile = () => {
   const [profileData, setProfileData] = useState(null);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(100);
   const [isFarming, setIsFarming] = useState(false);
   const [claimAvailable, setClaimAvailable] = useState(false);
   const navigate = useNavigate();
+  const [currentCoins, setCurrentCoins] = useState(100);
+  const totalCoins = 100;
+  const farmingDurationInSeconds = 3 * 3600;
 
   const CONFIG_OBJ = {
     headers: {
@@ -23,6 +29,13 @@ const Profile = () => {
     process.env.NODE_ENV === "development"
       ? config.LOCAL_BASE_URL.replace(/\/$/, "")
       : config.BASE_URL.replace(/\/$/, "");
+  
+  const formatNumber = (num) => {
+    if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
+    if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
+    // if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+    return num.toLocaleString();
+  };
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -61,10 +74,13 @@ const Profile = () => {
     if (isFarming && timer > 0) {
       interval = setInterval(() => {
         setTimer((prev) => prev - 1);
+        const elapsed = farmingDurationInSeconds - timer;
+        setCurrentCoins(((elapsed / farmingDurationInSeconds) * totalCoins).toFixed(3));
       }, 1000);
     } else if (timer <= 0) {
       setClaimAvailable(true);
       setIsFarming(false);
+      setCurrentCoins(totalCoins);
       clearInterval(interval);
     }
     return () => clearInterval(interval);
@@ -74,8 +90,9 @@ const Profile = () => {
     try {
       await axios.post(`${baseURL}/start-farming`, {}, CONFIG_OBJ);
       setIsFarming(true);
-      setTimer(30); // Reset timer to 30 seconds for testing
+      setTimer(10800); // Reset timer to 30 seconds for testing
       setClaimAvailable(false);
+      toast.success("Farming started!");
     } catch (error) {
       console.error("Error starting farming session:", error);
     }
@@ -92,14 +109,16 @@ const Profile = () => {
       setProfileData(response.data.user); // Update wallet balance and reset state
       setClaimAvailable(false);
       setIsFarming(false); // Reset farming state
-      Swal.fire("Coins claimed successfully!", "", "success");
+      toast.success("Coins claimed successfully!"); // Show toast on success
+      // Swal.fire("Coins claimed successfully!", "", "success");
     } catch (error) {
       console.error("Error claiming coins:", error);
-      Swal.fire("Failed to claim coins. Please try again.", "", "error");
+      // Swal.fire("Failed to claim coins. Please try again.", "", "error");
+      toast.error("Failed to claim coins. Please try again.");
     }
   };
 
-  const progressPercentage = ((30 - timer) / 30) * 100;
+  const progressPercentage = ((10800 - timer) / 10800) * 100;
 
   return (
     <div style={styles.container}>
@@ -139,9 +158,12 @@ const Profile = () => {
         {profileData?.role === "user" && (
           <div style={styles.balanceBox}>
             {/* <h3 style={styles.balanceTitle}>Coin Balance</h3> */}
-            <img src={Coin} alt="coin" style={{height:'50px'}}/>
+            {/* <img src={Coin} alt="coin" style={{ height: "50px" }} /> */}
             <p style={styles.balanceAmount}>
-              {profileData?.walletAmount || "0.00"} Sharks
+              {formatNumber(profileData?.walletAmount || 0)}{" "}
+              <span style={{ fontSize: "22px", fontFamily: "times-roman" }}>
+                Sharks
+              </span>
             </p>
           </div>
         )}
@@ -149,7 +171,11 @@ const Profile = () => {
       {profileData?.role === "user" && (
         <>
           <div style={styles.box3}>
-           <img src={Back} alt="image" style={{height:'100%',width:'100%'}}/>
+            <img
+              src={Back}
+              alt="image"
+              style={{ height: "130%", width: "100%" }}
+            />
           </div>
           <div style={styles.box4}>
             <div
@@ -157,18 +183,30 @@ const Profile = () => {
             ></div>
             {!isFarming && !claimAvailable && (
               <button style={styles.startButton} onClick={startFarming}>
-                Start Farming
+                Start Mining
               </button>
             )}
-            {isFarming && (
-              <p style={styles.timer}>
-                {Math.floor(timer / 3600)}h {Math.floor((timer % 3600) / 60)}m{" "}
-                {timer % 60}s
-              </p>
+             {isFarming && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <p style={styles.timer}>
+                  {Math.floor(timer / 3600)}h {Math.floor((timer % 3600) / 60)}m{" "}
+                  {timer % 60}s
+                </p>
+                <p style={styles.coins}>
+                  Coins: {currentCoins} {/* Display coins with 3 decimals */}
+                </p>
+              </div>
             )}
             {claimAvailable && (
               <button style={styles.claimButton} onClick={claimCoins}>
-                Claim Coins
+                Sharks Coins
               </button>
             )}
           </div>
@@ -186,6 +224,11 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+  },
+  coins: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    color: "#fff",
   },
   profileContainer: {
     textAlign: "left",
@@ -228,7 +271,7 @@ const styles = {
     padding: "10px",
     textAlign: "center",
     borderRadius: "5px",
-    marginTop: "10px",
+    marginTop: "-15px",
   },
   balanceTitle: {
     fontSize: "25px",
@@ -236,14 +279,14 @@ const styles = {
     marginBottom: "5px",
   },
   balanceAmount: {
-    fontSize: "40px",
+    fontSize: "44px",
     color: "#fff",
     fontWeight: "bold",
   },
   box3: {
     backgroundColor: "#222",
     width: "80%",
-    height:'270px',
+    height: "270px",
     maxWidth: "400px",
     borderRadius: "8px",
     margin: "-45px 0",
@@ -251,14 +294,14 @@ const styles = {
   box4: {
     backgroundColor: "#000",
     width: "80%",
-    border:'2px solid skyblue',
+    // border: "2px solid skyblue",
     maxWidth: "400px",
     padding: "15px",
     textAlign: "center",
     borderRadius: "8px",
-    margin: "10px 0",
-    position: "relative",
-    bottom: "-10%",
+    margin: "40px 0",
+    position: "absolute",
+    bottom: "15%",
     overflow: "hidden",
   },
   progressBar: {
@@ -277,7 +320,8 @@ const styles = {
     border: "none",
     cursor: "pointer",
     position: "relative",
-    zIndex: 1,
+    height:"40px",
+    width: "100%",
   },
   timer: {
     color: "#fff",
@@ -286,7 +330,7 @@ const styles = {
     zIndex: 1,
   },
   claimButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "skyblue",
     color: "#fff",
     padding: "10px 20px",
     borderRadius: "5px",
@@ -294,6 +338,8 @@ const styles = {
     cursor: "pointer",
     position: "relative",
     zIndex: 1,
+    width: "100%",
+    // height:"55px"
   },
   userInfo: {
     display: "flex",
@@ -304,7 +350,7 @@ const styles = {
     width: "50px",
     height: "50px",
     borderRadius: "50%",
-    backgroundColor: "#ccc",
+    backgroundColor: "skyblue",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -323,4 +369,4 @@ const styles = {
   },
 };
 
-export default Profile;
+export default Profile;

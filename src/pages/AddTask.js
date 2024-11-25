@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import "./AddTask.css";
 import { useNavigate } from "react-router-dom";
 import config from "../config"; // Import config for dynamic base URL
@@ -52,12 +53,7 @@ const AddTask = () => {
 
     // Validate points input
     if (parseInt(points) <= 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Points",
-        text: "Points must be a positive number.",
-        confirmButtonColor: "#FF6347",
-      });
+     toast.error("Invalid Points")
       return;
     }
 
@@ -87,12 +83,7 @@ const AddTask = () => {
       );
 
       // Show success message
-      Swal.fire({
-        icon: "success",
-        title: "Task Added",
-        text: `Task "${taskName}" has been successfully added!`,
-        confirmButtonColor: "#FFA500",
-      });
+      toast.success("Task Added successfully")
 
       // Clear form fields after submission
       setTaskName("");
@@ -104,12 +95,7 @@ const AddTask = () => {
       console.error("Error adding task:", error);
 
       // Show error message
-      Swal.fire({
-        icon: "error",
-        title: "Failed to Add Task",
-        text: "An error occurred while adding the task. Please try again.",
-        confirmButtonColor: "#FF6347",
-      });
+      toast.error("Failed to Add Task")
     } finally {
       setIsSubmitting(false); // Reset submitting state
     }

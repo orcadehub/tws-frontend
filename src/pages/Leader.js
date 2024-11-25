@@ -59,6 +59,14 @@ const Leader = () => {
     fetchLeaderboard();
   }, [navigate]); // Add baseURL to dependency array
 
+  const formatNumber = (num) => {
+    if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
+    if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
+    // if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+    return num.toLocaleString();
+  };
+
+  
   return (
     <div className="whole">
       <div className="lead">
@@ -79,7 +87,7 @@ const Leader = () => {
           </svg>
           <div className="pin" id="user">
             <h5>{userData?.username || "UserLead"}</h5>
-            <p>{userData?.walletAmount || "0"} COINS</p>
+            <p>{userData?.walletAmount || "0"} SHARKS</p>
           </div>
         </div>
         <div className="end">
@@ -88,7 +96,7 @@ const Leader = () => {
       </div>
 
       <div className="hold">
-        <h2>{totalUsers || "0"} holders</h2> {/* Display total users */}
+        <h2>{formatNumber(totalUsers || "0")} holders</h2> {/* Display total users */}
       </div>
 
       {/* Display top 100 leaderboard */}
@@ -109,7 +117,7 @@ const Leader = () => {
             </div>
             <div className="user">
               <h5>{leader.username}</h5>
-              <p>{leader.walletAmount} COINS</p>
+              <p>{leader.walletAmount} SHARKS</p>
             </div>
           </div>
           <div className="end">

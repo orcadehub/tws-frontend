@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import {toast} from 'react-toastify'
 import "./Airdrop.css";
 import config from "../config";
 import Demo from "./Demo";
@@ -110,20 +111,11 @@ const Airdrop = () => {
         );
 
         setUserData(updatedUserData);
-        Swal.fire({
-          icon: "success",
-          title: "Task Started",
-          text: `You have successfully started the task. Now you can claim the reward.`,
-          confirmButtonColor: "#FFA500",
-        });
+        // toast.success("Task Started")
       }
     } catch (error) {
       console.error("Error starting the task:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
-      });
+      toast.error("OOPS.. Something went wrong")
     }
   };
 
@@ -157,20 +149,11 @@ const Airdrop = () => {
         );
 
         setUserData(updatedUserData);
-        Swal.fire({
-          icon: "success",
-          title: "Task Claimed",
-          text: `You have successfully claimed the task and earned ${points} points.`,
-          confirmButtonColor: "#FFA500",
-        });
+        toast.success("Task Claimed")
       }
     } catch (error) {
       console.error("Error claiming the task:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
-      });
+      toast.error("OOPS... Something went wrong")
     }
   };
 
@@ -192,20 +175,11 @@ const Airdrop = () => {
           `${baseURL}/task/${taskId}`,
           CONFIG_OBJ
         );
-        Swal.fire({
-          icon: "success",
-          title: "Task Deleted",
-          text: response.data.message,
-          confirmButtonColor: "#FFA500",
-        });
+        toast.success("Task Deleted")
         setTasks((tasks) => tasks.filter((task) => task._id !== taskId));
       }
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
-      });
+      toast.error("OOPS... Something went wrong")
     }
   };
 

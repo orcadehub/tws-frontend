@@ -1,18 +1,18 @@
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  body {
-    background-color: black;
-    color: white;
-  }
+body {
+  background-color: black;
+  color: white;
+}
 
 .mobile {
   width: 400px;
   height: 82vh;
-  margin:  auto;
+  margin: auto;
   overflow-y: scroll;
 }
 
@@ -24,6 +24,7 @@
 /* Hide scrollbar for Firefox */
 .mobile {
   scrollbar-width: none;
+  margin-top: 20px;
 }
 
 .content {
@@ -102,8 +103,6 @@
   font-size: 18px;
   margin-left: 25px;
   list-style-type: none;
-  
- 
 }
 
 .ol ol li {
@@ -128,7 +127,7 @@
   flex-direction: row;
   margin: 12px;
   position: sticky;
-  top:2%;
+  top: 2%;
 }
 
 .btn button {
@@ -182,4 +181,9 @@
     font-size: 22px;
     padding: 8px;
   }
+}
+
+.fa-sack-dollar,
+.fa-handshake {
+  color: skyblue;
 }

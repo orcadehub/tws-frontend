@@ -11,7 +11,7 @@ import Signup from "./pages/Signup";
 import AddTask from "./pages/AddTask";
 import Onboarding from "./pages/Onboarding";
 // import Demo from "./pages/Demo";
-
+import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <>
@@ -34,6 +34,15 @@ function App() {
 
         <ConditionalHeader />
       </Router>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+      />
     </>
   );
 }
