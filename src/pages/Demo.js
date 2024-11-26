@@ -41,6 +41,7 @@ const Demo = () => {
             amount: "100000000",
           },
         ],
+        fee: "10000000",
       };
 
       await tonConnectUI.sendTransaction(transaction);
