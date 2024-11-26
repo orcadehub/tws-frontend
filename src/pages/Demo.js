@@ -38,7 +38,7 @@ const Demo = () => {
         messages: [
           {
             address: "0:8d4592883c74e135c66145b030e93febc668a7334fb099fc68d59d9798f2d47f", 
-            amount: "10000000",
+            amount: "100000000",
           },
         ],
       };
