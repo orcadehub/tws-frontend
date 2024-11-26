@@ -12,6 +12,7 @@ const Demo = () => {
     // Update connection state based on the presence of a wallet address
     setIsConnected(!!userFriendlyAddress);
     console.log(rawAddress)
+    console.log(userFriendlyAddress)
   }, [userFriendlyAddress]);
 
   const handleWalletClick = async () => {
@@ -37,7 +38,7 @@ const Demo = () => {
         messages: [
           {
             address: "0:8d4592883c74e135c66145b030e93febc668a7334fb099fc68d59d9798f2d47f", 
-            amount: "0.0059", 
+            amount: "10000000",
           },
         ],
       };
