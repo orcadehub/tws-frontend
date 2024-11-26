@@ -1,0 +1,11 @@
+/* General Toast Background and Text */
+.Toastify__toast {
+    background-color: black !important; /* Set background to black */
+    color: white !important;          /* Set text color to white */
+  }
+  
+  /* Progress Bar Customization for Success */
+  .Toastify__progress-bar--success {
+    background-color: skyblue !important; /* Change progress bar to skyblue */
+  }
+  

@@ -121,7 +121,7 @@ const Leader = () => {
             </div>
           </div>
           <div className="end">
-            <h4>#{index + 1}</h4>
+            <h5>#{index + 1}</h5>
           </div>
         </div>
       ))}

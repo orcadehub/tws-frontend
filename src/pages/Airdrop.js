@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 import "./Airdrop.css";
 import config from "../config";
 import Demo from "./Demo";
+import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
 const Airdrop = () => {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ const Airdrop = () => {
       }
     } catch (error) {
       console.error("Error starting the task:", error);
-      toast.error("OOPS.. Something went wrong")
+      toast.error("OOPS.. Something went wrong");
     }
   };
 
@@ -149,11 +150,11 @@ const Airdrop = () => {
         );
 
         setUserData(updatedUserData);
-        toast.success("Task Claimed")
+        toast.success("Task Claimed");
       }
     } catch (error) {
       console.error("Error claiming the task:", error);
-      toast.error("OOPS... Something went wrong")
+      toast.error("OOPS... Something went wrong");
     }
   };
 
@@ -175,18 +176,20 @@ const Airdrop = () => {
           `${baseURL}/task/${taskId}`,
           CONFIG_OBJ
         );
-        toast.success("Task Deleted")
+        toast.success("Task Deleted");
         setTasks((tasks) => tasks.filter((task) => task._id !== taskId));
       }
     } catch (error) {
-      toast.error("OOPS... Something went wrong")
+      toast.error("OOPS... Something went wrong");
     }
   };
 
   return (
     <div className="mobile-container">
       <div className="wallet">
-        <Demo/>
+        <TonConnectUIProvider manifestUrl="https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmWUrnKMyMhAociQcbyAFUUPkLNkBRLXFdiPGVwEmX1zuv">
+          <Demo />
+        </TonConnectUIProvider>
       </div>
       <h1>Airdrop Tasks</h1>
       <div className="task-section">
@@ -194,7 +197,14 @@ const Airdrop = () => {
           {tasks.map((task) => (
             <div className="user-profile" key={task._id}>
               <div className="profile-info">
-                <div className="profile-pic">{/* Add user image here */}</div>
+                <div className="profile-pic">
+                  {" "}
+                  <img
+                    src={task.imageURL}
+                    alt="image"
+                    style={{ height: "100%", borderRadius: "50%" }}
+                  />
+                </div>
                 <div className="profile-details">
                   <span className="user-name">{task.taskName}</span>{" "}
                   {/* Task Name */}
@@ -226,7 +236,7 @@ const Airdrop = () => {
 
                     {task.taskCompletion === "complete" && (
                       <button className="btn btn-custom" disabled>
-                      <i class="fa-solid fa-check"></i>
+                        <i class="fa-solid fa-check"></i>
                       </button>
                     )}
                   </>

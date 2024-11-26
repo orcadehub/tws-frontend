@@ -1,80 +1,76 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { TonConnectButton } from "@tonconnect/ui-react";
-import axios from "axios"; // To make API calls
-import config from "../config";
+import React, { useState, useEffect } from "react";
+import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 
 const Demo = () => {
-  const [walletAddress, setWalletAddress] = useState(null);
-  const [isConnected, setIsConnected] = useState(false); // Track wallet connection status
+  const [tonConnectUI] = useTonConnectUI();
+  const userFriendlyAddress = useTonAddress();
+  const rawAddress = useTonAddress(false); // Fetch the raw address
 
-  const CONFIG_OBJ = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
-  };
-
-  // Determine base URL based on environment (development or production)
-  const baseURL =
-    process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
-      : config.BASE_URL.replace(/\/$/, "");
-
-  // Use useCallback to avoid re-creating the update function on each render
-  const updateWalletAddress = useCallback(async (address) => {
-    // Get the chatid from localStorage
-    const user = JSON.parse(localStorage.getItem("user"));
-    const chatid = user ? user.chatid : null;
-
-    if (!chatid) {
-      console.error("Chat ID not found in localStorage");
-      return;
-    }
-
-    try {
-      const response = await axios.put(
-        `${baseURL}/update-wallet`,
-        {
-          chatid,
-          walletAddress: address, // Update the wallet address or set null
-        },
-        CONFIG_OBJ
-      );
-
-      if (response.status === 200) {
-        console.log("Wallet address updated successfully");
-      }
-    } catch (error) {
-      console.error("Error updating wallet address:", error);
-    }
-  }, []);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const data = JSON.parse(
-      localStorage.getItem("ton-connect-storage_bridge-connection")
-    );
+    // Update connection state based on the presence of a wallet address
+    setIsConnected(!!userFriendlyAddress);
+    console.log(rawAddress)
+  }, [userFriendlyAddress]);
 
-    if (data && data.connectEvent) {
-      const rawHexAddress = data.connectEvent.payload.items[0].address;
-
-      try {
-        setWalletAddress(rawHexAddress);
-        setIsConnected(true); // Set connection state
-        updateWalletAddress(rawHexAddress); // Call the API to update wallet address
-      } catch (error) {
-        console.error("Error parsing address:", error);
-      }
-    } else {
-      // Wallet is disconnected, set null and call API
-      setWalletAddress(null);
+  const handleWalletClick = async () => {
+    if (isConnected) {
+      // Disconnect the wallet
+      await tonConnectUI.disconnect();
       setIsConnected(false);
-      updateWalletAddress(null); // Update wallet address to null
+    } else {
+      // Open the connection modal
+      tonConnectUI.openModal();
     }
-  }, [isConnected, updateWalletAddress]);
+  };
+
+  const handleSubscribe = async () => {
+    try {
+      if (!rawAddress) {
+        alert("Wallet not connected. Please connect the wallet first.");
+        return;
+      }
+
+      const transaction = {
+        validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes
+        messages: [
+          {
+            address: "0:8d4592883c74e135c66145b030e93febc668a7334fb099fc68d59d9798f2d47f", 
+            amount: "0.0059", 
+          },
+        ],
+      };
+
+      await tonConnectUI.sendTransaction(transaction);
+      alert("Transaction successful!");
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      alert("Transaction failed. Please try again.");
+    }
+  };
+
+  // Format address to show first 4 and last 4 characters
+  const formatAddress = (address) => {
+    if (!address) return "";
+    return `${address.slice(0, 4)}....${address.slice(-4)}`;
+  };
 
   return (
-    <div style={{ textAlign: "center", margin: "20px 0" }}>
-      <TonConnectButton />
+    <div>
+      <button onClick={handleWalletClick}>
+        {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
+      </button>
+      {isConnected && (
+        <div style={{ marginTop: "20px" }}>
+          <p>
+            <strong>User-Friendly Address:</strong> {formatAddress(userFriendlyAddress)}
+          </p>
+          <button style={{ marginTop: "10px" }} onClick={handleSubscribe}>
+            Subscribe
+          </button>
+        </div>
+      )}
     </div>
   );
 };

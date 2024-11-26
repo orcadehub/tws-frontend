@@ -160,7 +160,7 @@ const Profile = () => {
             {/* <h3 style={styles.balanceTitle}>Coin Balance</h3> */}
             {/* <img src={Coin} alt="coin" style={{ height: "50px" }} /> */}
             <p style={styles.balanceAmount}>
-              {formatNumber(profileData?.walletAmount || 0)}{" "}
+              {formatNumber(profileData?.walletAmount || 0)}
               <span style={{ fontSize: "22px", fontFamily: "times-roman" }}>
                 Sharks
               </span>
@@ -212,6 +212,7 @@ const Profile = () => {
           </div>
         </>
       )}
+      <div><a href=""></a></div>
     </div>
   );
 };
@@ -229,6 +230,7 @@ const styles = {
     fontSize: "18px",
     fontWeight: "bold",
     color: "#fff",
+    zIndex: 1,
   },
   profileContainer: {
     textAlign: "left",
@@ -274,19 +276,19 @@ const styles = {
     marginTop: "-15px",
   },
   balanceTitle: {
-    fontSize: "25px",
+    fontSize: "40px",
     color: "#fff",
     marginBottom: "5px",
   },
   balanceAmount: {
-    fontSize: "44px",
+    fontSize: "60px",
     color: "#fff",
     fontWeight: "bold",
   },
   box3: {
     backgroundColor: "#222",
     width: "80%",
-    height: "270px",
+    height: "240px",
     maxWidth: "400px",
     borderRadius: "8px",
     margin: "-45px 0",

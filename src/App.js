@@ -12,6 +12,8 @@ import AddTask from "./pages/AddTask";
 import Onboarding from "./pages/Onboarding";
 // import Demo from "./pages/Demo";
 import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css'
 function App() {
   return (
     <>
@@ -36,7 +38,7 @@ function App() {
       </Router>
       <ToastContainer
         position="top-center"
-        autoClose={3000}
+        autoClose={1500}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

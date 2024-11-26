@@ -66,6 +66,7 @@ h1 {
 .end {
   padding-right: 18px;
   padding-bottom: 10px;
+ 
 }
 
 .align {
@@ -75,7 +76,7 @@ h1 {
 
 .whole {
   width: 430px;
-  height: 85vh;
+  /* height: 80vh; */
   overflow-y:scroll;
   margin:auto;
 }
