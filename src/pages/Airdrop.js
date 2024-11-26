@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import "./Airdrop.css";
 import config from "../config";
 import Demo from "./Demo";
-import { TonConnectUIProvider } from '@tonconnect/ui-react';
+
 
 const Airdrop = () => {
   const navigate = useNavigate();
@@ -187,9 +187,8 @@ const Airdrop = () => {
   return (
     <div className="mobile-container">
       <div className="wallet">
-        <TonConnectUIProvider manifestUrl="https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmWUrnKMyMhAociQcbyAFUUPkLNkBRLXFdiPGVwEmX1zuv">
+        
           <Demo />
-        </TonConnectUIProvider>
       </div>
       <h1>Airdrop Tasks</h1>
       <div className="task-section">

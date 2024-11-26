@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import Swal from "sweetalert2";
 import config from "../config";
 import Back from "../assets/homeblack.jpg";
-// import Coin from '../assets/coin.png';
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const [timer, setTimer] = useState(100);
   const [isFarming, setIsFarming] = useState(false);
   const [claimAvailable, setClaimAvailable] = useState(false);
+  const [showModal, setShowModal] = useState(false); // State for showing modal
+  const [isClaimingBonus, setIsClaimingBonus] = useState(false);
   const navigate = useNavigate();
   const [currentCoins, setCurrentCoins] = useState(100);
   const totalCoins = 100;
-  const farmingDurationInSeconds = 3 * 3600;
+  const farmingDurationInSeconds = 30;
+
+  const [tonConnectUI] = useTonConnectUI(); // TON Connect UI hook
+  // const userFriendlyAddress = useTonAddress();
+  const rawAddress = useTonAddress(false); // Fetch the raw address
 
   const CONFIG_OBJ = {
     headers: {
@@ -29,7 +34,7 @@ const Profile = () => {
     process.env.NODE_ENV === "development"
       ? config.LOCAL_BASE_URL.replace(/\/$/, "")
       : config.BASE_URL.replace(/\/$/, "");
-  
+
   const formatNumber = (num) => {
     if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
     if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
@@ -75,7 +80,9 @@ const Profile = () => {
       interval = setInterval(() => {
         setTimer((prev) => prev - 1);
         const elapsed = farmingDurationInSeconds - timer;
-        setCurrentCoins(((elapsed / farmingDurationInSeconds) * totalCoins).toFixed(3));
+        setCurrentCoins(
+          ((elapsed / farmingDurationInSeconds) * totalCoins).toFixed(3)
+        );
       }, 1000);
     } else if (timer <= 0) {
       setClaimAvailable(true);
@@ -90,7 +97,7 @@ const Profile = () => {
     try {
       await axios.post(`${baseURL}/start-farming`, {}, CONFIG_OBJ);
       setIsFarming(true);
-      setTimer(10800); // Reset timer to 30 seconds for testing
+      setTimer(30); // Reset timer to 30 seconds for testing
       setClaimAvailable(false);
       toast.success("Farming started!");
     } catch (error) {
@@ -108,6 +115,7 @@ const Profile = () => {
 
       setProfileData(response.data.user); // Update wallet balance and reset state
       setClaimAvailable(false);
+      setShowModal(false);
       setIsFarming(false); // Reset farming state
       toast.success("Coins claimed successfully!"); // Show toast on success
       // Swal.fire("Coins claimed successfully!", "", "success");
@@ -118,7 +126,47 @@ const Profile = () => {
     }
   };
 
-  const progressPercentage = ((10800 - timer) / 10800) * 100;
+  const handleClaimBonus = async () => {
+    try {
+      if (!rawAddress) {
+        toast.error("Wallet not connected. Please connect the wallet first.");
+        return;
+      }
+
+      const transaction = {
+        validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes
+        messages: [
+          {
+            address:
+              "0:8d4592883c74e135c66145b030e93febc668a7334fb099fc68d59d9798f2d47f", // Example address for bonus
+            amount: "8000000", // 0.008 TON in nanoTON
+          },
+        ],
+        fee: "1000000",
+      };
+
+      await tonConnectUI.sendTransaction(transaction);
+      const response = await axios.post(
+        `${baseURL}/claim-coins`,
+        { coinsToAdd: 200 },
+        CONFIG_OBJ
+      );
+
+      setProfileData(response.data.user); // Update wallet balance and reset state
+      setClaimAvailable(false);
+      setShowModal(false);
+      setIsFarming(false); // Reset farming state
+      setIsClaimingBonus(false); // Close modal after successful transaction
+      setClaimAvailable(false); // Reset state
+
+      toast.success("Bonus claimed successfully!");
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      toast.error("Transaction failed. Please try again.");
+    }
+  };
+
+  const progressPercentage = ((30 - timer) / 30) * 100;
 
   return (
     <div style={styles.container}>
@@ -186,7 +234,7 @@ const Profile = () => {
                 Start Mining
               </button>
             )}
-             {isFarming && (
+            {isFarming && (
               <div
                 style={{
                   display: "flex",
@@ -205,14 +253,89 @@ const Profile = () => {
               </div>
             )}
             {claimAvailable && (
-              <button style={styles.claimButton} onClick={claimCoins}>
+              <button
+                style={styles.claimButton}
+                onClick={() => setShowModal(true)}
+              >
                 Claim Sharks
               </button>
             )}
           </div>
+
+          {showModal && (
+            <div
+              className="modal fade show"
+              style={{
+                display: "block",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
+              tabIndex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h6
+                      className="modal-title fs-5"
+                      id="exampleModalLabel"
+                      style={{ color: "black" }}
+                    >
+                      Claim Your Rewards
+                    </h6>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      onClick={() => setShowModal(false)}
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <h6 style={{ color: "black" }}>
+                      Select your preferred option to claim your rewards.
+                    </h6>
+
+                    {/* <button type="button"  data-bs-dismiss="modal">Close</button> */}
+                    <div style={{display:'flex',justifyContent:'space-around',marginTop:'2rem 0'}}>
+                    {/* <div></div> */}
+                      <button
+                        type="button"
+                        className="btn btn-info"
+                        onClick={claimCoins}
+                      >
+                        Claim
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-warning"
+                        onClick={handleClaimBonus}
+                      >
+                        Claim Bonus (+100 sharks) 
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div style={{ width: "400px" }}>
+            <a href="https://web.telegram.org">
+              <button
+                style={{
+                  backgroundColor: "skyblue",
+                  width: "100%",
+                  height: "35px",
+                  borderRadius: "30%/30%",
+                  fontWeight: "bolder",
+                }}
+              >
+                Join Telegram Community
+              </button>
+            </a>
+          </div>
         </>
       )}
-      <div><a href=""></a></div>
     </div>
   );
 };
@@ -302,9 +425,10 @@ const styles = {
     textAlign: "center",
     borderRadius: "8px",
     margin: "40px 0",
-    position: "absolute",
-    bottom: "15%",
-    overflow: "hidden",
+    // position: "absolute",
+    position: "relative",
+    // bottom: "15%",
+    // overflow: "hidden",
   },
   progressBar: {
     position: "absolute",
@@ -322,7 +446,7 @@ const styles = {
     border: "none",
     cursor: "pointer",
     position: "relative",
-    height:"40px",
+    height: "40px",
     width: "100%",
   },
   timer: {
@@ -371,4 +495,4 @@ const styles = {
   },
 };
 
-export default Profile;
+export default Profile;
