@@ -6,10 +6,11 @@ import "./Friends.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet";
-import image from "../assets/slide1.jpg"
+import image from "../assets/slide1.jpg";
 
 const Friends = () => {
   const [referrals, setReferrals] = useState([]);
+  // const [referralAmount, setReferralAmount] = useState([]);
   const [totalReferrals, setTotalReferrals] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const Friends = () => {
         );
         console.log("Referral Data:", response.data);
         setReferrals(response.data.referrals);
+        // setReferralAmount(response.data.referralAmount);
         setTotalReferrals(response.data.totalReferrals);
       } catch (error) {
         console.error("Error fetching referral data:", error);
@@ -54,23 +56,21 @@ const Friends = () => {
     };
 
     fetchReferralData();
-  }, [user, navigate, baseURL]);
+  }, [navigate, baseURL]);
 
   // const coinsEarned = Math.min(totalReferrals * 150, 50000);
 
   const handleShare = () => {
-     const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: ${shareLink}`;
+    const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: ${shareLink}`;
     if (navigator.share) {
-       navigator
-         .share({
-           title: "Invite Friends!",
-           text: shareText,
-           url: shareLink,
-         })
-         .then(() => console.log("Referral link shared successfully"))
-         .catch((error) =>
-           console.error("Error sharing referral link:", error)
-         );
+      navigator
+        .share({
+          title: "Invite Friends!",
+          text: shareText,
+          url: shareLink,
+        })
+        .then(() => console.log("Referral link shared successfully"))
+        .catch((error) => console.error("Error sharing referral link:", error));
     } else {
       alert("Sharing is not supported on this device.");
     }
@@ -84,6 +84,13 @@ const Friends = () => {
       })
       .catch((error) => console.error("Error copying link:", error));
   };
+
+  // const formatNumber = (num) => {
+  //   if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
+  //   if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
+  //   // if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  //   return num.toLocaleString();
+  // };
 
   return (
     <div className="mobile">
@@ -114,8 +121,8 @@ const Friends = () => {
         </div>
         <div className="friends1">
           <p>Sharks earned</p>
-          <i class="fa-solid fa-sack-dollar"></i> X {totalReferrals * 150}
-          {/* <h4>💰 X {totalReferrals * 150}</h4> */}
+          <i class="fa-solid fa-sack-dollar"></i> X {user.referralAmount}
+          {/* <h4>💰 X {totalRef}</h4> */}
         </div>
       </div>
 
@@ -142,10 +149,16 @@ const Friends = () => {
           </h1>
         </div>
       </div>
-      <div className="name">
-        <h4>
-          <span className="span2">No.</span> Friend's name
-        </h4>
+      <div className="name" style={{display:'flex',justifyContent:'space-between',marginRight:'1.5rem'}}>
+  
+          <span className="span2">
+            No.
+          </span>
+          <span>Friend's name</span>
+          <span className="span2">
+            Sharks Earned
+          </span>
+
       </div>
 
       <div className="ol">
@@ -155,7 +168,13 @@ const Friends = () => {
           ) : (
             referrals.map((referral, index) => (
               <li key={index}>
-                <span className="span3"></span> {referral.username}
+              <div style={{display:'flex',justifyContent:'space-around  '}}>
+                
+                <span>{referral.username}</span>
+                <span className="span3" >
+                  {(referral.walletAmount * 0.1).toFixed(3)}
+                </span>
+                </div>
               </li>
             ))
           )}
@@ -181,4 +200,4 @@ const Friends = () => {
   );
 };
 
-export default Friends;
+export default Friends;

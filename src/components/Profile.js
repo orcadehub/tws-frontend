@@ -200,13 +200,13 @@ const Profile = () => {
                   {timer % 60}s
                 </p>
                 <p style={styles.coins}>
-                  Coins: {currentCoins} {/* Display coins with 3 decimals */}
+                  Sharks: {currentCoins} {/* Display coins with 3 decimals */}
                 </p>
               </div>
             )}
             {claimAvailable && (
               <button style={styles.claimButton} onClick={claimCoins}>
-                Sharks Coins
+                Claim Sharks
               </button>
             )}
           </div>

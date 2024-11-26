@@ -87,7 +87,7 @@ const Leader = () => {
           </svg>
           <div className="pin" id="user">
             <h5>{userData?.username || "UserLead"}</h5>
-            <p>{userData?.walletAmount || "0"} SHARKS</p>
+            <p>{formatNumber(userData?.walletAmount || "0")} SHARKS</p>
           </div>
         </div>
         <div className="end">
@@ -117,7 +117,7 @@ const Leader = () => {
             </div>
             <div className="user">
               <h5>{leader.username}</h5>
-              <p>{leader.walletAmount} SHARKS</p>
+              <p>{formatNumber(leader.walletAmount)} SHARKS</p>
             </div>
           </div>
           <div className="end">
