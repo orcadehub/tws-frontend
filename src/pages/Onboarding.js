@@ -1,23 +1,37 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./Onboarding.css"; // Include the styles
 // import Video from "../assets/shark.mp4"; // Import the video file
-// import Slide1 from "../assets/slide1.jpg";
-import ProfileImage1 from "../assets/home.jpg"; // Profile image for slide 1
-import ProfileImage2 from "../assets/home.jpg"; // Profile image for slide 2
-import ProfileImage3 from "../assets/home.jpg"; // Profile image for slide 3
-import ProfileImage4 from "../assets/home.jpg"; // Profile image for slide 4
+import Land1 from "../assets/land1.jpg";
+import ProfileImage1 from "../assets/homeblack.jpg"; // Profile image for slide 1
+import ProfileImage2 from "../assets/tg.png"; // Profile image for slide 2
+import ProfileImage3 from "../assets/air.jpg"; // Profile image for slide 3
+import ProfileImage4 from "../assets/coin.png"; // Profile image for slide 4
 import Lottie from "lottie-react";
 import ConfettiAnimation from "../assets/confetti.json";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import config from "../config";
+import { toast } from "react-toastify";
 
 const Onboarding = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [animatedDays, setAnimatedDays] = useState(0);
   const [animatedCoins, setAnimatedCoins] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
 
-  // const videoRef = useRef(null);
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
+      : config.BASE_URL.replace(/\/$/, "");
+
+  const CONFIG_OBJ = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  };
+  debugger
 
   const accountCreatedDate = new Date("2023-05-01"); // Replace with actual account creation date
 
@@ -39,16 +53,15 @@ const Onboarding = () => {
   };
 
   const daysOnTelegram = calculateDaysOnTelegram();
-  const bonusCoins = calculateBonusCoins(daysOnTelegram);
+  const bonusCoins = calculateBonusCoins(daysOnTelegram)+187;
 
   const slides = [
     {
       title: "Welcome to the White Sharks!",
+      image: Land1,
     },
     {
       progress: 75,
-      daysOnTelegram: daysOnTelegram,
-      bonusCoins: bonusCoins,
       profileImage: ProfileImage1,
       profileImage2: ProfileImage2,
       profileImage3: ProfileImage3,
@@ -56,20 +69,34 @@ const Onboarding = () => {
     },
     {
       // title: "Telegram OG ERA",
-      description: "You are a loyal telegram user",
-      days: 10,
+      title: "You are a loyal telegram user",
+      days: daysOnTelegram,
+      coins: bonusCoins,
     },
   ];
 
   const handleNext = () => {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide((prev) => prev + 1);
+      return;
     } else {
       // Trigger celebration animation
       setShowCelebration(true);
-      setTimeout(() => {setShowCelebration(false)
-        navigate('/home')
-      }, 4000); // Hide confetti after 4 seconds
+      setTimeout(async () => {
+        setShowCelebration(false);
+        try {
+          const response = await axios.put(`${baseURL}/addAmount`,{ amount: bonusCoins }, CONFIG_OBJ);
+          const { message } = response.data;
+          toast.success(message)
+          navigate("/home");
+        } catch (error) {
+          const errorMessage =
+            error.response?.data?.message ||
+            "Unable to verify user details. Please try again.";
+          toast.error(errorMessage);
+          navigate("/error"); // Redirect to an error page
+        }
+      }, 2000); // Hide confetti after 2 seconds
     }
   };
 
@@ -102,33 +129,6 @@ const Onboarding = () => {
     }
   }, [currentSlide, daysOnTelegram, bonusCoins]);
 
-  // useEffect(() => {
-  //   const video = videoRef.current;
-
-  //   if (currentSlide === 2 || video) {
-  //     video.currentTime = 0; // Reset video to the start
-  //     // Only play if the video isn't already playing
-  //     if (video.paused || video.ended) {
-  //       video.play().catch((error) => {
-  //         console.error("Error playing video:", error); // Catch any play errors
-  //       });
-  //     }
-  //     // Set timeout to pause after the video has played for 2 seconds
-  //     const timeout = setTimeout(() => {
-  //       if (!video.paused && !video.ended) {
-  //         video.pause();
-  //       }
-  //     }, 2000);
-
-  //     return () => {
-  //       clearTimeout(timeout);
-  //       if (!video.paused && !video.ended) {
-  //         video.pause(); // Ensure the video is paused when the component unmounts or slide changes
-  //       }
-  //     };
-  //   }
-  // }, [currentSlide]);
-
   useEffect(() => {
     if (currentSlide === 1) {
       const progressBars = document.querySelectorAll(".progress-1");
@@ -145,7 +145,7 @@ const Onboarding = () => {
           setTimeout(() => {
             currentBar += 1;
             animateBar(); // Proceed to the next bar
-          }, 2000); // Matches the 2s duration of the CSS transition
+          }, 500); // Matches the 2s duration of the CSS transition
         }
       };
 
@@ -181,14 +181,6 @@ const Onboarding = () => {
 
   return (
     <div className="carousel-container">
-      {/* <video
-        ref={videoRef}
-        className="video-background"
-        src={Video}
-        muted
-        playsInline
-        loop={false}
-      /> */}
       {showCelebration && (
         <div className="confetti-overlay">
           <Lottie
@@ -215,7 +207,7 @@ const Onboarding = () => {
           <div className="carousel-slide" key={index}>
             <h1 style={{ display: "flex" }}>{slide.title}</h1>
             <p style={{ display: "flex" }}>{slide.description}</p>
-            {/* <img src={slide.image} alt="image" style={{height:'300px'}}/>  */}
+            <img src={slide.image} className="img" alt="" />
             {index === 1 && (
               <div className="slide-content">
                 {/* Rating Section */}
@@ -234,7 +226,7 @@ const Onboarding = () => {
                 {/* Days on Telegram Section */}
                 <div className="center-section">
                   <div className="profile-image">
-                    <img src={slide.profileImage} alt="Profile" />
+                    <img src={slide.profileImage2} alt="Profile" />
                   </div>
                   <div className="days-on-telegram">
                     <h4>Calculating your TG days</h4>
@@ -246,7 +238,7 @@ const Onboarding = () => {
                 {/* MiniGame Section */}
                 <div className="right-section">
                   <div className="profile-image">
-                    <img src={slide.profileImage} alt="Profile" />
+                    <img src={slide.profileImage3} alt="Profile" />
                   </div>
                   <div className="bonus-coins">
                     <h4 className="text-start">Contribution to TG minigame </h4>
@@ -258,10 +250,10 @@ const Onboarding = () => {
                 {/* Bonus Coins Section */}
                 <div className="right-section">
                   <div className="profile-image">
-                    <img src={slide.profileImage} alt="Profile" />
+                    <img src={slide.profileImage4} alt="Profile" />
                   </div>
                   <div className="bonus-coins">
-                    <h4>Calculating Coins</h4>
+                    <h4>Calculating Sharks</h4>
                   </div>
                 </div>
                 <div className="progress-1">
@@ -270,18 +262,24 @@ const Onboarding = () => {
               </div>
             )}
 
-            {slide.animation && (
-              <div className="animation-container">
-                <video width="320" height="240" autoPlay loop muted>
-                  <source src={slide.animation} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+            {slide.days && (
+              <div
+                className="coins-earned"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <h5>
+                  Days on Telegram:{" "}
+                  <span style={{ color: "skyblue" }}>{slide.days}</span>
+                </h5>
               </div>
             )}
-
-            {slide.days && (
-              <div className="coins-earned" style={{ display: "flex" }}>
-                <p>Days on Telegram: {slide.days}</p>
+            {index === 2 && (
+              <div className="mt-5">
+                <h2>Sharks Recieved</h2>
+                <div style={{ fontSize: "50px" }}>
+                  {slide.coins}
+                  <span style={{ fontSize: "20px" }}>Sharks</span>
+                </div>
               </div>
             )}
           </div>
@@ -296,4 +294,4 @@ const Onboarding = () => {
   );
 };
 
-export default Onboarding;
+export default Onboarding;

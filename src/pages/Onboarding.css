@@ -1,10 +1,21 @@
 /* Demo.css */
+
 .carousel-container {
   position: relative;
   width: 400px; /* Adjust the width based on your requirement */
   overflow: hidden;
   margin: 0 auto;
-  height: 85vh;
+  height: 100vh;
+  z-index: 0;
+}
+.img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 99vh;
+  width: 100%;
+  filter: brightness(50%);
+  z-index: -1;
 }
 
 .carousel-track {
@@ -17,17 +28,19 @@
   padding: 20px;
   box-sizing: border-box;
   text-align: center;
+  z-index: 1;
+  color: white;
 }
 
-.carousel-slide h2 {
+/* .carousel-slide h2 {
   font-size: 24px;
+  color: white;
   margin-bottom: 15px;
-}
+} */
 
 .carousel-slide p {
   font-size: 16px;
   margin-bottom: 20px;
-  
 }
 
 .animation-container {
@@ -109,7 +122,9 @@
   margin-top: -30px;
 }
 
-.left-section, .center-section, .right-section {
+.left-section,
+.center-section,
+.right-section {
   display: flex; /* Enable row alignment */
   align-items: center; /* Center items vertically */
   width: 100%;
@@ -117,10 +132,10 @@
 }
 
 .profile-image {
-  width: 50px; 
-  height: 50px; 
-  border-radius: 50%; 
-  overflow: hidden; 
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
   margin-right: 10px; /* Add spacing between image and text */
 }
 
@@ -139,8 +154,8 @@
 .progress-1 {
   display: flex;
   align-self: center;
-  width:130px;
-  height:15px;
+  width: 130px;
+  height: 15px;
   margin-top: -10px;
   margin-bottom: 10px;
   padding-bottom: 10px;
@@ -150,8 +165,8 @@
   /* animation:p1 2s forwards  ease-in; */
   visibility: hidden;
   background-color: #ddd;
-    border-radius: 5px;
-    overflow: hidden;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .progress-1 .fill {
@@ -160,7 +175,7 @@
   height: 15px;
   background-color: #03d5f5;
   /* Loading bar color */
-  transition: width 2s linear;
+  transition: width 0.5s linear;
   /* Smooth transition for loading */
 }
 
@@ -177,7 +192,8 @@
   /* Push video behind other elements */
 }
 
-.days-on-telegram, .bonus-coins {
+.days-on-telegram,
+.bonus-coins {
   font-size: 16px;
 }
 
@@ -192,17 +208,17 @@ h4[data-index="1"],
 /* For other headings and images with delay */
 h4[data-index="2"],
 .profile-image[data-index="2"] {
-  transition-delay: 1.5s;
+  transition-delay: 0.3s;
 }
 
 h4[data-index="3"],
 .profile-image[data-index="3"] {
-  transition-delay: 3.8s;
+  transition-delay: 0.8s;
 }
 
 h4[data-index="4"],
 .profile-image[data-index="4"] {
-  transition-delay: 5.5s;
+  transition-delay: 1.3s;
 }
 
 /* Transition for all headings */

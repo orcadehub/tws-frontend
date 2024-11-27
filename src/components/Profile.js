@@ -11,6 +11,7 @@ const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const [timer, setTimer] = useState(100);
   const [isFarming, setIsFarming] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
   const [claimAvailable, setClaimAvailable] = useState(false);
   const [showModal, setShowModal] = useState(false); // State for showing modal
   const [isClaimingBonus, setIsClaimingBonus] = useState(false);
@@ -106,7 +107,9 @@ const Profile = () => {
   };
 
   const claimCoins = async () => {
+    if (isClaiming) return;
     try {
+      setIsClaiming(true);
       const response = await axios.post(
         `${baseURL}/claim-coins`,
         { coinsToAdd: 100 },
@@ -127,6 +130,7 @@ const Profile = () => {
   };
 
   const handleClaimBonus = async () => {
+    setShowModal(false);
     try {
       if (!rawAddress) {
         toast.error("Wallet not connected. Please connect the wallet first.");
@@ -154,7 +158,7 @@ const Profile = () => {
 
       setProfileData(response.data.user); // Update wallet balance and reset state
       setClaimAvailable(false);
-      setShowModal(false);
+      
       setIsFarming(false); // Reset farming state
       setIsClaimingBonus(false); // Close modal after successful transaction
       setClaimAvailable(false); // Reset state
@@ -294,10 +298,7 @@ const Profile = () => {
                     <h6 style={{ color: "black" }}>
                       Select your preferred option to claim your rewards.
                     </h6>
-
-                    {/* <button type="button"  data-bs-dismiss="modal">Close</button> */}
-                    <div style={{display:'flex',justifyContent:'space-around',marginTop:'2rem 0'}}>
-                    {/* <div></div> */}
+                    <div style={{display:'flex',justifyContent:'space-around',margin:'2rem 0'}}>
                       <button
                         type="button"
                         className="btn btn-info"
@@ -318,22 +319,6 @@ const Profile = () => {
               </div>
             </div>
           )}
-
-          <div style={{ width: "400px" }}>
-            <a href="https://web.telegram.org">
-              <button
-                style={{
-                  backgroundColor: "skyblue",
-                  width: "100%",
-                  height: "35px",
-                  borderRadius: "30%/30%",
-                  fontWeight: "bolder",
-                }}
-              >
-                Join Telegram Community
-              </button>
-            </a>
-          </div>
         </>
       )}
     </div>
@@ -410,7 +395,7 @@ const styles = {
   },
   box3: {
     backgroundColor: "#222",
-    width: "80%",
+    width: "90%",
     height: "240px",
     maxWidth: "400px",
     borderRadius: "8px",
@@ -456,7 +441,7 @@ const styles = {
     zIndex: 1,
   },
   claimButton: {
-    backgroundColor: "skyblue",
+    backgroundColor: "green",
     color: "#fff",
     padding: "10px 20px",
     borderRadius: "5px",

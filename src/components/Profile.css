@@ -132,7 +132,7 @@
 }
 
 
-/* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+/* Hide scrollbar for Webkit browsers (Chrome; Safari; Edge) */
 /* .container::-webkit-scrollbar {
   display: none;
 } */
@@ -141,3 +141,7 @@
 /* .container {
   scrollbar-width: none;
   } */
+
+
+
+

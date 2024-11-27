@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
-
+import './Demo.css'
 const Demo = () => {
   const [tonConnectUI] = useTonConnectUI();
   const userFriendlyAddress = useTonAddress();
@@ -26,33 +26,6 @@ const Demo = () => {
     }
   };
 
-  const handleSubscribe = async () => {
-    try {
-      if (!rawAddress) {
-        alert("Wallet not connected. Please connect the wallet first.");
-        return;
-      }
-
-      const transaction = {
-        validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes
-        messages: [
-          {
-            address: "0:8d4592883c74e135c66145b030e93febc668a7334fb099fc68d59d9798f2d47f", 
-            amount: "100000000",
-          },
-        ],
-        fee: "10000000",
-      };
-
-      await tonConnectUI.sendTransaction(transaction);
-      alert("Transaction successful!");
-    } catch (error) {
-      console.error("Transaction failed:", error);
-      alert("Transaction failed. Please try again.");
-    }
-  };
-
-  // Format address to show first 4 and last 4 characters
   const formatAddress = (address) => {
     if (!address) return "";
     return `${address.slice(0, 4)}....${address.slice(-4)}`;
@@ -60,17 +33,14 @@ const Demo = () => {
 
   return (
     <div>
-      <button onClick={handleWalletClick}>
+      <button onClick={handleWalletClick} className="buttonc">
         {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
       </button>
       {isConnected && (
         <div style={{ marginTop: "20px" }}>
           <p>
-            <strong>User-Friendly Address:</strong> {formatAddress(userFriendlyAddress)}
+            <strong>Connected:</strong> {formatAddress(userFriendlyAddress)}
           </p>
-          <button style={{ marginTop: "10px" }} onClick={handleSubscribe}>
-            Subscribe
-          </button>
         </div>
       )}
     </div>

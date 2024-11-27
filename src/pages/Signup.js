@@ -41,6 +41,7 @@ const Signup = () => {
         // Store user data and token in localStorage
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
+        debugger
 
         Swal.close();
 

@@ -133,7 +133,7 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error("Error starting the task:", error);
-      toast.error("OOPS... Something went wrong")
+      toast.error("OOPS... Something went wrong");
     }
   };
 
@@ -155,11 +155,11 @@ const Tasks = () => {
           `${baseURL}/task/${taskId}`,
           CONFIG_OBJ
         );
-        toast.success("Task Deleted")
+        toast.success("Task Deleted");
         setTasks((tasks) => tasks.filter((task) => task._id !== taskId));
       }
     } catch (error) {
-      toast.error("OOPS... Something went wrong")
+      toast.error("OOPS... Something went wrong");
     }
   };
 
@@ -168,7 +168,7 @@ const Tasks = () => {
       if (isMilestone) {
         // Handle milestone claim
         if (totalReferrals < parseInt(taskId.split("-")[1])) {
-          toast.error("Not Eligible")
+          toast.error("Not Eligible");
         }
 
         // Update user data for milestone
@@ -215,17 +215,17 @@ const Tasks = () => {
         );
 
         setUserData(updatedUserData);
-        toast.success("Task Claimed")
+        toast.success("Task Claimed");
       }
     } catch (error) {
       console.error("Error claiming the task:", error);
-      toast.error("OOPS... Something went wrong")
+      toast.error("OOPS... Something went wrong");
     }
   };
 
-  const handleTaskClaimSocial = async (taskId, points, isMilestone = false) => {
+  const handleTaskClaimSocial = async (taskId, points, link) => {
     try {
-      window.open("https://www.youtube.com/", "_blank");
+      window.open(`${link}`, "_blank");
       // Regular task claim
       const response = await axios.put(
         `${baseURL}/task/${taskId}/claim`,
@@ -258,13 +258,13 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error("Error claiming the task:", error);
-      toast.error("OOPS... Something went wrong")
+      toast.error("OOPS... Something went wrong");
     }
   };
 
-  const handleTaskStartSocial = async (taskId, points) => {
+  const handleTaskStartSocial = async (taskId, points, link) => {
     try {
-      window.open("https://www.youtube.com/", "_blank");
+      window.open(`${link}`, "_blank");
       // Send start request to the backend
       const response = await axios.put(
         `${baseURL}/task/${taskId}/start`,
@@ -300,7 +300,7 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error("Error starting the task:", error);
-      toast.error("OOPS... Something went wrong")
+      toast.error("OOPS... Something went wrong");
     }
   };
 
@@ -449,7 +449,7 @@ const Tasks = () => {
                                     handleTaskClaimSocial(
                                       task._id,
                                       task.points,
-                                      false
+                                      task.socialLink
                                     )
                                   }
                                 >
@@ -459,7 +459,11 @@ const Tasks = () => {
                                 <button
                                   className="btn btn-custom"
                                   onClick={() =>
-                                    handleTaskStartSocial(task._id, task.points)
+                                    handleTaskStartSocial(
+                                      task._id,
+                                      task.points,
+                                      task.socialLink
+                                    )
                                   }
                                 >
                                   Start

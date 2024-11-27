@@ -3,8 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import config from "../config"; // Import config for environment URLs
 import "./Friends.css";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import image from "../assets/slide1.jpg";
 
@@ -187,15 +186,6 @@ const Friends = () => {
           only
         </p>
       </div>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-      />
     </div>
   );
 };

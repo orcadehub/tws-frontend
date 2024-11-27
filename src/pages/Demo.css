@@ -1,0 +1,9 @@
+.buttonc{
+    width: 150px;
+    height: 30px;
+    background-color: skyblue;
+    display: flex;
+    justify-content: center;
+    border-radius: 10%/30%;
+    font-weight: bolder;
+}

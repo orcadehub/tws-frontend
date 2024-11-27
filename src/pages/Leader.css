@@ -75,12 +75,34 @@ h1 {
 }
 
 .whole {
-  width: 430px;
-  /* height: 80vh; */
-  overflow-y:scroll;
-  margin:auto;
+  width: 100%; /* Full width to fit mobile screens */
+  max-width: 375px; /* Set max-width to simulate the mobile screen */
+  height: 83vh;
+  overflow-y: scroll;
+  background-color: #000;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  margin:auto; /* Centers the container with a smaller margin */
+  padding: 1px;
+  color: white;
 }
 
+.profileInitial{
+  color: #000;
+  font-weight: bold;
+  font-size: 30px;
+}
+.profile{
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 50%;
+  margin-right: -0.5rem;
+
+}
 
 /* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
 .whole::-webkit-scrollbar {
@@ -91,5 +113,3 @@ h1 {
 .whole {
   scrollbar-width: none;
 }
-
-

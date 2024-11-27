@@ -66,7 +66,6 @@ const Leader = () => {
     return num.toLocaleString();
   };
 
-  
   return (
     <div className="whole">
       <div className="lead">
@@ -75,16 +74,11 @@ const Leader = () => {
 
       <div className="circle">
         <div className="items">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="70"
-            height="70"
-            fill="currentColor"
-            className="bi bi-circle-fill"
-            viewBox="0 0 16 16"
-          >
-            <circle cx="8" cy="8" r="8" />
-          </svg>
+          <div className="profile">
+            <span className="profileInitial">
+              {userData?.username?.charAt(0).toUpperCase() || "U"}
+            </span>
+          </div>
           <div className="pin" id="user">
             <h5>{userData?.username || "UserLead"}</h5>
             <p>{formatNumber(userData?.walletAmount || "0")} SHARKS</p>
@@ -96,24 +90,18 @@ const Leader = () => {
       </div>
 
       <div className="hold">
-        <h2>{formatNumber(totalUsers || "0")} holders</h2> {/* Display total users */}
+        <h2>{formatNumber(totalUsers || "0")} holders</h2>{" "}
+        {/* Display total users */}
       </div>
 
       {/* Display top 100 leaderboard */}
       {leaderboard.slice(0, 100).map((leader, index) => (
         <div className="board" key={index}>
           <div className="items">
-            <div className="align">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="40"
-                height="40"
-                fill="currentColor"
-                className="bi bi-circle-fill"
-                viewBox="0 0 16 16"
-              >
-                <circle cx="8" cy="8" r="8" />
-              </svg>
+            <div className="profile">
+              <span className="profileInitial">
+                {leader?.username?.charAt(0).toUpperCase() || "U"}
+              </span>
             </div>
             <div className="user">
               <h5>{leader.username}</h5>
