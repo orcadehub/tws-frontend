@@ -19,7 +19,7 @@ const Onboarding = () => {
   const [animatedDays, setAnimatedDays] = useState(0);
   const [animatedCoins, setAnimatedCoins] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
-
+  const [claiming, setClaiming] = useState(false);
   const baseURL =
     process.env.NODE_ENV === "development"
       ? config.LOCAL_BASE_URL.replace(/\/$/, "")
@@ -31,7 +31,7 @@ const Onboarding = () => {
       Authorization: "Bearer " + localStorage.getItem("token"),
     },
   };
-  debugger
+  debugger;
 
   const accountCreatedDate = new Date("2023-05-01"); // Replace with actual account creation date
 
@@ -53,7 +53,7 @@ const Onboarding = () => {
   };
 
   const daysOnTelegram = calculateDaysOnTelegram();
-  const bonusCoins = calculateBonusCoins(daysOnTelegram)+187;
+  const bonusCoins = calculateBonusCoins(daysOnTelegram) + 187;
 
   const slides = [
     {
@@ -81,22 +81,29 @@ const Onboarding = () => {
       return;
     } else {
       // Trigger celebration animation
-      setShowCelebration(true);
-      setTimeout(async () => {
-        setShowCelebration(false);
-        try {
-          const response = await axios.put(`${baseURL}/addAmount`,{ amount: bonusCoins }, CONFIG_OBJ);
-          const { message } = response.data;
-          toast.success(message)
-          navigate("/home");
-        } catch (error) {
-          const errorMessage =
-            error.response?.data?.message ||
-            "Unable to verify user details. Please try again.";
-          toast.error(errorMessage);
-          navigate("/error"); // Redirect to an error page
-        }
-      }, 2000); // Hide confetti after 2 seconds
+      if (!claiming) {
+        setClaiming(true);
+        setShowCelebration(true);
+        setTimeout(async () => {
+          setShowCelebration(false);
+          try {
+            const response = await axios.put(
+              `${baseURL}/addAmount`,
+              { amount: bonusCoins },
+              CONFIG_OBJ
+            );
+            const { message } = response.data;
+            toast.success(message);
+            navigate("/home");
+          } catch (error) {
+            const errorMessage =
+              error.response?.data?.message ||
+              "Unable to verify user details. Please try again.";
+            toast.error(errorMessage);
+            navigate("/error"); // Redirect to an error page
+          }
+        }, 2000); // Hide confetti after 2 seconds
+      }
     }
   };
 

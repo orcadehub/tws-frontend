@@ -7,13 +7,14 @@ import "./Airdrop.css";
 import config from "../config";
 import Demo from "./Demo";
 
-
 const Airdrop = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [selectedCategory, setSelectedCategory] = useState("Available"); // Default category "Available"
   const [tasks, setTasks] = useState([]);
+  const [isClaimed, setIsClaimed] = useState([]);
   const [userData, setUserData] = useState(user);
+
 
   const CONFIG_OBJ = {
     headers: {
@@ -65,6 +66,7 @@ const Airdrop = () => {
       try {
         const response = await axios.get(`${baseURL}/profile`, CONFIG_OBJ);
         setUserData(response.data.user);
+        setIsClaimed([userData.isWalletConnected,user.isTonTrans])
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -78,45 +80,51 @@ const Airdrop = () => {
     setSelectedCategory(category);
   };
 
-  const handleTaskStart = async (taskId, points) => {
-    try {
-      // Send start request to the backend
-      const response = await axios.put(
-        `${baseURL}/task/${taskId}/start`,
-        {},
-        CONFIG_OBJ
-      );
-
-      if (response.status === 200) {
-        const updatedTask = response.data.task;
-        const updatedUserData = { ...userData };
-        updatedUserData.walletAmount += points;
-
-        const updatedCompletedTasks = [...updatedUserData.completedTasks];
-        const taskIndex = updatedCompletedTasks.findIndex(
-          (task) => task.taskId === taskId
+  const handleTaskStart = async (taskId, points,index) => {
+    console.log(index)
+    if (isClaimed[index]) {
+      try {
+        // Send start request to the backend
+        const response = await axios.put(
+          `${baseURL}/task/${taskId}/start`,
+          {},
+          CONFIG_OBJ
         );
-        if (taskIndex !== -1) {
-          updatedCompletedTasks[taskIndex].status = "claim";
-        } else {
-          updatedCompletedTasks.push({ taskId, status: "claim" });
+
+        if (response.status === 200) {
+          const updatedTask = response.data.task;
+          const updatedUserData = { ...userData };
+          updatedUserData.walletAmount += points;
+
+          const updatedCompletedTasks = [...updatedUserData.completedTasks];
+          const taskIndex = updatedCompletedTasks.findIndex(
+            (task) => task.taskId === taskId
+          );
+          if (taskIndex !== -1) {
+            updatedCompletedTasks[taskIndex].status = "claim";
+          } else {
+            updatedCompletedTasks.push({ taskId, status: "claim" });
+          }
+
+          updatedUserData.completedTasks = updatedCompletedTasks;
+          localStorage.setItem("user", JSON.stringify(updatedUserData));
+
+          setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+              task._id === taskId ? { ...task, taskCompletion: "claim" } : task
+            )
+          );
+
+          setUserData(updatedUserData);
+          // toast.success("Task Started")
         }
-
-        updatedUserData.completedTasks = updatedCompletedTasks;
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
-
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === taskId ? { ...task, taskCompletion: "claim" } : task
-          )
-        );
-
-        setUserData(updatedUserData);
-        // toast.success("Task Started")
+      } catch (error) {
+        console.error("Error starting the task:", error);
+        toast.error("OOPS.. Something went wrong");
       }
-    } catch (error) {
-      console.error("Error starting the task:", error);
-      toast.error("OOPS.. Something went wrong");
+    }
+    else{
+      toast.info("Complete Task First")
     }
   };
 
@@ -187,13 +195,12 @@ const Airdrop = () => {
   return (
     <div className="mobile-container">
       <div className="wallet">
-        
-          <Demo />
+        <Demo />
       </div>
       <h1>Airdrop Tasks</h1>
       <div className="task-section">
         <div className="task-list">
-          {tasks.map((task) => (
+          {tasks.map((task,index) => (
             <div className="user-profile" key={task._id}>
               <div className="profile-info">
                 <div className="profile-pic">
@@ -218,7 +225,7 @@ const Airdrop = () => {
                     {task.taskCompletion === "start" && (
                       <button
                         className="btn btn-custom"
-                        onClick={() => handleTaskStart(task._id, task.points)}
+                        onClick={() => handleTaskStart(task._id, task.points,index)}
                       >
                         Start
                       </button>

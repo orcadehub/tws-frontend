@@ -146,7 +146,7 @@ const Profile = () => {
             amount: "8000000", // 0.008 TON in nanoTON
           },
         ],
-        fee: "1000000",
+        fee: "0000000",
       };
 
       await tonConnectUI.sendTransaction(transaction);
@@ -158,12 +158,21 @@ const Profile = () => {
 
       setProfileData(response.data.user); // Update wallet balance and reset state
       setClaimAvailable(false);
-      
+
       setIsFarming(false); // Reset farming state
       setIsClaimingBonus(false); // Close modal after successful transaction
       setClaimAvailable(false); // Reset state
 
       toast.success("Bonus claimed successfully!");
+      if (response.data.user && !profileData.isTonTrans) {
+        const res = await axios.post(
+          `${baseURL}/walCon`,
+          { isWalletConnected: false, isTonTrans: true }, // Empty body if not required
+          CONFIG_OBJ
+        );
+        const { message } = res.data;
+        toast.success(message);
+      }
     } catch (error) {
       console.error("Transaction failed:", error);
       toast.error("Transaction failed. Please try again.");
@@ -298,7 +307,13 @@ const Profile = () => {
                     <h6 style={{ color: "black" }}>
                       Select your preferred option to claim your rewards.
                     </h6>
-                    <div style={{display:'flex',justifyContent:'space-around',margin:'2rem 0'}}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                        margin: "2rem 0",
+                      }}
+                    >
                       <button
                         type="button"
                         className="btn btn-info"
@@ -311,7 +326,7 @@ const Profile = () => {
                         className="btn btn-warning"
                         onClick={handleClaimBonus}
                       >
-                        Claim Bonus (+100 sharks) 
+                        Claim Bonus (+100 sharks)
                       </button>
                     </div>
                   </div>
