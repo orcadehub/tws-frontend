@@ -27,7 +27,7 @@
   }
   .rocket {
     position: absolute;
-    bottom: -10%;
+    bottom: 5%;
     width: 100px;
     height: 300px;
     transform: translateX(-50%); /* Center horizontally */
