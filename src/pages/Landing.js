@@ -18,7 +18,7 @@ const Landing = () => {
       const handleOrientation = (event) => {
         const { gamma } = event; // Gamma represents left-right tilt
         if (gamma) {
-          const newPosition = Math.min(Math.max(position + gamma / 5, 0), 100); // Limit position between 0 and 100
+          const newPosition = Math.min(Math.max(position + gamma / 2, 0), 100); // Limit position between 0 and 100
           setPosition(newPosition);
         }
       };
