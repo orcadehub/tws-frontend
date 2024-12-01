@@ -1,0 +1,28 @@
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+  }
+  
+  .rocket {
+    position: absolute;
+    bottom: 5%;
+    width: 40px;
+    height: 60px;
+    background: red;
+    border-radius: 5px;
+    transform: translateX(-50%);
+  }
+  
+  .coin {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: yellow;
+    border-radius: 50%;
+  }
+  

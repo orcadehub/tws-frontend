@@ -100,7 +100,7 @@ const Profile = () => {
       setIsFarming(true);
       setTimer(30); // Reset timer to 30 seconds for testing
       setClaimAvailable(false);
-      toast.success("Farming started!");
+      toast.success("Mining started!");
     } catch (error) {
       console.error("Error starting farming session:", error);
     }
@@ -120,12 +120,12 @@ const Profile = () => {
       setClaimAvailable(false);
       setShowModal(false);
       setIsFarming(false); // Reset farming state
-      toast.success("Coins claimed successfully!"); // Show toast on success
+      toast.success("Sharks claimed successfully!"); // Show toast on success
       // Swal.fire("Coins claimed successfully!", "", "success");
     } catch (error) {
-      console.error("Error claiming coins:", error);
+      console.error("Error claiming Sharks:", error);
       // Swal.fire("Failed to claim coins. Please try again.", "", "error");
-      toast.error("Failed to claim coins. Please try again.");
+      toast.error("Failed to claim Sharks. Please try again.");
     }
   };
 

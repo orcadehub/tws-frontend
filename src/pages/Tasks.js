@@ -59,6 +59,8 @@ const Tasks = () => {
       try {
         const response = await axios.get(`${baseURL}/profile`, CONFIG_OBJ);
         setUserData(response.data.user);
+        console.log(userData)
+        debugger
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -362,7 +364,7 @@ const Tasks = () => {
                     <>
                       {task.category === "Advanced" ? (
                         <>
-                          {totalReferrals < 1 ? (
+                          {!userData.isReffered ? (
                             <div className="pending-container">
                               <button className="btn btn-custom" disabled>
                                 <i className="fa-solid fa-lock"></i> Invite 1

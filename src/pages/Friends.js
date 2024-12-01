@@ -30,6 +30,13 @@ const Friends = () => {
     },
   };
 
+  const formatNumber = (num) => {
+    if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
+    if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
+    // if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+    return num.toLocaleString();
+  };
+
   useEffect(() => {
     if (!user) {
       navigate("/authenticate");
@@ -120,7 +127,7 @@ const Friends = () => {
         </div>
         <div className="friends1">
           <p>Sharks earned</p>
-          <i class="fa-solid fa-sack-dollar"></i> X {user.referralAmount}
+          <i class="fa-solid fa-sack-dollar"></i> X {formatNumber(user.referralAmount || 0)}
           {/* <h4>💰 X {totalRef}</h4> */}
         </div>
       </div>
@@ -159,7 +166,6 @@ const Friends = () => {
           </span>
 
       </div>
-
       <div className="ol">
         <ol>
           {loading ? (
