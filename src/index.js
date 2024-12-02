@@ -1,15 +1,19 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { TonConnectUIProvider } from "@tonconnect/ui-react";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { TonConnectUIProvider } from '@tonconnect/ui-react';
+import { LoadingProvider } from './components/LoadingContext';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <TonConnectUIProvider manifestUrl="https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmWGxC2rEv8jM6mAw4rkWMfNwDuiRRn5QjcdSrxvqL4k1y">
+    <TonConnectUIProvider manifestUrl="https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmWUrnKMyMhAociQcbyAFUUPkLNkBRLXFdiPGVwEmX1zuv">
+        <LoadingProvider>
     <App />
-  </TonConnectUIProvider>
+
+        </LoadingProvider>
+    </TonConnectUIProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

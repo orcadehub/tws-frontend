@@ -131,22 +131,24 @@ body {
 }
 
 .btn button {
-  background-color: skyblue;
+  background-color: rgb(42,42,42);
   font-size: 20px;
   border-radius: 25px;
   border: none;
   outline: none;
+  color: white;
   padding: 10px 68px;
 }
 
 .btn2 h1 i {
-  background-color: skyblue;
+  background-color: rgb(42,42,42);
   border-radius: 25px;
   padding: 10px;
   outline: black;
   margin-left: 15px;
-  color: black;
+  color: white;
   font-size: 25px;
+  margin-top: 10px;
 }
 
 /* Media query for screens up to 430px */
@@ -199,12 +201,12 @@ body {
 .referrals-table th,
 .referrals-table td {
   padding: 12px 15px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
 }
 
 .referrals-table th {
-  background-color: skyblue;
-  color: #333;
+  background-color: rgb(42,42,42);
+  color: #fff;
 }
 
 /* .referrals-table tbody tr:nth-of-type(even) {

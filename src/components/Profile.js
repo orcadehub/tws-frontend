@@ -4,10 +4,14 @@ import { useNavigate } from "react-router-dom";
 import config from "../config";
 import Back from "../assets/pic.jpg";
 import { toast } from "react-toastify";
+import Pic from "../assets/pic.jpg";
+import Ton from "../assets/ton.png";
 import "react-toastify/dist/ReactToastify.css";
 import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
+import { useLoading } from ".//LoadingContext";
 
 const Profile = () => {
+  const { setIsLoading } = useLoading();
   const [profileData, setProfileData] = useState(null);
   const [timer, setTimer] = useState(100);
   const [isFarming, setIsFarming] = useState(false);
@@ -45,6 +49,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(`${baseURL}/profile`, CONFIG_OBJ);
         const user = response.data.user;
@@ -69,6 +74,8 @@ const Profile = () => {
         }
       } catch (error) {
         navigate("/authenticate");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -238,6 +245,41 @@ const Profile = () => {
               style={{ height: "130%", width: "100%" }}
             />
           </div>
+
+          <div
+            style={{
+              height: "40px",
+              width: "400px",
+              color: "white",
+              backgroundColor: "rgb(42,42,42)",
+              borderRadius: "10px",
+              marginTop: "-1rem",
+              fontWeight: "bolder",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              bottom: "22.5%",
+            }}
+          >
+            <i
+              class="fa-solid fa-people-group"
+              style={{ marginRight: "0.5rem" }}
+            ></i>
+            <a
+              href="https://t.me/ThewhiteShark_io"
+              style={{ textDecoration: "none", color: "white" }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Join Telegram Community
+            </a>
+            <i
+              class="fa-solid fa-arrows-turn-right"
+              style={{ marginLeft: "0.5rem" }}
+            ></i>
+          </div>
+
           <div style={styles.box4}>
             <div
               style={{ ...styles.progressBar, width: `${progressPercentage}%` }}
@@ -273,29 +315,6 @@ const Profile = () => {
               </button>
             )}
           </div>
-          <div
-            style={{
-              height: "40px",
-              width: "350px",
-              color: "black",
-              backgroundColor: "skyblue",
-              borderRadius: "10%/20%",
-              marginTop: "-1rem",
-              fontWeight: "bolder",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <a
-              href="https://t.me/ThewhiteShark_io"
-              style={{ textDecoration: "none", color: "black" }}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Join Telegram Community
-            </a>
-          </div>
 
           {showModal && (
             <div
@@ -307,49 +326,92 @@ const Profile = () => {
               tabIndex="-1"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
+              onClick={(e) => {
+                // Close modal if clicked outside the modal dialog
+                if (e.target.classList.contains("modal")) {
+                  setShowModal(false);
+                }
+              }}
             >
               <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
-                  <div className="modal-header">
-                    <h6
-                      className="modal-title fs-5"
-                      id="exampleModalLabel"
-                      style={{ color: "black" }}
-                    >
-                      Claim Your Rewards
-                    </h6>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      onClick={() => setShowModal(false)}
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    <h6 style={{ color: "black" }}>
-                      Select your preferred option to claim your rewards.
-                    </h6>
+                  <div
+                    className="modal-body"
+                    style={{ backgroundColor: "#000" }}
+                  >
                     <div
                       style={{
                         display: "flex",
                         justifyContent: "space-around",
-                        margin: "2rem 0",
+                        alignItems: "center",
+                        marginTop: "2rem",
                       }}
                     >
-                      <button
-                        type="button"
-                        className="btn btn-info"
-                        onClick={claimCoins}
+                      <div
+                        style={{
+                          textAlign: "center",
+                          backgroundColor: "black",
+                          padding: "1rem",
+                          borderRadius: "10px",
+                          width: "45%",
+                        }}
                       >
-                        Claim
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-warning"
-                        onClick={handleClaimBonus}
+                        <img
+                          src={Pic}
+                          alt="Coin"
+                          style={{ width: "90px", marginBottom: "0.5rem" }}
+                        />
+                        <h6 style={{ color: "#fff", marginBottom: "0.5rem" }}>
+                          100
+                        </h6>
+                        <button
+                          type="button"
+                          className="btn btn-light"
+                          style={{
+                            width: "100%",
+                            border: "1px solid black",
+                            color: "#000",
+                            borderRadius:'15px'
+                          }}
+                          onClick={claimCoins}
+                        >
+                          Claim
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          textAlign: "center",
+                          backgroundColor: "black",
+                          padding: "1rem",
+                          borderRadius: "10px",
+                          width: "45%",
+                        }}
                       >
-                        Claim Bonus (550 sharks)
-                      </button>
+                        <img
+                          src={Pic}
+                          alt="Coin Stack"
+                          style={{ width: "90px", marginBottom: "0.5rem" }}
+                        />
+                        <h6 style={{ color: "#fff", marginBottom: "0.5rem" }}>
+                          500
+                        </h6>
+                        <button
+                          type="button"
+                          className="btn btn-info"
+                          style={{
+                            width: "100%",
+                            borderRadius:'15px'
+                          }}
+                          onClick={handleClaimBonus}
+                        >
+                          <img
+                            src={Ton}
+                            alt="ton"
+                            style={{ height: "20px", margin: "-3px 5px 0 0" }}
+                          />
+                          Claim Bonus
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -379,10 +441,10 @@ const styles = {
   },
   profileContainer: {
     textAlign: "left",
-    width: "80%",
+    width: "100%",
     maxWidth: "400px",
     padding: "20px",
-    marginBottom: "10px",
+    marginBottom: "20px",
     borderRadius: "10px",
   },
   taskButtons: {
@@ -418,15 +480,10 @@ const styles = {
     padding: "10px",
     textAlign: "center",
     borderRadius: "5px",
-    marginTop: "-15px",
-  },
-  balanceTitle: {
-    fontSize: "40px",
-    color: "#fff",
-    marginBottom: "5px",
+    marginTop: "25px",
   },
   balanceAmount: {
-    fontSize: "60px",
+    fontSize: "54px",
     color: "#fff",
     fontWeight: "bold",
   },
@@ -436,39 +493,35 @@ const styles = {
     height: "auto",
     maxWidth: "400px",
     borderRadius: "8px",
-    margin: "-45px 0",
+    marginTop: "-1rem",
   },
   box4: {
     backgroundColor: "#000",
     width: "80%",
-    // border: "2px solid skyblue",
     maxWidth: "400px",
-    // padding: "15px",
     textAlign: "center",
     borderRadius: "8px",
-    margin: "40px 0",
-    // position: "absolute",
-    position: "relative",
-    // bottom: "15%",
-    // overflow: "hidden",
+    position: "absolute",
+    bottom: "15%",
   },
   progressBar: {
     position: "absolute",
     top: 0,
     left: 0,
     height: "60%",
-    backgroundColor: "skyblue", // Slightly transparent orange
+    borderRadius: "10px",
+    backgroundColor: "rgb(42,42,42)", // Slightly transparent orange
     zIndex: 0,
   },
   startButton: {
     backgroundColor: "skyblue",
     color: "#000",
-    padding: "10px 20px",
+    padding: "10px",
     borderRadius: "5px",
     border: "none",
     cursor: "pointer",
     position: "relative",
-    height: "40px",
+    height: "60%",
     width: "100%",
   },
   timer: {
@@ -478,16 +531,15 @@ const styles = {
     zIndex: 1,
   },
   claimButton: {
-    backgroundColor: "skyblue ",
+    backgroundColor: "skyblue",
     color: "#fff",
-    padding: "10px 20px",
     borderRadius: "5px",
     border: "none",
     cursor: "pointer",
     position: "relative",
     zIndex: 1,
     width: "100%",
-    // height:"55px"
+    height: "40px",
   },
   userInfo: {
     display: "flex",

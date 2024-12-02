@@ -66,6 +66,7 @@ const Demo = () => {
   return (
     <div>
       <button onClick={handleWalletClick} className="buttonc">
+      <i class="fa-solid fa-wallet me-2"></i>
         {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
       </button>
       {isConnected && (

@@ -3,8 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import config from "../config"; // Import config for environment URLs
 import "./Leader.css";
-
+import { useLoading } from "../components/LoadingContext";
 const Leader = () => {
+  const { setIsLoading } = useLoading();
   const [leaderboard, setLeaderboard] = useState([]);
   const [userRank, setUserRank] = useState(null);
   const [totalUsers, setTotalUsers] = useState(null);
@@ -27,11 +28,12 @@ const Leader = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/authenticate");
+      navigate("/error");
       return;
     }
 
     const fetchLeaderboard = async () => {
+      setIsLoading(true);
       try {
         // Fetch leaderboard data from the API
         const leaderboardResponse = await axios.get(
@@ -53,6 +55,8 @@ const Leader = () => {
       } catch (error) {
         console.error("Error fetching leaderboard data:", error);
         navigate("/authenticate");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -69,7 +73,7 @@ const Leader = () => {
   return (
     <div className="whole">
       <div className="lead">
-        <h1 style={{color:'white'}}>Ranking</h1>
+        <h1 style={{ color: "white" }}>Ranking</h1>
       </div>
 
       <div className="circle">
@@ -81,7 +85,9 @@ const Leader = () => {
           </div>
           <div className="pin" id="user">
             <h5>{userData?.username || "UserLead"}</h5>
-            <p>{formatNumber(userData?.walletAmount || "0")} SHARKS</p>
+            <p style={{ color: "white" }}>
+              {formatNumber(userData?.walletAmount || "0")} SHARKS
+            </p>
           </div>
         </div>
         <div className="end">
@@ -105,11 +111,21 @@ const Leader = () => {
             </div>
             <div className="user">
               <h6>{leader.username}</h6>
-              <p>{formatNumber(leader.walletAmount)} SHARKS</p>
+              <p style={{ color: "white" }}>
+                {formatNumber(leader.walletAmount)} SHARKS
+              </p>
             </div>
           </div>
           <div className="end">
-            <h5>#{index + 1}</h5>
+            <h5>
+              {index === 0
+                ? "🥇"
+                : index === 1
+                ? "🥈"
+                : index === 2
+                ? "🥉"
+                : `#${index + 1}`}
+            </h5>
           </div>
         </div>
       ))}

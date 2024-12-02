@@ -6,8 +6,9 @@ import "./Friends.css";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import image from "../assets/slide1.jpg";
-
+import { useLoading } from "../components/LoadingContext";
 const Friends = () => {
+  const { setIsLoading } = useLoading();
   const [referrals, setReferrals] = useState([]);
   const [totalReferrals, setTotalReferrals] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -36,11 +37,12 @@ const Friends = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/authenticate");
+      navigate("/error");
       return;
     }
 
     const fetchReferralData = async () => {
+      setIsLoading(true)
       try {
         const response = await axios.get(`${baseURL}/profile/referrals`, CONFIG_OBJ);
         console.log("Referral Data:", response.data);
@@ -51,6 +53,7 @@ const Friends = () => {
         navigate("/authenticate");
       } finally {
         setLoading(false);
+        setIsLoading(false)
       }
     };
 
@@ -99,10 +102,10 @@ const Friends = () => {
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="content">
-        <h3>
+        <h3 style={{color:'white'}}>
           Invite friends <i className="fa-solid fa-handshake"></i> and get rewards
         </h3>
-        <p>Earn 10% of Sharks from your friends!</p>
+        <p style={{color:'white'}}>Earn 10% of Sharks from your friends!</p>
       </div>
       <div className="col">
         <div className="friends">
@@ -114,18 +117,7 @@ const Friends = () => {
           <i className="fa-solid fa-sack-dollar"></i> X {formatNumber(user.referralAmount || 0)}
         </div>
       </div>
-      <div className="col2">
-        <ul>
-          <li>
-            You could earn <span className="span">10%</span> of all Sharks
-            earned by players you have invited.
-          </li>
-          <li>
-            Invited friends will receive a gift of up to{" "}
-            <span className="span">5000</span> Sharks.
-          </li>
-        </ul>
-      </div>
+      
       <div className="button">
         <div className="btn">
           <button onClick={handleShare}>Invite Friends!</button>

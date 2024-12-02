@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Landing.css";
 import Log from "../assets/rocket.mp4";
-import Rocket from "../assets/rocket.gif";
 import Intro from "../assets/intro.mp4";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -9,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import config from "../config";
 
 const Landing = () => {
-  const [position, setPosition] = useState(50); // Initial position
+  const [position, setPosition] = useState(80);
   const [coins, setCoins] = useState([]);
   const [score, setScore] = useState(0);
   const [claiming, setClaiming] = useState(false);
@@ -36,8 +35,9 @@ const Landing = () => {
       const handleOrientation = (event) => {
         const { gamma } = event;
         if (gamma) {
-          const newPosition = Math.min(Math.max(position + gamma / 3, 0), 100);
-          setPosition(newPosition);
+          const screenWidth = Math.min(window.innerWidth, 400);
+          const newLeft = Math.max(Math.min(position + gamma / 3, screenWidth), 0);
+          setPosition(newLeft);
         }
       };
 
@@ -59,6 +59,10 @@ const Landing = () => {
             value: Math.floor(Math.random() * 50) + 10,
             size: "small",
           };
+
+          const screenWidth = Math.min(window.innerWidth, 400);
+          randomCoin.left = (randomCoin.left * screenWidth) / 100;
+
           setCoins((prevCoins) => [...prevCoins, randomCoin]);
         }
       }, 1000);
@@ -83,18 +87,41 @@ const Landing = () => {
     }
   }, [gameOver, gameStarted]);
 
+  useEffect(() => {
+    if (gameStarted && (timeLeft === 18 || timeLeft === 5)) {
+      const bigCoin = {
+        id: `big-${Date.now()}`,
+        left: Math.random() * 100,
+        top: 0,
+        value: timeLeft === 18 ? 1000 : 2500,
+        size: "large",
+      };
+
+      const screenWidth = Math.min(window.innerWidth, 400);
+      bigCoin.left = (bigCoin.left * screenWidth) / 100;
+
+      setCoins((prevCoins) => [...prevCoins, bigCoin]);
+    }
+  }, [timeLeft, gameStarted]);
+
   const checkCollision = () => {
-    coins.forEach((coin) => {
-      if (
-        coin.top > 90 &&
-        (Math.abs(coin.left - position) < 15 ||
-          Math.abs(coin.right - position) < 15)
-      ) {
-        setScore((prevScore) => prevScore + coin.value);
-        setCoins((prevCoins) => prevCoins.filter((c) => c.id !== coin.id));
-      }
-    });
+    const rocketWidth = 90; // Assuming the rocket's width is around 50px
+    setCoins((prevCoins) =>
+      prevCoins.filter((coin) => {
+        if (
+          coin.top > 90 &&
+          coin.left >= position - rocketWidth / 2 &&
+          coin.left <= position + rocketWidth / 2
+        ) {
+          setScore((prevScore) => prevScore + coin.value);
+          document.getElementById(coin.id)?.classList.add("coin-collapsed");
+          return false; // Remove the coin
+        }
+        return true; // Keep the coin
+      })
+    );
   };
+  
 
   useEffect(() => {
     if (gameStarted) {
@@ -119,30 +146,15 @@ const Landing = () => {
     }
   }, [timeLeft, gameStarted]);
 
-  useEffect(() => {
-    if (gameStarted && (timeLeft === 18 || timeLeft === 4)) {
-      const bigCoin = {
-        id: `big-${Date.now()}`,
-        left: Math.random() * 100,
-        top: 0,
-        value: timeLeft === 18 ? 1000 : 2500,
-        size: "big",
-      };
-      setCoins((prevCoins) => [...prevCoins, bigCoin]);
-    }
-  }, [timeLeft, gameStarted]);
-
   const handleIntroEnd = () => {
     setIsIntroDone(true);
     setGameStarted(true);
   };
 
   const claimCoins = async () => {
-    if (claiming){
-      return
-    }
+    if (claiming) return;
     try {
-      setClaiming(true)
+      setClaiming(true);
       const response = await axios.put(
         `${baseURL}/addAmount`,
         { amount: score },
@@ -187,20 +199,26 @@ const Landing = () => {
           <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
           <video
             className="rocket"
-            style={{ left: `${position}%` }}
+            style={{ left: `${position}px` }}
             src={Log}
             autoPlay
             loop
             muted
           ></video>
-         
+
           {coins.map((coin) => (
             <div
+              id={coin.id}
               key={coin.id}
               className={`coin ${coin.size}`}
               style={{
-                left: `${coin.left}%`,
+                left: `${coin.left}px`,
                 top: `${coin.top}%`,
+                backgroundImage: "url(https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmcSxjgDfcU2qX9FAHJZvSkgenUWvPepAw9JiNk2nJmeM3)",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                width: coin.size === "large" ? "80px" : "40px",
+                height: coin.size === "large" ? "80px" : "40px",
               }}
             >
               {coin.value}

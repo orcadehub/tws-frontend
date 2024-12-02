@@ -5,7 +5,10 @@ import Swal from "sweetalert2";
 import "./Tasks.css";
 import config from "../config";
 import { toast } from "react-toastify";
+import { useLoading } from "../components/LoadingContext";
+
 const Tasks = () => {
+  const { setIsLoading } = useLoading();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [selectedCategory, setSelectedCategory] = useState("Available"); // Default category "Available"
@@ -30,11 +33,12 @@ const Tasks = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/authenticate");
+      navigate("/error");
       return;
     }
     // Fetch Tasks
     const fetchTasks = async () => {
+      setIsLoading(true)
       try {
         const response = await axios.get(`${baseURL}/tasks`, CONFIG_OBJ);
         const tasksWithCompletion = response.data.map((task) => {
@@ -52,6 +56,9 @@ const Tasks = () => {
         console.log(tasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
+      }
+      finally{
+        setIsLoading(false)
       }
     };
 
@@ -73,7 +80,7 @@ const Tasks = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/authenticate");
+      navigate("/error");
       return;
     }
 
@@ -311,7 +318,7 @@ const Tasks = () => {
 
   return (
     <div className="mobile-container">
-      <h1>Tasks</h1>
+      <h1 style={{color:'white'}}>Tasks</h1>
       <div className="task-section">
         <div className="header-container">
           {["Available", "Advanced"].map((category) => (
@@ -376,7 +383,7 @@ const Tasks = () => {
                             </div>
                           ) : task.taskCompletion === "claim" ? (
                             <button
-                              className="btn btn-custom"
+                              className="btn btn-custom taskbtn"
                               onClick={() =>
                                 handleTaskClaim(task._id, task.points, true)
                               }
@@ -389,7 +396,7 @@ const Tasks = () => {
                             </button>
                           ) : (
                             <button
-                              className="btn btn-custom"
+                              className="btn btn-custom taskbtn"
                               onClick={() =>
                                 handleTaskStart(task._id, task.points)
                               }
@@ -409,7 +416,7 @@ const Tasks = () => {
                                 </button>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
-                                  className="btn btn-custom"
+                                  className="btn btn-custom taskbtn"
                                   onClick={() =>
                                     handleTaskClaim(
                                       task._id,
@@ -422,7 +429,7 @@ const Tasks = () => {
                                 </button>
                               ) : totalReferrals >= task.milestoneCount ? (
                                 <button
-                                  className="btn btn-custom"
+                                  className="btn btn-custom taskbtn"
                                   onClick={() => {
                                     handleTaskClaim(
                                       task._id,
@@ -449,7 +456,7 @@ const Tasks = () => {
                                 </button>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
-                                  className="btn btn-custom"
+                                  className="btn btn-custom taskbtn"
                                   onClick={() =>
                                     handleTaskClaimSocial(
                                       task._id,
@@ -462,7 +469,7 @@ const Tasks = () => {
                                 </button>
                               ) : (
                                 <button
-                                  className="btn btn-custom"
+                                  className="btn btn-custom taskbtn"
                                   onClick={() =>
                                     handleTaskStartSocial(
                                       task._id,
@@ -481,7 +488,7 @@ const Tasks = () => {
                             <>
                               {task.taskCompletion === "start" && (
                                 <button
-                                  className="btn btn-custom"
+                                  className="btn btn-custom taskbtn"
                                   onClick={() =>
                                     handleTaskStart(task._id, task.points)
                                   }
@@ -491,7 +498,7 @@ const Tasks = () => {
                               )}
                               {task.taskCompletion === "claim" && (
                                 <button
-                                  className="btn btn-custom"
+                                  className="btn btn-custom taskbtn"
                                   onClick={() =>
                                     handleTaskClaim(
                                       task._id,

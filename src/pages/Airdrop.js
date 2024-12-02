@@ -5,10 +5,13 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import "./Airdrop.css";
 import config from "../config";
+
 import Demo from "./Demo";
 import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
+import { useLoading } from "../components/LoadingContext";
 
 const Airdrop = () => {
+  const { setIsLoading } = useLoading();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [selectedCategory, setSelectedCategory] = useState("Available"); // Default category "Available"
@@ -35,12 +38,13 @@ const Airdrop = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/authenticate");
+      navigate("/error");
       return;
     }
 
     // Fetch Tasks
     const fetchTasks = async () => {
+      setIsLoading(true)
       try {
         const response = await axios.get(`${baseURL}/tasks`, CONFIG_OBJ);
         // Filter tasks based on "Airdrop" category
@@ -62,6 +66,8 @@ const Airdrop = () => {
         setTasks(tasksWithCompletion);
       } catch (error) {
         console.error("Error fetching tasks:", error);
+      }finally{
+        setIsLoading(false)
       }
     };
 
@@ -232,7 +238,7 @@ const Airdrop = () => {
       <div className="wallet">
         <Demo />
       </div>
-      <h1>Airdrop Tasks</h1>
+      <h1 style={{color:'white'}}>Airdrop Tasks</h1>
       <div className="task-section">
         <div className="task-list">
           {tasks.map((task, index) => (
@@ -259,7 +265,7 @@ const Airdrop = () => {
                   <>
                     {task.taskCompletion === "start" && (
                       <button
-                        className="btn btn-custom"
+                        className="btn btn-custom taskbtn"
                         onClick={() =>
                           handleTaskStart(task._id, task.points, index)
                         }
@@ -270,7 +276,7 @@ const Airdrop = () => {
 
                     {task.taskCompletion === "claim" && (
                       <button
-                        className="btn btn-custom"
+                        className="btn btn-custom taskbtn"
                         onClick={() => handleTaskClaim(task._id, task.points)}
                       >
                         Claim

@@ -15,14 +15,17 @@ import Tasks from "./pages/Tasks";
 import AirDrop from "./pages/Airdrop";
 import Signup from "./pages/Signup";
 import AddTask from "./pages/AddTask";
-import Onboarding from "./pages/Onboarding";
-// import Demo from "./pages/Demo";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import Landing from "./pages/Landing";
 import Error from "./components/Error";
+import Loader from "./pages/Loader";
+import { useLoading } from "./components/LoadingContext";
+
 function App() {
+  const { isLoading } = useLoading();
+
   useEffect(() => {
     // Disable double-tap zoom
     const handleGestureStart = (e) => e.preventDefault();
@@ -46,6 +49,7 @@ function App() {
   return (
     <>
       <Router>
+        {isLoading && <Loader />}
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/game" element={<Landing />} />
@@ -89,4 +93,4 @@ function ConditionalHeader() {
   return !isHeaderHidden && <Header />;
 }
 
-export default App;
+export default App;

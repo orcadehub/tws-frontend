@@ -9,9 +9,9 @@ h1 {
 }
 
 .circle {
-  color: black;
+  color: white;
   padding-top: 13px;
-  background-color: skyblue;
+  background-color: rgb(43, 43, 43);
   padding-bottom: 6px;
   margin-top: 20px;
   padding-left: 15px;
@@ -21,8 +21,8 @@ h1 {
   margin-right: 30px;
   border-radius: 18px;
   align-items: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2), /* Soft shadow */
-              0px 0px 20px rgba(0, 255, 255, 0.6); /* Glow effect */
+  box-shadow: 0px 4px 10px rgba(43, 43, 43,0.4), /* Soft shadow */
+              0px 0px 20px rgba(244, 246, 246, 0.6); /* Glow effect */
 }
 
 .board {

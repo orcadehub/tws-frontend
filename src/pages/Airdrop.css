@@ -16,66 +16,11 @@
 
 
 
-
-
-
-
-
-.user-profile {
-  background-color: skyblue;  /* Purple background */
-  color: black;
-  border-radius: 8px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 300px; /* Adjust the width */
-  margin: 10px;
-}
-
-.profile-info {
-  display: flex;
-  align-items: center;
-}
-
-.profile-pic {
-  background-color: white;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-}
-
-.profile-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.coins {
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.header-link {
-  cursor: pointer;
-  padding: 10px;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.header-link.active {
-  border-bottom: 2px solid #007bff; /* Blue underline */
-  color: skyblue; /* Change text color to blue */
-}
-
 .wallet{
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 40%;
 }
 
 
