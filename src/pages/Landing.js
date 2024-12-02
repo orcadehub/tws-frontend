@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import config from "../config";
 
 const Landing = () => {
-  const [position, setPosition] = useState(80);
+  const [position, setPosition] = useState(30);
   const [coins, setCoins] = useState([]);
   const [score, setScore] = useState(0);
   const [claiming, setClaiming] = useState(false);
@@ -16,6 +16,7 @@ const Landing = () => {
   const [gameOver, setGameOver] = useState(false);
   const [isIntroDone, setIsIntroDone] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false); // New state
   const navigate = useNavigate();
 
   const baseURL =
@@ -30,13 +31,26 @@ const Landing = () => {
     },
   };
 
+  const handleIntroEnd = () => {
+    setIsIntroDone(true);
+    setShowInstructions(true); // Show instructions after intro ends
+  };
+
+  const startGame = () => {
+    setShowInstructions(false); // Hide instructions
+    setGameStarted(true); // Start the game
+  };
+
   useEffect(() => {
     if (isIntroDone && gameStarted) {
       const handleOrientation = (event) => {
         const { gamma } = event;
         if (gamma) {
           const screenWidth = Math.min(window.innerWidth, 400);
-          const newLeft = Math.max(Math.min(position + gamma / 3, screenWidth), 0);
+          const newLeft = Math.max(
+            Math.min(position + gamma / 3, screenWidth),
+            0
+          );
           setPosition(newLeft);
         }
       };
@@ -121,7 +135,6 @@ const Landing = () => {
       })
     );
   };
-  
 
   useEffect(() => {
     if (gameStarted) {
@@ -146,11 +159,6 @@ const Landing = () => {
     }
   }, [timeLeft, gameStarted]);
 
-  const handleIntroEnd = () => {
-    setIsIntroDone(true);
-    setGameStarted(true);
-  };
-
   const claimCoins = async () => {
     if (claiming) return;
     try {
@@ -173,7 +181,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="game-container">
+    <div className={`game-container ${showInstructions ? "blurred" : ""}`}>
       {!isIntroDone ? (
         <div className="intro-video-container">
           <video
@@ -183,6 +191,18 @@ const Landing = () => {
             onEnded={handleIntroEnd}
             muted
           />
+        </div>
+      ) : showInstructions ? (
+        <div className="instructions-overlay">
+          <h1 style={{color:"white"}}>Welcome to the Space Rocket Game</h1>
+          <p style={{color:"skyblue"}}>Rotate your device left and right to collect SHARKS!</p>
+          <div>
+            <span className="arrow arrow-left">⬅</span>
+            <span className="arrow arrow-right">➡</span>
+          </div>
+          <button className="start-button" onClick={startGame}>
+            Start Game
+          </button>
         </div>
       ) : gameOver ? (
         <div className="game-over-screen">
@@ -194,17 +214,19 @@ const Landing = () => {
         </div>
       ) : (
         <>
-          <h1 style={{ color: "white" }}>Space Rocket Game</h1>
-          <p style={{ color: "white" }}>Score: {score}</p>
-          <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
-          <video
-            className="rocket"
-            style={{ left: `${position}px` }}
-            src={Log}
-            autoPlay
-            loop
-            muted
-          ></video>
+          <div className="text-center">
+            <h1 style={{ color: "white" }}>Space Rocket Game</h1>
+            <p style={{ color: "white" }}>Score: {score}</p>
+            <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
+            <video
+              className="rocket"
+              style={{ left: `${position}px` }}
+              src={Log}
+              autoPlay
+              loop
+              muted
+            ></video>
+          </div>
 
           {coins.map((coin) => (
             <div
@@ -214,7 +236,8 @@ const Landing = () => {
               style={{
                 left: `${coin.left}px`,
                 top: `${coin.top}%`,
-                backgroundImage: "url(https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmcSxjgDfcU2qX9FAHJZvSkgenUWvPepAw9JiNk2nJmeM3)",
+                backgroundImage:
+                  "url(https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmcSxjgDfcU2qX9FAHJZvSkgenUWvPepAw9JiNk2nJmeM3)",
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 width: coin.size === "large" ? "80px" : "40px",
