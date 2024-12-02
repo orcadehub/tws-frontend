@@ -185,15 +185,15 @@ const Landing = () => {
           <h1 style={{ color: "white" }}>Space Rocket Game</h1>
           <p style={{ color: "white" }}>Score: {score}</p>
           <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
-          {/* <video
+          <video
             className="rocket"
             style={{ left: `${position}%` }}
             src={Log}
             autoPlay
             loop
             muted
-          ></video> */}
-          <img src={Rocket} alt="rocket" className="rocket" />
+          ></video>
+         
           {coins.map((coin) => (
             <div
               key={coin.id}
