@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
-import Back from "../assets/homeblack.jpg";
+import Back from "../assets/pic.jpg";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
