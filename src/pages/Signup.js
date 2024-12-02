@@ -47,7 +47,7 @@ const Signup = () => {
 
         if (isNewUser) {
           // Navigate to onboarding slides for new users
-          navigate("/onboarding");
+          navigate("/game");
         } else {
           // Navigate directly to home for existing users
           navigate("/home");

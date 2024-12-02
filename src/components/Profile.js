@@ -18,7 +18,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [currentCoins, setCurrentCoins] = useState(100);
   const totalCoins = 100;
-  const farmingDurationInSeconds = 30;
+  const farmingDurationInSeconds = 10800;
 
   const [tonConnectUI] = useTonConnectUI(); // TON Connect UI hook
   // const userFriendlyAddress = useTonAddress();
@@ -98,7 +98,7 @@ const Profile = () => {
     try {
       await axios.post(`${baseURL}/start-farming`, {}, CONFIG_OBJ);
       setIsFarming(true);
-      setTimer(30); // Reset timer to 30 seconds for testing
+      setTimer(10800); // Reset timer to 30 seconds for testing
       setClaimAvailable(false);
       toast.success("Mining started!");
     } catch (error) {
@@ -152,7 +152,7 @@ const Profile = () => {
       await tonConnectUI.sendTransaction(transaction);
       const response = await axios.post(
         `${baseURL}/claim-coins`,
-        { coinsToAdd: 200 },
+        { coinsToAdd: 550 },
         CONFIG_OBJ
       );
 
@@ -179,7 +179,7 @@ const Profile = () => {
     }
   };
 
-  const progressPercentage = ((30 - timer) / 30) * 100;
+  const progressPercentage = ((10800 - timer) / 10800) * 100;
 
   return (
     <div style={styles.container}>
@@ -252,7 +252,6 @@ const Profile = () => {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
                   width: "100%",
                 }}
               >
@@ -273,6 +272,29 @@ const Profile = () => {
                 Claim Sharks
               </button>
             )}
+          </div>
+          <div
+            style={{
+              height: "40px",
+              width: "350px",
+              color: "black",
+              backgroundColor: "skyblue",
+              borderRadius: "10%/20%",
+              marginTop: "-1rem",
+              fontWeight: "bolder",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <a
+              href="https://t.me/ThewhiteShark_io"
+              style={{ textDecoration: "none", color: "black" }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Join Telegram Community
+            </a>
           </div>
 
           {showModal && (
@@ -326,7 +348,7 @@ const Profile = () => {
                         className="btn btn-warning"
                         onClick={handleClaimBonus}
                       >
-                        Claim Bonus (+100 sharks)
+                        Claim Bonus (550 sharks)
                       </button>
                     </div>
                   </div>
@@ -410,8 +432,8 @@ const styles = {
   },
   box3: {
     backgroundColor: "#222",
-    width: "90%",
-    height: "240px",
+    width: "300px",
+    height: "auto",
     maxWidth: "400px",
     borderRadius: "8px",
     margin: "-45px 0",
@@ -421,7 +443,7 @@ const styles = {
     width: "80%",
     // border: "2px solid skyblue",
     maxWidth: "400px",
-    padding: "15px",
+    // padding: "15px",
     textAlign: "center",
     borderRadius: "8px",
     margin: "40px 0",
@@ -434,7 +456,7 @@ const styles = {
     position: "absolute",
     top: 0,
     left: 0,
-    height: "100%",
+    height: "60%",
     backgroundColor: "skyblue", // Slightly transparent orange
     zIndex: 0,
   },
@@ -456,7 +478,7 @@ const styles = {
     zIndex: 1,
   },
   claimButton: {
-    backgroundColor: "green",
+    backgroundColor: "skyblue ",
     color: "#fff",
     padding: "10px 20px",
     borderRadius: "5px",

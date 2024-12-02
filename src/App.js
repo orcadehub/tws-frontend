@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import Landing from "./pages/Landing";
+import Error from "./components/Error";
 function App() {
   useEffect(() => {
     // Disable double-tap zoom
@@ -50,7 +51,7 @@ function App() {
           <Route exact path="/game" element={<Landing />} />
           <Route exact path="/home" element={<Home />} />
           <Route exact path="/onboarding" element={<Onboarding />} />
-          {/* <Route exact path="/authenticate/:referralid" element={<Signup />} />  */}
+          <Route exact path="/error" element={<Error />} /> 
           {/* Dynamic route for referral ID */}
           <Route exact path="/verify-chatid/:chatid" element={<Signup />} />
           {/* New route for chatid */}
@@ -80,7 +81,7 @@ function ConditionalHeader() {
   const location = useLocation();
 
   // Don't show the Header on certain routes
-  const noHeaderRoutes = ["/onboarding", "/verify-chatid","/game"];
+  const noHeaderRoutes = ["/onboarding", "/verify-chatid","/game","/error"];
   const isHeaderHidden = noHeaderRoutes.some((path) =>
     location.pathname.startsWith(path.split(":")[0])
   );

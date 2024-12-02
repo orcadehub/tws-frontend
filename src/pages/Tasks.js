@@ -13,6 +13,7 @@ const Tasks = () => {
   const [userData, setUserData] = useState(user);
   const [referrals, setReferrals] = useState([]);
   const [totalReferrals, setTotalReferrals] = useState(0);
+  const [clicks, setClicks] = useState(0);
 
   const CONFIG_OBJ = {
     headers: {
@@ -59,8 +60,8 @@ const Tasks = () => {
       try {
         const response = await axios.get(`${baseURL}/profile`, CONFIG_OBJ);
         setUserData(response.data.user);
-        console.log(userData)
-        debugger
+        console.log(userData);
+        debugger;
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -227,7 +228,6 @@ const Tasks = () => {
 
   const handleTaskClaimSocial = async (taskId, points, link) => {
     try {
-      window.open(`${link}`, "_blank");
       // Regular task claim
       const response = await axios.put(
         `${baseURL}/task/${taskId}/claim`,
@@ -265,44 +265,47 @@ const Tasks = () => {
   };
 
   const handleTaskStartSocial = async (taskId, points, link) => {
-    try {
-      window.open(`${link}`, "_blank");
-      // Send start request to the backend
-      const response = await axios.put(
-        `${baseURL}/task/${taskId}/start`,
-        {},
-        CONFIG_OBJ
-      );
-
-      if (response.status === 200) {
-        const updatedTask = response.data.task;
-        const updatedUserData = { ...userData };
-        updatedUserData.walletAmount += points;
-
-        const updatedCompletedTasks = [...updatedUserData.completedTasks];
-        const taskIndex = updatedCompletedTasks.findIndex(
-          (task) => task.taskId === taskId
+    window.open(`${link}`, "_blank");
+    setClicks(clicks + 1);
+    if (clicks == 1) {
+      try {
+        // Send start request to the backend
+        const response = await axios.put(
+          `${baseURL}/task/${taskId}/start`,
+          {},
+          CONFIG_OBJ
         );
-        if (taskIndex !== -1) {
-          updatedCompletedTasks[taskIndex].status = "claim";
-        } else {
-          updatedCompletedTasks.push({ taskId, status: "claim" });
+
+        if (response.status === 200) {
+          const updatedTask = response.data.task;
+          const updatedUserData = { ...userData };
+          updatedUserData.walletAmount += points;
+
+          const updatedCompletedTasks = [...updatedUserData.completedTasks];
+          const taskIndex = updatedCompletedTasks.findIndex(
+            (task) => task.taskId === taskId
+          );
+          if (taskIndex !== -1) {
+            updatedCompletedTasks[taskIndex].status = "claim";
+          } else {
+            updatedCompletedTasks.push({ taskId, status: "claim" });
+          }
+
+          updatedUserData.completedTasks = updatedCompletedTasks;
+          localStorage.setItem("user", JSON.stringify(updatedUserData));
+
+          setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+              task._id === taskId ? { ...task, taskCompletion: "claim" } : task
+            )
+          );
+
+          setUserData(updatedUserData);
         }
-
-        updatedUserData.completedTasks = updatedCompletedTasks;
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
-
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === taskId ? { ...task, taskCompletion: "claim" } : task
-          )
-        );
-
-        setUserData(updatedUserData);
+      } catch (error) {
+        console.error("Error starting the task:", error);
+        toast.error("OOPS... Something went wrong");
       }
-    } catch (error) {
-      console.error("Error starting the task:", error);
-      toast.error("OOPS... Something went wrong");
     }
   };
 
@@ -455,7 +458,7 @@ const Tasks = () => {
                                     )
                                   }
                                 >
-                                  start
+                                  claim
                                 </button>
                               ) : (
                                 <button
@@ -468,7 +471,7 @@ const Tasks = () => {
                                     )
                                   }
                                 >
-                                  Start
+                                  start
                                 </button>
                               )}
                             </>

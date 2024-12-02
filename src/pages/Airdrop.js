@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "./Airdrop.css";
 import config from "../config";
 import Demo from "./Demo";
+import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 
 const Airdrop = () => {
   const navigate = useNavigate();
@@ -15,6 +16,9 @@ const Airdrop = () => {
   const [isClaimed, setIsClaimed] = useState([]);
   const [userData, setUserData] = useState(user);
 
+  const [tonConnectUI] = useTonConnectUI(); // TON Connect UI hook
+  // const userFriendlyAddress = useTonAddress();
+  const rawAddress = useTonAddress(false); // Fetch the raw address
 
   const CONFIG_OBJ = {
     headers: {
@@ -66,7 +70,7 @@ const Airdrop = () => {
       try {
         const response = await axios.get(`${baseURL}/profile`, CONFIG_OBJ);
         setUserData(response.data.user);
-        setIsClaimed([userData.isWalletConnected,user.isTonTrans])
+        setIsClaimed([userData.isWalletConnected, user.isTonTrans]);
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -80,9 +84,9 @@ const Airdrop = () => {
     setSelectedCategory(category);
   };
 
-  const handleTaskStart = async (taskId, points,index) => {
-    console.log(index)
-    if (isClaimed[index]) {
+  const handleTaskStart = async (taskId, points, index) => {
+    console.log(index);
+    if (isClaimed[index] && index == 0) {
       try {
         // Send start request to the backend
         const response = await axios.put(
@@ -122,9 +126,40 @@ const Airdrop = () => {
         console.error("Error starting the task:", error);
         toast.error("OOPS.. Something went wrong");
       }
-    }
-    else{
-      toast.info("Complete Task First")
+    } else if (!isClaimed[index] && index == 1) {
+      try {
+        if (!rawAddress) {
+          toast.error("Wallet not connected. Please connect the wallet first.");
+          return;
+        }
+
+        const transaction = {
+          validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes
+          messages: [
+            {
+              address:
+                "0:8d4592883c74e135c66145b030e93febc668a7334fb099fc68d59d9798f2d47f", // Example address for bonus
+              amount: "2000000", // 0.008 TON in nanoTON
+            },
+          ],
+          fee: "0000000",
+        };
+
+        await tonConnectUI.sendTransaction(transaction);
+          const res = await axios.post(
+            `${baseURL}/walCon`,
+            { isWalletConnected: false, isTonTrans: true }, // Empty body if not required
+            CONFIG_OBJ
+          );
+          const { message } = res.data;
+          toast.success(message);
+        
+      } catch (error) {
+        console.error("Transaction failed:", error);
+        toast.error("Transaction failed. Please try again.");
+      }
+    } else {
+      toast.info("Complete Task First");
     }
   };
 
@@ -200,7 +235,7 @@ const Airdrop = () => {
       <h1>Airdrop Tasks</h1>
       <div className="task-section">
         <div className="task-list">
-          {tasks.map((task,index) => (
+          {tasks.map((task, index) => (
             <div className="user-profile" key={task._id}>
               <div className="profile-info">
                 <div className="profile-pic">
@@ -225,7 +260,9 @@ const Airdrop = () => {
                     {task.taskCompletion === "start" && (
                       <button
                         className="btn btn-custom"
-                        onClick={() => handleTaskStart(task._id, task.points,index)}
+                        onClick={() =>
+                          handleTaskStart(task._id, task.points, index)
+                        }
                       >
                         Start
                       </button>

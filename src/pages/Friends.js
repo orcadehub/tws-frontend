@@ -9,7 +9,6 @@ import image from "../assets/slide1.jpg";
 
 const Friends = () => {
   const [referrals, setReferrals] = useState([]);
-  // const [referralAmount, setReferralAmount] = useState([]);
   const [totalReferrals, setTotalReferrals] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -17,7 +16,6 @@ const Friends = () => {
   const referralId = user?.referralId;
   const shareLink = `https://t.me/thewhiteshark_bot?start=${referralId}`;
 
-  // Get the base URL depending on the environment
   const baseURL =
     process.env.NODE_ENV === "development"
       ? config.LOCAL_BASE_URL.replace(/\/$/, "")
@@ -33,7 +31,6 @@ const Friends = () => {
   const formatNumber = (num) => {
     if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
     if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
-    // if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
     return num.toLocaleString();
   };
 
@@ -45,26 +42,20 @@ const Friends = () => {
 
     const fetchReferralData = async () => {
       try {
-        const response = await axios.get(
-          `${baseURL}/profile/referrals`, // Use dynamic baseURL
-          CONFIG_OBJ
-        );
+        const response = await axios.get(`${baseURL}/profile/referrals`, CONFIG_OBJ);
         console.log("Referral Data:", response.data);
         setReferrals(response.data.referrals);
-        // setReferralAmount(response.data.referralAmount);
         setTotalReferrals(response.data.totalReferrals);
       } catch (error) {
         console.error("Error fetching referral data:", error);
         navigate("/authenticate");
       } finally {
-        setLoading(false); // Ensure loading is set to false once the request finishes
+        setLoading(false);
       }
     };
 
     fetchReferralData();
   }, [navigate, baseURL]);
-
-  // const coinsEarned = Math.min(totalReferrals * 150, 50000);
 
   const handleShare = () => {
     const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: ${shareLink}`;
@@ -78,7 +69,8 @@ const Friends = () => {
         .then(() => console.log("Referral link shared successfully"))
         .catch((error) => console.error("Error sharing referral link:", error));
     } else {
-      alert("Sharing is not supported on this device.");
+      // Fallback for unsupported devices
+      handleCopyLink();
     }
   };
 
@@ -90,13 +82,6 @@ const Friends = () => {
       })
       .catch((error) => console.error("Error copying link:", error));
   };
-
-  // const formatNumber = (num) => {
-  //   if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
-  //   if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
-  //   // if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
-  //   return num.toLocaleString();
-  // };
 
   return (
     <div className="mobile">
@@ -115,33 +100,29 @@ const Friends = () => {
       </Helmet>
       <div className="content">
         <h3>
-          Invite friends <i class="fa-solid fa-handshake"></i> and get rewards
+          Invite friends <i className="fa-solid fa-handshake"></i> and get rewards
         </h3>
-        <p>Earn up to 50,000 Sharks from your friends!</p>
+        <p>Earn 10% of Sharks from your friends!</p>
       </div>
       <div className="col">
         <div className="friends">
           <p>Friends invited</p>
-          <i class="fa-solid fa-handshake"></i> X {totalReferrals}
-          {/* <h4>🤝 X {totalReferrals}</h4> */}
+          <i className="fa-solid fa-handshake"></i> X {totalReferrals}
         </div>
         <div className="friends1">
           <p>Sharks earned</p>
-          <i class="fa-solid fa-sack-dollar"></i> X {formatNumber(user.referralAmount || 0)}
-          {/* <h4>💰 X {totalRef}</h4> */}
+          <i className="fa-solid fa-sack-dollar"></i> X {formatNumber(user.referralAmount || 0)}
         </div>
       </div>
-
       <div className="col2">
         <ul>
           <li>
             You could earn <span className="span">10%</span> of all Sharks
-            earned by players you have invited, capped at{" "}
-            <span className="span">50,000</span> Sharks.
+            earned by players you have invited.
           </li>
           <li>
-            Invited friends will receive a gift of{" "}
-            <span className="span">1000</span> Sharks.
+            Invited friends will receive a gift of up to{" "}
+            <span className="span">5000</span> Sharks.
           </li>
         </ul>
       </div>
@@ -155,37 +136,34 @@ const Friends = () => {
           </h1>
         </div>
       </div>
-      <div className="name" style={{display:'flex',justifyContent:'space-between',marginRight:'1.5rem'}}>
-  
-          <span className="span2">
-            No.
-          </span>
-          <span>Friend's name</span>
-          <span className="span2">
-            Sharks Earned
-          </span>
-
-      </div>
-      <div className="ol">
-        <ol>
+      <table className="referrals-table">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Sharks Earned</th>
+          </tr>
+        </thead>
+        <tbody>
           {loading ? (
-            <p>Loading...</p>
-          ) : (
+            <tr>
+              <td colSpan="3">Loading...</td>
+            </tr>
+          ) : referrals.length > 0 ? (
             referrals.map((referral, index) => (
-              <li key={index}>
-              <div style={{display:'flex',justifyContent:'space-around  '}}>
-                
-                <span>{referral.username}</span>
-                <span className="span3" >
-                  {(referral.walletAmount * 0.1).toFixed(3)}
-                </span>
-                </div>
-              </li>
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{referral.username}</td>
+                <td>{(referral.walletAmount * 0.1).toFixed(3)}</td>
+              </tr>
             ))
+          ) : (
+            <tr>
+              <td colSpan="3">No referrals yet.</td>
+            </tr>
           )}
-        </ol>
-      </div>
-
+        </tbody>
+      </table>
       <div className="display">
         <p>
           Displaying the most recent {Math.min(referrals.length, 300)} records

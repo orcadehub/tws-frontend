@@ -127,7 +127,7 @@ body {
   flex-direction: row;
   margin: 12px;
   position: sticky;
-  top: 2%;
+  top: 0%;
 }
 
 .btn button {
@@ -187,3 +187,32 @@ body {
 .fa-handshake {
   color: skyblue;
 }
+
+.referrals-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* margin: 20px 0; */
+  font-size: 1em;
+  text-align: left;
+}
+
+.referrals-table th,
+.referrals-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.referrals-table th {
+  background-color: skyblue;
+  color: #333;
+}
+
+/* .referrals-table tbody tr:nth-of-type(even) {
+  background-color: #f9f9f9;
+} */
+
+ .referrals-table tbody tr:hover {
+  background-color:skyblue;
+  color: black;
+} 
+
