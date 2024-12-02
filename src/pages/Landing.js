@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Landing.css";
 import Log from "../assets/rocket.mp4";
+import Rocket from "../assets/rocket.gif";
 import Intro from "../assets/intro.mp4";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -11,6 +12,7 @@ const Landing = () => {
   const [position, setPosition] = useState(50); // Initial position
   const [coins, setCoins] = useState([]);
   const [score, setScore] = useState(0);
+  const [claiming, setClaiming] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameOver, setGameOver] = useState(false);
   const [isIntroDone, setIsIntroDone] = useState(false);
@@ -41,7 +43,8 @@ const Landing = () => {
 
       window.addEventListener("deviceorientation", handleOrientation);
 
-      return () => window.removeEventListener("deviceorientation", handleOrientation);
+      return () =>
+        window.removeEventListener("deviceorientation", handleOrientation);
     }
   }, [position, isIntroDone, gameStarted]);
 
@@ -84,7 +87,8 @@ const Landing = () => {
     coins.forEach((coin) => {
       if (
         coin.top > 90 &&
-        Math.abs(coin.left - position) < 15
+        (Math.abs(coin.left - position) < 15 ||
+          Math.abs(coin.right - position) < 15)
       ) {
         setScore((prevScore) => prevScore + coin.value);
         setCoins((prevCoins) => prevCoins.filter((c) => c.id !== coin.id));
@@ -134,7 +138,11 @@ const Landing = () => {
   };
 
   const claimCoins = async () => {
+    if (claiming){
+      return
+    }
     try {
+      setClaiming(true)
       const response = await axios.put(
         `${baseURL}/addAmount`,
         { amount: score },
@@ -166,25 +174,26 @@ const Landing = () => {
         </div>
       ) : gameOver ? (
         <div className="game-over-screen">
-          <h1>Game Over!</h1>
-          <p>Your Final Score: {score}</p>
+          <h1 style={{ color: "white" }}>Game Over!</h1>
+          <p style={{ color: "white" }}>Your Final Score: {score}</p>
           <button onClick={claimCoins} className="claim-coins-button">
-            Claim Coins
+            Claim Sharks
           </button>
         </div>
       ) : (
         <>
-          <h1>Space Rocket Game</h1>
-          <p>Score: {score}</p>
-          <p>Time Left: {timeLeft}s</p>
-          <video
+          <h1 style={{ color: "white" }}>Space Rocket Game</h1>
+          <p style={{ color: "white" }}>Score: {score}</p>
+          <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
+          {/* <video
             className="rocket"
             style={{ left: `${position}%` }}
             src={Log}
             autoPlay
             loop
             muted
-          ></video>
+          ></video> */}
+          <img src={Rocket} alt="rocket" className="rocket" />
           {coins.map((coin) => (
             <div
               key={coin.id}

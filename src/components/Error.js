@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Error.css";
-import ErrorImage from "../assets/error.webp"; // Replace this with your error image path
+import ErrorImage from "../assets/error.jpg"; // Replace this with your error image path
 
 const Error = () => {
   const navigate = useNavigate();

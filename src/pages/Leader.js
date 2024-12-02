@@ -69,7 +69,7 @@ const Leader = () => {
   return (
     <div className="whole">
       <div className="lead">
-        <h1>Ranking</h1>
+        <h1 style={{color:'white'}}>Ranking</h1>
       </div>
 
       <div className="circle">
@@ -104,7 +104,7 @@ const Leader = () => {
               </span>
             </div>
             <div className="user">
-              <h5>{leader.username}</h5>
+              <h6>{leader.username}</h6>
               <p>{formatNumber(leader.walletAmount)} SHARKS</p>
             </div>
           </div>

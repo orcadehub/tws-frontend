@@ -50,7 +50,7 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/game" element={<Landing />} />
           <Route exact path="/home" element={<Home />} />
-          <Route exact path="/onboarding" element={<Onboarding />} />
+          <Route exact path="/onboarding" element={<Landing />} />
           <Route exact path="/error" element={<Error />} /> 
           {/* Dynamic route for referral ID */}
           <Route exact path="/verify-chatid/:chatid" element={<Signup />} />

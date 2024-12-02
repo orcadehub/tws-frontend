@@ -20,7 +20,7 @@
     width: 430px;
     margin: auto;
     height: 100vh;
-    background: rgb(12, 2, 54); /* Deep purple background */
+    background: black; /* Deep purple background */
     overflow: hidden;
     color: white;
     text-align: center;
@@ -28,8 +28,9 @@
   .rocket {
     position: absolute;
     bottom: 5%;
-    width: 100px;
-    height: 300px;
+    width: 150px;
+    height: 150px;
+    border-radius: 70%;
     transform: translateX(-50%); /* Center horizontally */
   }
   
@@ -66,5 +67,11 @@
     font-size: 36px;
     text-align: center;
     margin-top: 20%;
+  }
+  .claim-coins-button{
+    background-color: skyblue;
+    color: black;
+    width: 40%;
+    border-radius: 10%/10%;
   }
   
