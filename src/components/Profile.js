@@ -253,7 +253,7 @@ const Profile = () => {
             ></i>
             <a
               href="https://t.me/ThewhiteShark_io"
-              style={{ textDecoration: "none", color: "white" }}
+              style={{ textDecoration: "none", color: "white",fontWeight:'bolder' }}
               target="_blank"
               rel="noopener noreferrer"
             >

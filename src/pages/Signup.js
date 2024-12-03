@@ -57,6 +57,9 @@ const Signup = () => {
         });
         navigate("/error"); // Redirect to an error page
       }
+      finally{
+        setIsLoading(false)
+      }
     };
 
     verifyUser();
