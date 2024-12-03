@@ -131,22 +131,23 @@ body {
 }
 
 .btn button {
-  background-color: rgb(42,42,42);
+  background-color: skyblue;
   font-size: 20px;
   border-radius: 25px;
   border: none;
   outline: none;
-  color: white;
+  color: black;
+  font-weight: bold;
   padding: 10px 68px;
 }
 
 .btn2 h1 i {
-  background-color: rgb(42,42,42);
+  background-color: skyblue;
   border-radius: 25px;
   padding: 10px;
   outline: black;
   margin-left: 15px;
-  color: white;
+  color: black;
   font-size: 25px;
   margin-top: 10px;
 }
@@ -172,6 +173,7 @@ body {
   .display {
     padding-left: 15px;
     font-size: 14px;
+  
   }
 
   .btn button {
@@ -201,6 +203,7 @@ body {
 .referrals-table th,
 .referrals-table td {
   padding: 12px 15px;
+  font-weight: bold;
   /* border: 1px solid #ddd; */
 }
 
@@ -216,5 +219,6 @@ body {
  .referrals-table tbody tr:hover {
   background-color:skyblue;
   color: black;
+ 
 } 
 

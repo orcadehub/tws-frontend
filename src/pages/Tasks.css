@@ -13,11 +13,13 @@
 .taskbtn{
   border-radius: 10px;
   color: black;
+  padding: 1px 15px;
   background-color: white;
 }
 .clmbtn{
   border-radius: 10px;
   color: black;
+  padding: 1px 15px;
   background-color: skyblue;
 }
 /* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
@@ -103,7 +105,7 @@
 
 .header-link {
   cursor: pointer;
-  padding: 10px;
+  padding: 5px 20px;
   font-weight: bold;
   text-decoration: none;
 }

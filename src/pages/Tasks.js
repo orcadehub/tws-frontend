@@ -391,9 +391,9 @@ const Tasks = () => {
                               Claim
                             </button>
                           ) : task.taskCompletion === "complete" ? (
-                            <button className="btn btn-custom" disabled>
-                              <i class="fa-solid fa-check"></i>
-                            </button>
+                            <div>
+                              <i class="fa-solid fa-circle-check"></i>
+                            </div>
                           ) : (
                             <button
                               className="btn btn-custom taskbtn"
@@ -411,9 +411,9 @@ const Tasks = () => {
                           {task.category === "Friends" && (
                             <>
                               {task.taskCompletion === "complete" ? (
-                                <button className="btn btn-custom" disabled>
-                                  <i class="fa-solid fa-check"></i>
-                                </button>
+                                <div>
+                                  <i class="fa-solid fa-circle-check"></i>
+                                </div>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
                                   className="btn btn-custom clmbtn"
@@ -451,9 +451,9 @@ const Tasks = () => {
                           {task.category === "Social" && (
                             <>
                               {task.taskCompletion === "complete" ? (
-                                <button className="btn btn-custom" disabled>
-                                  <i class="fa-solid fa-check"></i>
-                                </button>
+                                <div disabled>
+                                <i class="fa-solid fa-circle-check"></i>
+                                </div>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
                                   className="btn btn-custom clmbtn"
@@ -511,9 +511,9 @@ const Tasks = () => {
                                 </button>
                               )}
                               {task.taskCompletion === "complete" && (
-                                <button className="btn btn-custom" disabled>
-                                  <i class="fa-solid fa-check"></i>
-                                </button>
+                                <div disabled>
+                                  <i class="fa-solid fa-circle-check"></i>
+                                </div>
                               )}
                             </>
                           )}

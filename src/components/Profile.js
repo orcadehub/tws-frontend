@@ -248,7 +248,7 @@ const Profile = () => {
 
           <div style={styles.box41}>
             <i
-              class="fa-solid fa-people-group"
+              class="fa-brands fa-telegram"
               style={{ marginRight: "0.5rem" }}
             ></i>
             <a
@@ -257,12 +257,12 @@ const Profile = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Join Telegram Community
+              Join TG Announcement
             </a>
-            <i
-              class="fa-solid fa-arrows-turn-right"
+            {/* <i
+              class="fa-solid fa-forward"
               style={{ marginLeft: "0.5rem" }}
-            ></i>
+            ></i> */}
           </div>
 
           <div style={styles.box4}>
@@ -278,18 +278,25 @@ const Profile = () => {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                  alignSelf:'end',
                   width: "100%",
                 }}
               >
-                <p style={styles.timer}>
-                  {Math.floor(timer / 3600)}h {Math.floor((timer % 3600) / 60)}m{" "}
-                  {timer % 60}s
-                </p>
-                <p style={styles.coins}>
-                  Sharks: {currentCoins} {/* Display coins with 3 decimals */}
-                </p>
+                <div>
+                  <p style={{ color: "white", fontWeight: "bolder" }}>
+                    <i class="fa-solid fa-person-digging me-2"></i>Mining
+                    <span style={styles.coins}>
+                      {currentCoins} {/* Display coins with 3 decimals */}
+                    </span>
+                  </p>
+                </div>
+                <div style={{ position: "absolute", right: "2%",top:'25%' }}>
+                  <p style={styles.timer}>
+                    {Math.floor(timer / 3600)}h{" "}
+                    {Math.floor((timer % 3600) / 60)}m {timer % 60}s
+                  </p>
+                </div>
               </div>
             )}
             {claimAvailable && (
@@ -488,17 +495,16 @@ const styles = {
     height: "auto",
     maxWidth: "400px",
     borderRadius: "8px",
-    marginTop:'-4rem'
+    marginTop: "-4rem",
   },
   box4: {
     backgroundColor: "rgb(42,42,42)",
     width: "80%",
     maxWidth: "400px",
-    // padding: "15px",
-    textAlign: "center",
     borderRadius: "8px",
     margin: "40px 0",
     position: "absolute",
+    height: "44px",
     bottom: "9%",
     overflow: "hidden",
   },
@@ -511,8 +517,9 @@ const styles = {
     borderRadius: "8px",
     margin: "40px 0",
     position: "absolute",
-    bottom: "16%",
+    bottom: "20%",
     overflow: "hidden",
+    boxShadow:"0px 4px 10px rgba(43, 43, 43,0.4),0px 0px 20px rgba(244, 246, 246, 0.6)",
   },
   progressBar: {
     position: "absolute",
@@ -525,7 +532,7 @@ const styles = {
   startButton: {
     backgroundColor: "white",
     color: "#000",
-    fontWeight:'bolder',
+    fontWeight: "bolder",
     padding: "10px 20px",
     borderRadius: "10px",
     border: "none",
@@ -536,7 +543,7 @@ const styles = {
   },
   timer: {
     color: "#fff",
-    fontSize: "18px",
+    fontSize: "10px",
     position: "relative",
     zIndex: 1,
   },

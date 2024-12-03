@@ -72,7 +72,7 @@ const Demo = () => {
       {isConnected && (
         <div style={{ marginTop: "20px"}}>
           <div>
-            <strong>Connected:</strong> {formatAddress(userFriendlyAddress)}
+            <strong>Connected:</strong> <span  style={{fontWeight:'bolder'}}>{formatAddress(userFriendlyAddress)}</span>
           </div>
         </div>
       )}

@@ -238,7 +238,7 @@ const Airdrop = () => {
       <div className="wallet">
         <Demo />
       </div>
-      <h1 style={{color:'white'}}>Airdrop Tasks</h1>
+      <h1 style={{color:'white',marginBottom:'2rem'}}>Airdrop Tasks</h1>
       <div className="task-section">
         <div className="task-list">
           {tasks.map((task, index) => (
@@ -255,7 +255,7 @@ const Airdrop = () => {
                 <div className="profile-details">
                   <span className="user-name">{task.taskName}</span>{" "}
                   {/* Task Name */}
-                  <span className="coins">{task.points} COINS</span>{" "}
+                  <span className="coins">+{task.points} SHARKS</span>{" "}
                   {/* Task Points */}
                 </div>
               </div>
@@ -284,9 +284,9 @@ const Airdrop = () => {
                     )}
 
                     {task.taskCompletion === "complete" && (
-                      <button className="btn btn-custom" disabled>
-                        <i class="fa-solid fa-check"></i>
-                      </button>
+                      <div>
+                      <i class="fa-solid fa-circle-check"></i>
+                      </div>
                     )}
                   </>
                 )}
