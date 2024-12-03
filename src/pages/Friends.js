@@ -42,9 +42,12 @@ const Friends = () => {
     }
 
     const fetchReferralData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const response = await axios.get(`${baseURL}/profile/referrals`, CONFIG_OBJ);
+        const response = await axios.get(
+          `${baseURL}/profile/referrals`,
+          CONFIG_OBJ
+        );
         console.log("Referral Data:", response.data);
         setReferrals(response.data.referrals);
         setTotalReferrals(response.data.totalReferrals);
@@ -53,7 +56,7 @@ const Friends = () => {
         navigate("/authenticate");
       } finally {
         setLoading(false);
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
 
@@ -62,19 +65,12 @@ const Friends = () => {
 
   const handleShare = () => {
     const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: ${shareLink}`;
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "Invite Friends!",
-          text: shareText,
-          url: shareLink,
-        })
-        .then(() => console.log("Referral link shared successfully"))
-        .catch((error) => console.error("Error sharing referral link:", error));
-    } else {
-      // Fallback for unsupported devices
-      handleCopyLink();
-    }
+    const telegramShareLink = `https://t.me/share/url?url=${encodeURIComponent(
+      shareLink
+    )}&text=${encodeURIComponent(shareText)}`;
+
+    // Open the Telegram share link
+    window.open(telegramShareLink, "_blank");
   };
 
   const handleCopyLink = () => {
@@ -102,10 +98,11 @@ const Friends = () => {
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="content">
-        <h3 style={{color:'white'}}>
-          Invite friends <i className="fa-solid fa-handshake"></i> and get rewards
+        <h3 style={{ color: "white" }}>
+          Invite friends <i className="fa-solid fa-handshake"></i> and get
+          rewards
         </h3>
-        <p style={{color:'white'}}>Earn 10% of Sharks from your friends!</p>
+        <p style={{ color: "white" }}>Earn 10% of Sharks from your friends!</p>
       </div>
       <div className="col">
         <div className="friends">
@@ -114,10 +111,11 @@ const Friends = () => {
         </div>
         <div className="friends1">
           <p>Sharks earned</p>
-          <i className="fa-solid fa-sack-dollar"></i> X {formatNumber(user.referralAmount || 0)}
+          <i className="fa-solid fa-sack-dollar"></i> X{" "}
+          {formatNumber(user.referralAmount || 0)}
         </div>
       </div>
-      
+
       <div className="button">
         <div className="btn">
           <button onClick={handleShare}>Invite Friends!</button>
