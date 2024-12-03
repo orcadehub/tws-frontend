@@ -64,11 +64,13 @@ const Friends = () => {
   }, [navigate, baseURL]);
 
   const handleShare = () => {
-    const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: ${shareLink}`;
+    const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: `;
     const telegramShareLink = `https://t.me/share/url?url=${encodeURIComponent(
       shareLink
     )}&text=${encodeURIComponent(shareText)}`;
 
+    // If you have a bot message with an image and buttons
+    const botMessageLink = shareLink;
     // Open the Telegram share link
     window.open(telegramShareLink, "_blank");
   };

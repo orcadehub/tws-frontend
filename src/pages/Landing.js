@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Landing.css";
 import Log from "../assets/rocket.mp4";
 import Intro from "../assets/intro.mp4";
+import Tilt from '../assets/tilt.gif'
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +41,12 @@ const Landing = () => {
     setShowInstructions(false); // Hide instructions
     setGameStarted(true); // Start the game
   };
+  useEffect(() => {
+    const screenWidth = Math.min(window.innerWidth, 400);
+    const rocketWidth = 100; // Assuming rocket width is 100px
+    setPosition((screenWidth - rocketWidth) / 2); // Center the rocket
+  }, []); 
+
 
   useEffect(() => {
     if (isIntroDone && gameStarted) {
@@ -48,7 +55,7 @@ const Landing = () => {
         if (gamma) {
           const screenWidth = Math.min(window.innerWidth, 400);
           const newLeft = Math.max(
-            Math.min(position + gamma / 3, screenWidth),
+            Math.min(position + gamma / 2, screenWidth),
             0
           );
           setPosition(newLeft);
@@ -70,8 +77,9 @@ const Landing = () => {
             id: Date.now(),
             left: Math.random() * 100,
             top: 0,
-            value: Math.floor(Math.random() * 50) + 10,
+            value: Math.floor(Math.random() * 100) + 10,
             size: "small",
+            collected:false,
           };
 
           const screenWidth = Math.min(window.innerWidth, 400);
@@ -109,6 +117,7 @@ const Landing = () => {
         top: 0,
         value: timeLeft === 18 ? 1000 : 2500,
         size: "large",
+        collected: false, 
       };
 
       const screenWidth = Math.min(window.innerWidth, 400);
@@ -119,31 +128,43 @@ const Landing = () => {
   }, [timeLeft, gameStarted]);
 
   const checkCollision = () => {
-    const rocketWidth = 90; // Assuming the rocket's width is around 50px
+    const rocketWidth = 100; // Match CSS
     setCoins((prevCoins) =>
       prevCoins.filter((coin) => {
-        if (
+        const isCollision =
+          !coin.collected &&
           coin.top > 90 &&
           coin.left >= position - rocketWidth / 2 &&
-          coin.left <= position + rocketWidth / 2
-        ) {
+          coin.left <= position + rocketWidth / 2;
+  
+        if (isCollision) {
+          // Increment score
           setScore((prevScore) => prevScore + coin.value);
-          document.getElementById(coin.id)?.classList.add("coin-collapsed");
-          return false; // Remove the coin
+  
+          // Mark the coin as collected and hide it
+          const coinElement = document.getElementById(coin.id);
+          if (coinElement) {
+            coinElement.classList.add("coin-hidden");
+          }
+  
+          // Remove this coin from state
+          return false; // Filter it out
         }
-        return true; // Keep the coin
+        return true; // Keep non-colliding coins
       })
     );
   };
+  
 
   useEffect(() => {
     if (gameStarted) {
       const interval = setInterval(() => {
         if (!gameOver) checkCollision();
-      }, 100);
+      }, 0.0001); // Faster interval for immediate response
       return () => clearInterval(interval);
     }
   }, [coins, position, gameOver, gameStarted]);
+  
 
   useEffect(() => {
     if (gameStarted) {
@@ -159,46 +180,62 @@ const Landing = () => {
     }
   }, [timeLeft, gameStarted]);
 
-  const claimCoins = async () => {
-    if (claiming) return;
-    try {
-      setClaiming(true);
-      const response = await axios.put(
-        `${baseURL}/addAmount`,
-        { amount: score },
-        CONFIG_OBJ
-      );
-      const { message } = response.data;
-      toast.success(message);
-      navigate("/home");
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        "Unable to verify user details. Please try again.";
-      toast.error(errorMessage);
-      navigate("/error");
-    }
-  };
+    // Remove collected coins after animation
+    useEffect(() => {
+      const timeoutIds = [];
+  
+      coins.forEach((coin) => {
+        if (coin.collected) {
+          // Remove the coin after 500ms (duration of explode animation)
+          const timeoutId = setTimeout(() => {
+            setCoins((prevCoins) => prevCoins.filter((c) => c.id !== coin.id));
+          }, 0);
+          timeoutIds.push(timeoutId);
+        }
+      });
+  
+      return () => {
+        timeoutIds.forEach((id) => clearTimeout(id));
+      };
+    }, [coins]);
+  
+
+    const claimCoins = async () => {
+      if (claiming) return;
+      try {
+        setClaiming(true);
+        const response = await axios.put(
+          `${baseURL}/addAmount`,
+          { amount: score },
+          CONFIG_OBJ
+        );
+        const { message } = response.data;
+        toast.success(message);
+        navigate("/home");
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.message ||
+          "Unable to verify user details. Please try again.";
+        toast.error(errorMessage);
+        navigate("/error");
+      }
+    };
+  
 
   return (
     <div className={`game-container ${showInstructions ? "blurred" : ""}`}>
       {!isIntroDone ? (
         <div className="intro-video-container">
-          <video
-            className="intro-video"
-            src={Intro}
-            autoPlay
-            onEnded={handleIntroEnd}
-            muted
-          />
+         <h1 style={{color:'white'}}>Welcome To the </h1>
+         <h1 style={{color:'white'}}>White Sharks</h1>
+         <button onClick={handleIntroEnd} style={{backgroundColor:'skyblue',width:'30%',borderRadius:'15px',height:'40px',}}>Next</button>
         </div>
       ) : showInstructions ? (
         <div className="instructions-overlay">
           <h1 style={{color:"white"}}>Welcome to the Space Rocket Game</h1>
           <p style={{color:"skyblue"}}>Rotate your device left and right to collect SHARKS!</p>
           <div>
-            <span className="arrow arrow-left">⬅</span>
-            <span className="arrow arrow-right">➡</span>
+            <img src={Tilt} alt="tilt" style={{height:'200px'}}/>
           </div>
           <button className="start-button" onClick={startGame}>
             Start Game
@@ -214,7 +251,7 @@ const Landing = () => {
         </div>
       ) : (
         <>
-          <div className="text-center">
+        <div className="text-center">
             <h1 style={{ color: "white" }}>Space Rocket Game</h1>
             <p style={{ color: "white" }}>Score: {score}</p>
             <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
@@ -232,7 +269,7 @@ const Landing = () => {
             <div
               id={coin.id}
               key={coin.id}
-              className={`coin ${coin.size}`}
+              className={`coin ${coin.size} `}
               style={{
                 left: `${coin.left}px`,
                 top: `${coin.top}%`,
@@ -247,6 +284,7 @@ const Landing = () => {
               {coin.value}
             </div>
           ))}
+
         </>
       )}
     </div>
