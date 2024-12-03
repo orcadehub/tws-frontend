@@ -38,7 +38,7 @@ const Tasks = () => {
     }
     // Fetch Tasks
     const fetchTasks = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         const response = await axios.get(`${baseURL}/tasks`, CONFIG_OBJ);
         const tasksWithCompletion = response.data.map((task) => {
@@ -56,9 +56,8 @@ const Tasks = () => {
         console.log(tasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
-      }
-      finally{
-        setIsLoading(false)
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -318,7 +317,7 @@ const Tasks = () => {
 
   return (
     <div className="mobile-container">
-      <h1 style={{color:'white'}}>Tasks</h1>
+      <h1 style={{ color: "white" }}>Tasks</h1>
       <div className="task-section">
         <div className="header-container">
           {["Available", "Advanced"].map((category) => (
@@ -369,13 +368,14 @@ const Tasks = () => {
                     )}
                   </div>
                 </div>
+
                 <div className="user-ranking">
                   {user?.role !== "admin" && (
                     <>
                       {task.category === "Advanced" ? (
                         <>
                           {!userData.isReffered ? (
-                            <div className="pending-container">
+                            <div className="pending-container taskbtn">
                               <button className="btn btn-custom" disabled>
                                 <i className="fa-solid fa-lock"></i> Invite 1
                                 friend
@@ -383,7 +383,7 @@ const Tasks = () => {
                             </div>
                           ) : task.taskCompletion === "claim" ? (
                             <button
-                              className="btn btn-custom taskbtn"
+                              className="btn btn-custom clmbtn"
                               onClick={() =>
                                 handleTaskClaim(task._id, task.points, true)
                               }
@@ -416,7 +416,7 @@ const Tasks = () => {
                                 </button>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
-                                  className="btn btn-custom taskbtn"
+                                  className="btn btn-custom clmbtn"
                                   onClick={() =>
                                     handleTaskClaim(
                                       task._id,
@@ -429,7 +429,7 @@ const Tasks = () => {
                                 </button>
                               ) : totalReferrals >= task.milestoneCount ? (
                                 <button
-                                  className="btn btn-custom taskbtn"
+                                  className="btn btn-custom clmbtn"
                                   onClick={() => {
                                     handleTaskClaim(
                                       task._id,
@@ -456,7 +456,7 @@ const Tasks = () => {
                                 </button>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
-                                  className="btn btn-custom taskbtn"
+                                  className="btn btn-custom clmbtn"
                                   onClick={() =>
                                     handleTaskClaimSocial(
                                       task._id,
@@ -498,7 +498,7 @@ const Tasks = () => {
                               )}
                               {task.taskCompletion === "claim" && (
                                 <button
-                                  className="btn btn-custom taskbtn"
+                                  className="btn btn-custom clmbtn"
                                   onClick={() =>
                                     handleTaskClaim(
                                       task._id,

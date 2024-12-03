@@ -228,7 +228,7 @@ const Profile = () => {
             {/* <h3 style={styles.balanceTitle}>Coin Balance</h3> */}
             {/* <img src={Coin} alt="coin" style={{ height: "50px" }} /> */}
             <p style={styles.balanceAmount}>
-              {formatNumber(profileData?.walletAmount || 0)}
+              {formatNumber(profileData?.walletAmount || 0)}{" "}
               <span style={{ fontSize: "22px", fontFamily: "times-roman" }}>
                 Sharks
               </span>
@@ -246,22 +246,7 @@ const Profile = () => {
             />
           </div>
 
-          <div
-            style={{
-              height: "40px",
-              width: "400px",
-              color: "white",
-              backgroundColor: "rgb(42,42,42)",
-              borderRadius: "10px",
-              marginTop: "-1rem",
-              fontWeight: "bolder",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              bottom: "22.5%",
-            }}
-          >
+          <div style={styles.box41}>
             <i
               class="fa-solid fa-people-group"
               style={{ marginRight: "0.5rem" }}
@@ -294,6 +279,7 @@ const Profile = () => {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
+                  alignItems: "center",
                   width: "100%",
                 }}
               >
@@ -352,8 +338,10 @@ const Profile = () => {
                           textAlign: "center",
                           backgroundColor: "black",
                           padding: "1rem",
-                          borderRadius: "10px",
                           width: "45%",
+                          borderRadius: "15px",
+                          boxShadow:
+                            "0px 4px 10px rgba(43, 43, 43,0.4),0px 0px 20px rgba(244, 246, 246, 0.6)",
                         }}
                       >
                         <img
@@ -362,7 +350,7 @@ const Profile = () => {
                           style={{ width: "90px", marginBottom: "0.5rem" }}
                         />
                         <h6 style={{ color: "#fff", marginBottom: "0.5rem" }}>
-                          100
+                          100 <i class="bx bxs-coin"></i>
                         </h6>
                         <button
                           type="button"
@@ -371,7 +359,7 @@ const Profile = () => {
                             width: "100%",
                             border: "1px solid black",
                             color: "#000",
-                            borderRadius:'15px'
+                            borderRadius: "15px",
                           }}
                           onClick={claimCoins}
                         >
@@ -383,8 +371,10 @@ const Profile = () => {
                           textAlign: "center",
                           backgroundColor: "black",
                           padding: "1rem",
-                          borderRadius: "10px",
+                          borderRadius: "15px",
                           width: "45%",
+                          boxShadow:
+                            "0px 4px 10px rgba(43, 43, 43,0.4),0px 0px 20px rgba(244, 246, 246, 0.6)",
                         }}
                       >
                         <img
@@ -393,14 +383,14 @@ const Profile = () => {
                           style={{ width: "90px", marginBottom: "0.5rem" }}
                         />
                         <h6 style={{ color: "#fff", marginBottom: "0.5rem" }}>
-                          500
+                          500 <i class="fa-solid fa-coins"></i>
                         </h6>
                         <button
                           type="button"
                           className="btn btn-info"
                           style={{
                             width: "100%",
-                            borderRadius:'15px'
+                            borderRadius: "15px",
                           }}
                           onClick={handleClaimBonus}
                         >
@@ -409,7 +399,7 @@ const Profile = () => {
                             alt="ton"
                             style={{ height: "20px", margin: "-3px 5px 0 0" }}
                           />
-                          Claim Bonus
+                          Claim
                         </button>
                       </div>
                     </div>
@@ -437,14 +427,13 @@ const styles = {
     fontSize: "18px",
     fontWeight: "bold",
     color: "#fff",
-    zIndex: 1,
   },
   profileContainer: {
     textAlign: "left",
     width: "100%",
     maxWidth: "400px",
     padding: "20px",
-    marginBottom: "20px",
+    marginBottom: "10px",
     borderRadius: "10px",
   },
   taskButtons: {
@@ -480,48 +469,69 @@ const styles = {
     padding: "10px",
     textAlign: "center",
     borderRadius: "5px",
-    marginTop: "25px",
+    marginTop: "-15px",
+  },
+  balanceTitle: {
+    fontSize: "25px",
+    color: "#fff",
+    marginBottom: "5px",
   },
   balanceAmount: {
-    fontSize: "54px",
+    fontSize: "44px",
     color: "#fff",
     fontWeight: "bold",
+    marginTop: "4rem",
   },
   box3: {
     backgroundColor: "#222",
-    width: "300px",
+    width: "80%",
     height: "auto",
     maxWidth: "400px",
     borderRadius: "8px",
-    marginTop: "-1rem",
+    marginTop:'-4rem'
   },
   box4: {
-    backgroundColor: "#000",
+    backgroundColor: "rgb(42,42,42)",
     width: "80%",
     maxWidth: "400px",
+    // padding: "15px",
     textAlign: "center",
     borderRadius: "8px",
+    margin: "40px 0",
     position: "absolute",
-    bottom: "15%",
+    bottom: "9%",
+    overflow: "hidden",
+  },
+  box41: {
+    backgroundColor: "rgb(42,42,42)",
+    width: "80%",
+    maxWidth: "400px",
+    padding: "10px",
+    textAlign: "center",
+    borderRadius: "8px",
+    margin: "40px 0",
+    position: "absolute",
+    bottom: "16%",
+    overflow: "hidden",
   },
   progressBar: {
     position: "absolute",
     top: 0,
     left: 0,
-    height: "60%",
-    borderRadius: "10px",
-    backgroundColor: "rgb(42,42,42)", // Slightly transparent orange
+    height: "100%",
+    backgroundColor: "skyblue", // Slightly transparent orange
     zIndex: 0,
   },
   startButton: {
-    backgroundColor: "skyblue",
+    backgroundColor: "white",
     color: "#000",
-    padding: "10px",
-    borderRadius: "5px",
+    fontWeight:'bolder',
+    padding: "10px 20px",
+    borderRadius: "10px",
     border: "none",
     cursor: "pointer",
     position: "relative",
-    height: "60%",
+    height: "40px",
     width: "100%",
   },
   timer: {
@@ -533,13 +543,14 @@ const styles = {
   claimButton: {
     backgroundColor: "skyblue",
     color: "#fff",
+    padding: "10px 20px",
     borderRadius: "5px",
     border: "none",
     cursor: "pointer",
     position: "relative",
     zIndex: 1,
     width: "100%",
-    height: "40px",
+    // height:"55px"
   },
   userInfo: {
     display: "flex",

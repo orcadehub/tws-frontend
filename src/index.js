@@ -8,7 +8,7 @@ import { LoadingProvider } from './components/LoadingContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <TonConnectUIProvider manifestUrl="https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmWUrnKMyMhAociQcbyAFUUPkLNkBRLXFdiPGVwEmX1zuv">
+    <TonConnectUIProvider manifestUrl="https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmWGxC2rEv8jM6mAw4rkWMfNwDuiRRn5QjcdSrxvqL4k1y">
         <LoadingProvider>
     <App />
 
