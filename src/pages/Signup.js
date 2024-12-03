@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import config from "../config"; // Import config to get base URLs
-import { useLoading } from "../components/LoadingContext";
+// import { useLoading } from "../components/LoadingContext";
 const Signup = () => {
-  const { setIsLoading } = useLoading();
+  // const { setIsLoading } = useLoading();
   const { chatid } = useParams(); // Capture chat ID from the URL
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const Signup = () => {
         return navigate("/error"); // Redirect to an error page or another route
       }
 
-      setIsLoading(true)
+      // setIsLoading(true)
 
       try {
         const response = await axios.get(`${baseURL}/verify-chatid/${chatid}`);
@@ -57,9 +57,9 @@ const Signup = () => {
         });
         navigate("/error"); // Redirect to an error page
       }
-      finally{
-        setIsLoading(false)
-      }
+      // finally{
+      //   setIsLoading(false)
+      // }
     };
 
     verifyUser();
