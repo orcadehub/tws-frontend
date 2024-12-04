@@ -72,7 +72,7 @@ const Friends = () => {
     // If you have a bot message with an image and buttons
     const botMessageLink = shareLink;
     // Open the Telegram share link
-    window.open(botMessageLink, "_blank");
+    window.open(telegramShareLink, "_blank");
   };
 
   const handleCopyLink = () => {
