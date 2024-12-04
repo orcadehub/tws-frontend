@@ -392,7 +392,7 @@ const Tasks = () => {
                             </button>
                           ) : task.taskCompletion === "complete" ? (
                             <div>
-                              <i class="fa-solid fa-circle-check"></i>
+                              <i class="fa-solid fa-circle-check fa-lg"></i>
                             </div>
                           ) : (
                             <button
@@ -412,7 +412,7 @@ const Tasks = () => {
                             <>
                               {task.taskCompletion === "complete" ? (
                                 <div>
-                                  <i class="fa-solid fa-circle-check"></i>
+                                  <i class="fa-solid fa-circle-check fa-lg"></i>
                                 </div>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
@@ -452,7 +452,7 @@ const Tasks = () => {
                             <>
                               {task.taskCompletion === "complete" ? (
                                 <div disabled>
-                                <i class="fa-solid fa-circle-check"></i>
+                                <i class="fa-solid fa-circle-check fa-lg"></i>
                                 </div>
                               ) : task.taskCompletion === "claim" ? (
                                 <button
@@ -512,7 +512,7 @@ const Tasks = () => {
                               )}
                               {task.taskCompletion === "complete" && (
                                 <div disabled>
-                                  <i class="fa-solid fa-circle-check"></i>
+                                  <i class="fa-solid fa-circle-check fa-lg"></i>
                                 </div>
                               )}
                             </>

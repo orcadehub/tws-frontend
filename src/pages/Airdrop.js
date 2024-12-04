@@ -92,7 +92,7 @@ const Airdrop = () => {
 
   const handleTaskStart = async (taskId, points, index) => {
     console.log(index);
-    if (isClaimed[index] && index == 0) {
+    if (rawAddress) {
       try {
         // Send start request to the backend
         const response = await axios.put(
@@ -285,7 +285,7 @@ const Airdrop = () => {
 
                     {task.taskCompletion === "complete" && (
                       <div>
-                      <i class="fa-solid fa-circle-check"></i>
+                      <i class="fa-solid fa-circle-check fa-xl"></i>
                       </div>
                     )}
                   </>

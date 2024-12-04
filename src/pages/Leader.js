@@ -66,7 +66,7 @@ const Leader = () => {
   const formatNumber = (num) => {
     if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
     if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
-    // if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+    if (num >= 1e5) return (num / 1e3).toFixed(1) + "K";
     return num.toLocaleString();
   };
 
@@ -91,7 +91,7 @@ const Leader = () => {
           </div>
         </div>
         <div className="end">
-          <h5>#{userRank || "N/A"}</h5> {/* Display user rank */}
+          <h5>#{formatNumber(userRank || "N/A")}</h5> {/* Display user rank */}
         </div>
       </div>
 

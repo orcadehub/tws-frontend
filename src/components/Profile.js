@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
@@ -13,14 +13,14 @@ import { useLoading } from ".//LoadingContext";
 const Profile = () => {
   const { setIsLoading } = useLoading();
   const [profileData, setProfileData] = useState(null);
-  const [timer, setTimer] = useState(100);
+  const [timer, setTimer] = useState(10);
   const [isFarming, setIsFarming] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimAvailable, setClaimAvailable] = useState(false);
   const [showModal, setShowModal] = useState(false); // State for showing modal
   const [isClaimingBonus, setIsClaimingBonus] = useState(false);
   const navigate = useNavigate();
-  const [currentCoins, setCurrentCoins] = useState(100);
+  const [currentCoins, setCurrentCoins] = useState();
   const totalCoins = 100;
   const farmingDurationInSeconds = 10800;
 
@@ -73,7 +73,7 @@ const Profile = () => {
           setIsFarming(false);
         }
       } catch (error) {
-        navigate("/authenticate");
+        navigate("/error");
       } finally {
         setIsLoading(false);
       }
@@ -188,6 +188,24 @@ const Profile = () => {
 
   const progressPercentage = ((10800 - timer) / 10800) * 100;
 
+  // JavaScript logic for updating styles dynamically
+  const previousCoins = useRef(currentCoins);
+
+  useEffect(() => {
+    if (currentCoins !== previousCoins.current) {
+      const coinElement = document.getElementById("rolling-coins");
+      coinElement.style.transform = 'translateY(-130%)';
+      setTimeout(() => {
+        previousCoins.current = currentCoins;
+        coinElement.style.transition = "none";
+        coinElement.style.transform = "translateY(120%)";
+        setTimeout(() => {
+          coinElement.style.transition = "transform 0.9s ease-out";
+        }, 50);
+      }, 900); // Match this to the animation duration
+    }
+  }, [currentCoins]);
+
   return (
     <div style={styles.container}>
       <div style={styles.profileContainer}>
@@ -253,7 +271,11 @@ const Profile = () => {
             ></i>
             <a
               href="https://t.me/ThewhiteShark_io"
-              style={{ textDecoration: "none", color: "white",fontWeight:'bolder' }}
+              style={{
+                textDecoration: "none",
+                color: "white",
+                fontWeight: "bolder",
+              }}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -267,7 +289,7 @@ const Profile = () => {
 
           <div style={styles.box4}>
             <div
-              style={{ ...styles.progressBar, width: `${progressPercentage}%` }}
+              style={{ ...styles.progressBar, width: `${progressPercentage}%`}}
             ></div>
             {!isFarming && !claimAvailable && (
               <button style={styles.startButton} onClick={startFarming}>
@@ -279,19 +301,23 @@ const Profile = () => {
                 style={{
                   display: "flex",
                   justifyContent: "space-evenly",
-                  alignSelf:'end',
+                  alignSelf: "end",
                   width: "100%",
                 }}
               >
-                <div>
-                  <p style={{ color: "white", fontWeight: "bolder" }}>
-                    <i class="fa-solid fa-person-digging me-2"></i>Mining
-                    <span style={styles.coins}>
-                      {currentCoins} {/* Display coins with 3 decimals */}
+                <div style={{ marginTop: "6px", marginLeft:"-60px",zIndex:'10' }}>
+                  <p style={{ color: "white", fontWeight: "bolder"}}>
+                    <i class="fa-solid fa-person-digging me-1"></i>
+                    <span className="me-1">Mining</span>
+                    <span
+                      style={(styles.coins, styles.coinNumber)}
+                      id="rolling-coins"
+                    >
+                        {currentCoins} {/* Display coins with 3 decimals */}
                     </span>
                   </p>
                 </div>
-                <div style={{ position: "absolute", right: "2%",top:'25%' }}>
+                <div style={{ position: "absolute", right: "2%", top: "28%" }}>
                   <p style={styles.timer}>
                     {Math.floor(timer / 3600)}h{" "}
                     {Math.floor((timer % 3600) / 60)}m {timer % 60}s
@@ -434,6 +460,16 @@ const styles = {
     fontSize: "18px",
     fontWeight: "bold",
     color: "#fff",
+    display: "inline-block",
+    overflow: "hidden",
+    height: "20px", // Adjust to fit the font size
+    position: "relative",
+  },
+  coinNumber: {
+    position: "absolute",
+    top: 6,
+    transition: "transform 0.2s ease-in-out",
+    willChange: "transform",
   },
   profileContainer: {
     textAlign: "left",
@@ -519,7 +555,8 @@ const styles = {
     position: "absolute",
     bottom: "20%",
     overflow: "hidden",
-    boxShadow:"0px 4px 10px rgba(43, 43, 43,0.4),0px 0px 20px rgba(244, 246, 246, 0.6)",
+    boxShadow:
+      "0px 4px 10px rgba(43, 43, 43,0.4),0px 0px 20px rgba(244, 246, 246, 0.6)",
   },
   progressBar: {
     position: "absolute",
@@ -533,17 +570,17 @@ const styles = {
     backgroundColor: "white",
     color: "#000",
     fontWeight: "bolder",
-    padding: "10px 20px",
+    padding: "8px 20px 15px 20px",
     borderRadius: "10px",
     border: "none",
     cursor: "pointer",
     position: "relative",
-    height: "40px",
+    height: "50px",
     width: "100%",
   },
   timer: {
     color: "#fff",
-    fontSize: "10px",
+    fontSize: "12px",
     position: "relative",
     zIndex: 1,
   },
