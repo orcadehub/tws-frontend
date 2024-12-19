@@ -18,7 +18,7 @@
 
 .rocket {
   position: absolute;
-  bottom: 10%;
+  bottom: 15%;
   width: 100px;
   border-radius: 50%;
 }
@@ -80,6 +80,8 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
+  background-image: url('../assets/dark.jpg');
+  background-size: cover;
   z-index: 10;
   color: white;
   flex-direction: column;
@@ -100,6 +102,10 @@
 
 .arrow-right {
   transform: rotate(-90deg);
+}
+.game-container{
+  background-image: url('../assets/dark.jpg');
+  background-size: cover;
 }
 
 @keyframes bounce {
@@ -150,9 +156,26 @@
   animation: explode 0.001s forwards;
 }
 
-/* .coin-hidden {
-  visibility: hidden;
-  opacity: 0;
-  transition: none;
+/* Coin fragments */
+.coin-fragment {
+  margin-left: 25px;
+  position: absolute;
+  width: 10px; /* Small fragment size */
+  height: 10px;
+  border-radius: 50%; /* Make it circular */
+  background-color: yellow; /* Fragment color */
+  opacity: 1;
+  animation: fragment-blast 0.5s ease-out forwards;
+}
 
-} */
+/* Explosion animation */
+@keyframes fragment-blast {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(var(--dx) * 50px), calc(var(--dy) * 50px)) scale(0.5);
+    opacity: 0;
+  }
+}

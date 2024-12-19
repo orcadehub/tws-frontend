@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./Landing.css";
 import Log from "../assets/rocket.mp4";
-import Intro from "../assets/intro.mp4";
-import Tilt from '../assets/tilt.gif'
+import Intro from "../assets/sharkbg.jpg";
+import Tilt from "../assets/tilt.gif";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
 
 const Landing = () => {
-  const [position, setPosition] = useState(30);
+  const [position, setPosition] = useState(0);
   const [coins, setCoins] = useState([]);
   const [score, setScore] = useState(0);
   const [claiming, setClaiming] = useState(false);
@@ -45,8 +45,7 @@ const Landing = () => {
     const screenWidth = Math.min(window.innerWidth, 400);
     const rocketWidth = 100; // Assuming rocket width is 100px
     setPosition((screenWidth - rocketWidth) / 2); // Center the rocket
-  }, []); 
-
+  }, []);
 
   useEffect(() => {
     if (isIntroDone && gameStarted) {
@@ -79,7 +78,7 @@ const Landing = () => {
             top: 0,
             value: Math.floor(Math.random() * 100) + 10,
             size: "small",
-            collected:false,
+            collected: false,
           };
 
           const screenWidth = Math.min(window.innerWidth, 400);
@@ -117,7 +116,7 @@ const Landing = () => {
         top: 0,
         value: timeLeft === 18 ? 1000 : 2500,
         size: "large",
-        collected: false, 
+        collected: false,
       };
 
       const screenWidth = Math.min(window.innerWidth, 400);
@@ -128,31 +127,54 @@ const Landing = () => {
   }, [timeLeft, gameStarted]);
 
   const checkCollision = () => {
-    const rocketWidth = 100; // Match CSS
+    const rocketWidth = 100;
+
     setCoins((prevCoins) =>
       prevCoins.filter((coin) => {
         const isCollision =
           !coin.collected &&
-          coin.top > 90 &&
-          coin.left >= position - rocketWidth / 2 &&
-          coin.left <= position + rocketWidth / 2;
-  
+          coin.top > 77 &&
+          coin.left + (coin.size === "large" ? 80 : 40) >=
+            position - rocketWidth*0.4 &&
+          coin.left <= position + rocketWidth*0.8;
+
         if (isCollision) {
           // Increment score
           setScore((prevScore) => prevScore + coin.value);
-  
-          // Mark the coin as collected and hide it
-          const coinElement = document.getElementById(coin.id);
-          if (coinElement) {
-            coinElement.classList.add("coin-hidden");
-          }
-  
-          // Remove this coin from state
-          return false; // Filter it out
+
+          // Trigger explosion
+          triggerExplosion(coin.left, coin.top, coin.size);
+
+          // Remove the coin
+          return false;
         }
-        return true; // Keep non-colliding coins
+        return true;
       })
     );
+  };
+
+  const triggerExplosion = (left, top, size) => {
+    const fragmentContainer = document.createElement("div");
+    fragmentContainer.style.position = "absolute";
+    fragmentContainer.style.left = `${left}px`;
+    fragmentContainer.style.top = `${top}vh`; // Use vh since `coin.top` is in %
+    fragmentContainer.style.pointerEvents = "none"; // Ignore pointer events
+  
+    // Create fragments
+    for (let i = 0; i < 8; i++) {
+      const fragment = document.createElement("div");
+      fragment.className = "coin-fragment";
+      fragment.style.setProperty("--dx", Math.cos((i * Math.PI) / 4)); // X direction
+      fragment.style.setProperty("--dy", Math.sin((i * Math.PI) / 4)); // Y direction
+      fragmentContainer.appendChild(fragment);
+    }
+  
+    document.body.appendChild(fragmentContainer);
+  
+    // Remove fragments after animation
+    setTimeout(() => {
+      document.body.removeChild(fragmentContainer);
+    }, 500); // Match animation duration
   };
   
 
@@ -164,7 +186,6 @@ const Landing = () => {
       return () => clearInterval(interval);
     }
   }, [coins, position, gameOver, gameStarted]);
-  
 
   useEffect(() => {
     if (gameStarted) {
@@ -180,62 +201,82 @@ const Landing = () => {
     }
   }, [timeLeft, gameStarted]);
 
-    // Remove collected coins after animation
-    useEffect(() => {
-      const timeoutIds = [];
-  
-      coins.forEach((coin) => {
-        if (coin.collected) {
-          // Remove the coin after 500ms (duration of explode animation)
-          const timeoutId = setTimeout(() => {
-            setCoins((prevCoins) => prevCoins.filter((c) => c.id !== coin.id));
-          }, 0);
-          timeoutIds.push(timeoutId);
-        }
-      });
-  
-      return () => {
-        timeoutIds.forEach((id) => clearTimeout(id));
-      };
-    }, [coins]);
-  
+  // Remove collected coins after animation
+  useEffect(() => {
+    const timeoutIds = [];
 
-    const claimCoins = async () => {
-      if (claiming) return;
-      try {
-        setClaiming(true);
-        const response = await axios.put(
-          `${baseURL}/addAmount`,
-          { amount: score },
-          CONFIG_OBJ
-        );
-        const { message } = response.data;
-        toast.success(message);
-        navigate("/home");
-      } catch (error) {
-        const errorMessage =
-          error.response?.data?.message ||
-          "Unable to verify user details. Please try again.";
-        toast.error(errorMessage);
-        navigate("/error");
+    coins.forEach((coin) => {
+      if (coin.collected) {
+        const timeoutId = setTimeout(() => {
+          setCoins((prevCoins) => prevCoins.filter((c) => c.id !== coin.id));
+        }, 0.0001);
+        timeoutIds.push(timeoutId);
       }
+    });
+
+    return () => {
+      timeoutIds.forEach((id) => clearTimeout(id));
     };
-  
+  }, [coins]);
+
+  const claimCoins = async () => {
+    if (claiming) return;
+    try {
+      setClaiming(true);
+      const response = await axios.put(
+        `${baseURL}/addAmount`,
+        { amount: score },
+        CONFIG_OBJ
+      );
+      const { message } = response.data;
+      toast.success(message);
+      navigate("/home");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Unable to verify user details. Please try again.";
+      toast.error(errorMessage);
+      navigate("/error");
+    }
+  };
 
   return (
     <div className={`game-container ${showInstructions ? "blurred" : ""}`}>
       {!isIntroDone ? (
         <div className="intro-video-container">
-         <h1 style={{color:'white'}}>Welcome To the </h1>
-         <h1 style={{color:'white'}}>White Sharks</h1>
-         <button onClick={handleIntroEnd} style={{backgroundColor:'skyblue',width:'30%',borderRadius:'15px',height:'40px',}}>Next</button>
+          <img
+            src={Intro}
+            alt="shark"
+            style={{ height: "100%", width: "100%" }}
+          />
+          <button
+            onClick={handleIntroEnd}
+            style={{
+              backgroundColor: "skyblue",
+              width: "30%",
+              borderRadius: "15px",
+              height: "40px",
+              position: "absolute",
+              bottom: "5%",
+            }}
+          >
+            Next
+          </button>
         </div>
       ) : showInstructions ? (
         <div className="instructions-overlay">
-          <h1 style={{color:"white"}}>Welcome to the Space Rocket Game</h1>
-          <p style={{color:"skyblue"}}>Rotate your device left and right to collect SHARKS!</p>
+          <h1 style={{ color: "white", fontWeight: "bolder" }}>
+            Welcome to the Space Rocket Game
+          </h1>
+          <p style={{ color: "skyblue" }}>
+            Rotate your device left and right to collect SHARKS!
+          </p>
           <div>
-            <img src={Tilt} alt="tilt" style={{height:'200px'}}/>
+            <img
+              src={Tilt}
+              alt="tilt"
+              style={{ height: "200px", background: "none" }}
+            />
           </div>
           <button className="start-button" onClick={startGame}>
             Start Game
@@ -250,8 +291,8 @@ const Landing = () => {
           </button>
         </div>
       ) : (
-        <>
-        <div className="text-center">
+        <div className="game-box">
+          <div className="text-center">
             <h1 style={{ color: "white" }}>Space Rocket Game</h1>
             <p style={{ color: "white" }}>Score: {score}</p>
             <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
@@ -284,8 +325,7 @@ const Landing = () => {
               {coin.value}
             </div>
           ))}
-
-        </>
+        </div>
       )}
     </div>
   );
