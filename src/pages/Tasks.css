@@ -3,7 +3,7 @@
   max-width: 375px; /* Set max-width to simulate the mobile screen */
   height: 83vh;
   overflow-y: scroll;
-  background-color: #000;
+  /* background-color: #000; */
   border-radius: 15px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
   margin: 20px auto; /* Centers the container with a smaller margin */
@@ -21,6 +21,10 @@
   color: black;
   padding: 1px 15px;
   background-color: skyblue;
+}
+.clmbtn:hover{
+  background-color: skyblue;
+  color: black;
 }
 /* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
 .mobile-container::-webkit-scrollbar {

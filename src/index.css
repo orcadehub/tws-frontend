@@ -1,6 +1,7 @@
 body {
   background-color: black;
   scrollbar-width: none;
+  background-image: url('./assets/dark.jpg');
 }
 body::-webkit-scrollbar{
   display: none;

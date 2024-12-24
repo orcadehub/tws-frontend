@@ -7,7 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
-
+import Coin from '../assets/pic.jpg'
 const Landing = () => {
   const [position, setPosition] = useState(0);
   const [coins, setCoins] = useState([]);
@@ -315,7 +315,7 @@ const Landing = () => {
                 left: `${coin.left}px`,
                 top: `${coin.top}%`,
                 backgroundImage:
-                  "url(https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmcSxjgDfcU2qX9FAHJZvSkgenUWvPepAw9JiNk2nJmeM3)",
+                  `url(${Coin})`,
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 width: coin.size === "large" ? "80px" : "40px",

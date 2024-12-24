@@ -9,7 +9,7 @@ import Ton from "../assets/ton.png";
 import "react-toastify/dist/ReactToastify.css";
 import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 import { useLoading } from ".//LoadingContext";
-
+import './Profile.css'
 const Profile = () => {
   const { setIsLoading } = useLoading();
   const [profileData, setProfileData] = useState(null);
@@ -194,7 +194,7 @@ const Profile = () => {
   useEffect(() => {
     if (currentCoins !== previousCoins.current) {
       const coinElement = document.getElementById("rolling-coins");
-      coinElement.style.transform = 'translateY(-130%)';
+      coinElement.style.transform = "translateY(-130%)";
       setTimeout(() => {
         previousCoins.current = currentCoins;
         coinElement.style.transition = "none";
@@ -207,7 +207,7 @@ const Profile = () => {
   }, [currentCoins]);
 
   return (
-    <div style={styles.container}>
+    <div className="container">
       <div style={styles.profileContainer}>
         <div style={styles.userInfo}>
           <div style={styles.profileIcon}>
@@ -289,7 +289,7 @@ const Profile = () => {
 
           <div style={styles.box4}>
             <div
-              style={{ ...styles.progressBar, width: `${progressPercentage}%`}}
+              style={{ ...styles.progressBar, width: `${progressPercentage}%` }}
             ></div>
             {!isFarming && !claimAvailable && (
               <button style={styles.startButton} onClick={startFarming}>
@@ -305,15 +305,21 @@ const Profile = () => {
                   width: "100%",
                 }}
               >
-                <div style={{ marginTop: "6px", marginLeft:"-60px",zIndex:'10' }}>
-                  <p style={{ color: "white", fontWeight: "bolder"}}>
+                <div
+                  style={{
+                    marginTop: "6px",
+                    marginLeft: "-60px",
+                    zIndex: "10",
+                  }}
+                >
+                  <p style={{ color: "white", fontWeight: "bolder" }}>
                     <i class="fa-solid fa-person-digging me-1"></i>
                     <span className="me-1">Mining</span>
                     <span
                       style={(styles.coins, styles.coinNumber)}
                       id="rolling-coins"
                     >
-                        {currentCoins} {/* Display coins with 3 decimals */}
+                      {currentCoins} {/* Display coins with 3 decimals */}
                     </span>
                   </p>
                 </div>
@@ -448,14 +454,6 @@ const Profile = () => {
 };
 
 const styles = {
-  container: {
-    backgroundColor: "#000",
-    color: "#fff",
-    height: "83%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
   coins: {
     fontSize: "18px",
     fontWeight: "bold",
