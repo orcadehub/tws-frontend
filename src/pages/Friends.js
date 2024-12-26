@@ -15,20 +15,20 @@ const Friends = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const referralId = user?.referralId;
-  
+  const shareLink = `https://t.me/thewhiteshark_bot?start=${referralId}`;
+
   const baseURL =
-  process.env.NODE_ENV === "development"
-  ? config.LOCAL_BASE_URL.replace(/\/$/, "")
-  : config.BASE_URL.replace(/\/$/, "");
-  
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
+      : config.BASE_URL.replace(/\/$/, "");
+
   const CONFIG_OBJ = {
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + localStorage.getItem("token"),
     },
   };
-  const shareLink = `${baseURL}/referral?start=${referralId}`;
-  
+
   const formatNumber = (num) => {
     if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
     if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
@@ -64,7 +64,7 @@ const Friends = () => {
   }, [navigate, baseURL]);
 
   const handleShare = () => {
-    const shareText = `${user.username} invites you to join and earn rewards!\n\n`;
+    const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: `;
     const telegramShareLink = `https://t.me/share/url?url=${encodeURIComponent(
       shareLink
     )}&text=${encodeURIComponent(shareText)}`;
