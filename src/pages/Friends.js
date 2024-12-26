@@ -15,20 +15,20 @@ const Friends = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const referralId = user?.referralId;
-  const shareLink = `https://t.me/thewhiteshark_bot?start=${referralId}`;
-
+  
   const baseURL =
-    process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL.replace(/\/$/, "")
-      : config.BASE_URL.replace(/\/$/, "");
-
+  process.env.NODE_ENV === "development"
+  ? config.LOCAL_BASE_URL.replace(/\/$/, "")
+  : config.BASE_URL.replace(/\/$/, "");
+  
   const CONFIG_OBJ = {
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + localStorage.getItem("token"),
     },
   };
-
+  const shareLink = `${baseURL}/referral?start=${referralId}`;
+  
   const formatNumber = (num) => {
     if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
     if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
@@ -64,7 +64,7 @@ const Friends = () => {
   }, [navigate, baseURL]);
 
   const handleShare = () => {
-    const shareText = `${user.username} invites you to join and earn rewards! Use this referral link: `;
+    const shareText = `${user.username} invites you to join and earn rewards!\n\n`;
     const telegramShareLink = `https://t.me/share/url?url=${encodeURIComponent(
       shareLink
     )}&text=${encodeURIComponent(shareText)}`;
@@ -84,20 +84,26 @@ const Friends = () => {
   return (
     <div className="mobile">
       <Helmet>
+        <title>Invite Friends and Earn Rewards</title>
+        <meta
+          name="description"
+          content="Invite your friends to join The White Shark Bot and start earning rewards together!"
+        />
         <meta
           property="og:title"
-          content="Join the Rewards Program with The White Shark Bot!"
+          content={`${user.username} invites you to join The White Shark Bot!`}
         />
         <meta
           property="og:description"
-          content="Sign up with this link to start earning rewards. Get 1000 points as a bonus, and help your inviter earn up to 50,000 points!"
+          content="Earn rewards when your friends join. Get 1000 points as a bonus, and help your inviter earn up to 50,000 points!"
         />
         <meta
           property="og:image"
-          content="https://coffee-geographical-ape-289.mypinata.cloud/files/bafybeiaferr2uiduyzo7bv2ojde6hcgj4pbvqwxwksk5kmqdvhe6g6jw6y?X-Algorithm=PINATA1&X-Date=1735126336&X-Expires=30&X-Method=GET&X-Signature=f852de0848b6676ddb475a3474afe29f3bac1764851c98ca08f94bd02e129c58"
+          content="https://coffee-geographical-ape-289.mypinata.cloud/ipfs/QmcSxjgDfcU2qX9FAHJZvSkgenUWvPepAw9JiNk2nJmeM3"
         />
         <meta property="og:url" content={shareLink} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="The White Shark Bot" />
       </Helmet>
       <div className="content">
         <h3 style={{ color: "white" }}>
