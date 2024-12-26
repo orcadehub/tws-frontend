@@ -16,7 +16,7 @@ const Friends = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const referralId = user?.referralId;
   const shareLink = `https://t.me/thewhiteshark_bot?start=${referralId}`;
-
+  const link = "https://t.me/thewhiteshark_bot";
   const baseURL =
     process.env.NODE_ENV === "development"
       ? config.LOCAL_BASE_URL.replace(/\/$/, "")
@@ -96,7 +96,7 @@ const Friends = () => {
           property="og:image"
           content="https://coffee-geographical-ape-289.mypinata.cloud/files/bafybeiaferr2uiduyzo7bv2ojde6hcgj4pbvqwxwksk5kmqdvhe6g6jw6y?X-Algorithm=PINATA1&X-Date=1735126336&X-Expires=30&X-Method=GET&X-Signature=f852de0848b6676ddb475a3474afe29f3bac1764851c98ca08f94bd02e129c58"
         />
-        <meta property="og:url" content={shareLink} />
+        <meta property="og:url" content={link} />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="content">
