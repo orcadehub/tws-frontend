@@ -30,7 +30,7 @@ const Signup = () => {
       setIsLoading(true);
 
       try {
-        toast.info(chatid)
+        toast.info(`${baseURL}/verify-chatid/${chatid}`)
         const response = await axios.get(`${baseURL}/verify-chatid/${chatid}`);
 
         const { user, token, isNewUser } = response.data;
@@ -45,7 +45,7 @@ const Signup = () => {
           navigate("/onboarding");
         } else {
           // Navigate directly to home for existing users
-          toast.success("entered home page");
+          // toast.success("entered home page");
           navigate("/home");
         }
       } catch (error) {
