@@ -30,11 +30,11 @@ const Signup = () => {
       setIsLoading(true);
 
       try {
-        toast.info(chatid);
+        toast.info(chatid)
         const response = await axios.get(`${baseURL}/verify-chatid/${chatid}`);
 
         const { user, token, isNewUser } = response.data;
-        toast.success(user);
+        toast.success(user)
         localStorage.clear();
         // Store user data and token in localStorage
         localStorage.setItem("user", JSON.stringify(user));
@@ -52,7 +52,7 @@ const Signup = () => {
         const errorMessage =
           error.response?.data?.message ||
           "Unable to verify user details. Please try again.";
-        toast.error("Error fetching user",errorMessage);
+        toast.error(errorMessage);
         navigate("/error"); // Redirect to an error page
       } finally {
         setIsLoading(false);
