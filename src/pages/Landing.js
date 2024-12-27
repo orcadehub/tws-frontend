@@ -41,11 +41,28 @@ const Landing = () => {
     setShowInstructions(false); // Hide instructions
     setGameStarted(true); // Start the game
   };
-  useEffect(() => {
-    const screenWidth = Math.min(window.innerWidth, 400);
-    const rocketWidth = 100; // Assuming rocket width is 100px
-    setPosition((screenWidth - rocketWidth) / 2); // Center the rocket
-  }, []);
+
+ useEffect(() => {
+   if (isIntroDone && gameStarted) {
+     const handleOrientation = (event) => {
+       const { gamma } = event; // Device tilt angle
+       if (gamma) {
+         const screenWidth = Math.min(window.innerWidth, 400); // Mobile screen width (max 400px)
+         const rocketWidth = 100; // Rocket width in pixels
+         const maxLeft = screenWidth - rocketWidth; // Maximum allowed left position
+         const newLeft = position + gamma / 2; // Adjust position based on tilt
+
+         // Keep rocket within screen bounds
+         setPosition(Math.max(0, Math.min(newLeft, maxLeft)));
+       }
+     };
+
+     window.addEventListener("deviceorientation", handleOrientation);
+
+     return () =>
+       window.removeEventListener("deviceorientation", handleOrientation);
+   }
+ }, [position, isIntroDone, gameStarted]);
 
   useEffect(() => {
     if (isIntroDone && gameStarted) {
@@ -293,7 +310,7 @@ const Landing = () => {
       ) : (
         <div className="game-box">
           <div className="text-center">
-            <h1 style={{ color: "white" }}>Space Rocket Game</h1>
+            <h1 style={{ color: "white" }}>Space Rocket Game 1</h1>
             <p style={{ color: "white" }}>Score: {score}</p>
             <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
             <video
