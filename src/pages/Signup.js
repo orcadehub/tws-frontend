@@ -27,7 +27,7 @@ const Signup = () => {
         return navigate("/error"); // Redirect to an error page or another route
       }
 
-      setIsLoading(true)
+      setIsLoading(true);
 
       try {
         const response = await axios.get(`${baseURL}/verify-chatid/${chatid}`);
@@ -38,21 +38,21 @@ const Signup = () => {
         localStorage.setItem("token", token);
         if (isNewUser) {
           // Navigate to onboarding slides for new users
+          toast.success("entered onboarding page");
           navigate("/onboarding");
         } else {
           // Navigate directly to home for existing users
-          toast.success('entered home page')
+          toast.success("entered home page");
           navigate("/home");
         }
       } catch (error) {
         const errorMessage =
           error.response?.data?.message ||
           "Unable to verify user details. Please try again.";
-       
+        toast.error(errorMessage);
         navigate("/error"); // Redirect to an error page
-      }
-      finally{
-        setIsLoading(false)
+      } finally {
+        setIsLoading(false);
       }
     };
 
