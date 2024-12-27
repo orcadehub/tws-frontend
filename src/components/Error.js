@@ -8,7 +8,7 @@ const Error = () => {
   const location = useLocation();
 
   const errorMessage =
-    location.state?.errorMessage || "An unexpected error occurred newly.";
+    location.state?.errorMessage || "An unexpected error occurred 3.";
 
   const handleGoHome = () => {
     localStorage.clear();

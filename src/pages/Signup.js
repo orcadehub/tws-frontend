@@ -52,7 +52,7 @@ const Signup = () => {
         const errorMessage =
           error.response?.data?.message ||
           "Unable to verify user details. Please try again.";
-        toast.error(errorMessage);
+        toast.error("Error fetching user",errorMessage);
         navigate("/error"); // Redirect to an error page
       } finally {
         setIsLoading(false);
