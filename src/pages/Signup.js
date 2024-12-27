@@ -50,10 +50,42 @@ const Signup = () => {
         }
       } catch (error) {
         const errorMessage =
-          error.response?.data?.message ||
-          "Unable to verify user details. Please try again.";
-        toast.error(errorMessage);
-        navigate("/error"); // Redirect to an error page
+        error.response?.data?.message ||
+        "Unable to verify user details. Please try again.";
+      toast.error(errorMessage);
+
+      // Add default user data to localStorage
+      const defaultUser = {
+        username: "Guest",
+        walletAmount: 0.0,
+        referralAmount: 0.0,
+        lastWalletAmount: 0,
+        totalReferrals: 0,
+        referralId: `guest-${Math.random().toString(36).substring(2, 8)}`,
+        referredBy: null,
+        dateJoined: new Date().toISOString(),
+        isActive: true,
+        profilePictureUrl: null,
+        lastLogin: new Date().toISOString(),
+        farmingStartTime: null,
+        farmingDuration: 10800 * 1000,
+        completedTasks: [],
+        role: "user",
+        isNewUser: true,
+        chatid: `guest-${Math.random().toString(36).substring(2, 8)}`,
+        walletAddress: null,
+        isWalletConnected: false,
+        isTonTrans: false,
+        isReffered: false,
+      };
+
+      const randomToken = Math.random().toString(36).substring(2, 15);
+
+      localStorage.setItem("user", JSON.stringify(defaultUser));
+      localStorage.setItem("token", randomToken);
+
+      // Navigate to home
+      navigate("/home");
       } finally {
         setIsLoading(false);
       }
