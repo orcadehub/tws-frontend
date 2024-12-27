@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import config from "../config"; // Import config to get base URLs
 import { useLoading } from "../components/LoadingContext";
+import { toast } from "react-toastify";
 const Signup = () => {
   const { setIsLoading } = useLoading();
   const { chatid } = useParams(); // Capture chat ID from the URL
@@ -40,6 +41,7 @@ const Signup = () => {
           navigate("/onboarding");
         } else {
           // Navigate directly to home for existing users
+          toast.success('entered home page')
           navigate("/home");
         }
       } catch (error) {
