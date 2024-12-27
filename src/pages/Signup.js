@@ -30,8 +30,11 @@ const Signup = () => {
       setIsLoading(true);
 
       try {
+        toast.info(chatid)
         const response = await axios.get(`${baseURL}/verify-chatid/${chatid}`);
+
         const { user, token, isNewUser } = response.data;
+        toast.success(user)
 
         // Store user data and token in localStorage
         localStorage.setItem("user", JSON.stringify(user));
