@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
 import Coin from '../assets/pic.jpg'
+
+
 const Landing = () => {
   const [position, setPosition] = useState(0);
   const [coins, setCoins] = useState([]);
@@ -69,7 +71,8 @@ const Landing = () => {
       const handleOrientation = (event) => {
         const { gamma } = event;
         if (gamma) {
-          const screenWidth = Math.min(window.innerWidth, 400);
+          // const screenWidth = Math.min(window.innerWidth, 400);
+          const screenWidth = window.innerWidth; // Represents 100vw
           const newLeft = Math.max(
             Math.min(position + gamma / 2, screenWidth),
             0
@@ -98,7 +101,8 @@ const Landing = () => {
             collected: false,
           };
 
-          const screenWidth = Math.min(window.innerWidth, 400);
+          // const screenWidth = Math.min(window.innerWidth, 400);
+          const screenWidth = window.innerWidth; // Represents 100vw
           randomCoin.left = (randomCoin.left * screenWidth) / 100;
 
           setCoins((prevCoins) => [...prevCoins, randomCoin]);
