@@ -34,14 +34,14 @@ const Signup = () => {
         const response = await axios.get(`${baseURL}/verify-chatid/${chatid}`);
 
         const { user, token, isNewUser } = response.data;
-        toast.success(user)
+        // toast.success(user)
         localStorage.clear();
         // Store user data and token in localStorage
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
         if (isNewUser) {
           // Navigate to onboarding slides for new users
-          toast.success("entered onboarding page");
+          // toast.success("entered onboarding page");
           navigate("/onboarding");
         } else {
           // Navigate directly to home for existing users
