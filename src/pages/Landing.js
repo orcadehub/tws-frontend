@@ -51,7 +51,7 @@ const Landing = () => {
        if (gamma) {
          const screenWidth = Math.min(window.innerWidth, 400); // Mobile screen width (max 400px)
          const rocketWidth = 100; // Rocket width in pixels
-         const maxLeft = screenWidth - rocketWidth; // Maximum allowed left position
+         const maxLeft = screenWidth - rocketWidth*2; // Maximum allowed left position
          const newLeft = position + gamma / 2; // Adjust position based on tilt
 
          // Keep rocket within screen bounds
