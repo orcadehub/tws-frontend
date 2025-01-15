@@ -24,8 +24,8 @@ const AddTask = () => {
 
   // Function to check if the user is an admin based on the JWT token
   const checkAdminStatus = () => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const token = localStorage.getItem("token");
+    const userData = JSON.parse(localStorage.getItem("users"));
+    const token = localStorage.getItem("tokens");
 
     if (!token) {
       console.log("No token found. Redirecting to login.");
@@ -76,7 +76,7 @@ const AddTask = () => {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Send token in request header
+            Authorization: `Bearer ${localStorage.getItem("tokens")}`, // Send token in request header
             "Content-Type": "application/json", // Set header for file upload
           },
         }

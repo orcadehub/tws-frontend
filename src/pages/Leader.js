@@ -11,7 +11,7 @@ const Leader = () => {
   const [totalUsers, setTotalUsers] = useState(null);
   const [userData, setUserData] = useState(null); // Store user's up-to-date data
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("users"));
 
   // Get the base URL depending on the environment
   const baseURL =
@@ -22,7 +22,7 @@ const Leader = () => {
   const CONFIG_OBJ = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
+      Authorization: "Bearer " + localStorage.getItem("tokens"),
     },
   };
 

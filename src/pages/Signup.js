@@ -30,15 +30,15 @@ const Signup = () => {
       setIsLoading(true);
 
       try {
-        toast.info(`${baseURL}/verify-chatid/${chatid}`)
+        // toast.info(`${baseURL}/verify-chatid/${chatid}`)
+        localStorage.clear();
         const response = await axios.get(`${baseURL}/verify-chatid/${chatid}`);
-
         const { user, token, isNewUser } = response.data;
         // toast.success(user)
-        localStorage.clear();
+        
         // Store user data and token in localStorage
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
+        localStorage.setItem("users", JSON.stringify(user));
+        localStorage.setItem("tokens", token);
         if (isNewUser) {
           // Navigate to onboarding slides for new users
           // toast.success("entered onboarding page");
@@ -81,8 +81,8 @@ const Signup = () => {
 
       const randomToken = Math.random().toString(36).substring(2, 15);
 
-      localStorage.setItem("user", JSON.stringify(defaultUser));
-      localStorage.setItem("token", randomToken);
+      localStorage.setItem("users", JSON.stringify(defaultUser));
+      localStorage.setItem("tokens", randomToken);
 
       // Navigate to home
       navigate("/home");

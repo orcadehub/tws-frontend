@@ -13,7 +13,7 @@ const Friends = () => {
   const [totalReferrals, setTotalReferrals] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("users"));
   const referralId = user?.referralId;
   const shareLink = `https://t.me/thewhiteshark_bot?start=${referralId}`;
 
@@ -25,7 +25,7 @@ const Friends = () => {
   const CONFIG_OBJ = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
+      Authorization: "Bearer " + localStorage.getItem("tokens"),
     },
   };
 

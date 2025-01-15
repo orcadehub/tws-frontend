@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Error.css";
+// import { toast } from "react-toastify";
 import ErrorImage from "../assets/error.jpg"; // Replace this with your error image path
 
 const Error = () => {

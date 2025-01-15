@@ -13,7 +13,7 @@ import { useLoading } from "../components/LoadingContext";
 const Airdrop = () => {
   const { setIsLoading } = useLoading();
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("users"));
   const [selectedCategory, setSelectedCategory] = useState("Available"); // Default category "Available"
   const [tasks, setTasks] = useState([]);
   const [isClaimed, setIsClaimed] = useState([]);
@@ -26,7 +26,7 @@ const Airdrop = () => {
   const CONFIG_OBJ = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
+      Authorization: "Bearer " + localStorage.getItem("tokens"),
     },
   };
 
@@ -117,7 +117,7 @@ const Airdrop = () => {
           }
 
           updatedUserData.completedTasks = updatedCompletedTasks;
-          localStorage.setItem("user", JSON.stringify(updatedUserData));
+          localStorage.setItem("users", JSON.stringify(updatedUserData));
 
           setTasks((prevTasks) =>
             prevTasks.map((task) =>
@@ -190,7 +190,7 @@ const Airdrop = () => {
         }
 
         updatedUserData.completedTasks = updatedCompletedTasks;
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
+        localStorage.setItem("users", JSON.stringify(updatedUserData));
 
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
