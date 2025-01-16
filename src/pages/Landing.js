@@ -307,7 +307,7 @@ useEffect(() => {
       ) : (
         <div className="game-box">
           <div className="text-center">
-            <h1 style={{ color: "white" }}>Space Rocket Game 1</h1>
+            <h1 style={{ color: "white" }}>Space Rocket Game</h1>
             <p style={{ color: "white" }}>Score: {score}</p>
             <p style={{ color: "white" }}>Time Left: {timeLeft}s</p>
             <video
