@@ -336,7 +336,7 @@ useEffect(() => {
                 height: coin.size === "large" ? "80px" : "40px",
               }}
             >
-              {coin.value}
+              {/* {coin.value} */}
             </div>
           ))}
         </div>
