@@ -15,7 +15,7 @@ const Friends = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("users"));
   const referralId = user?.referralId;
-  const shareLink = `https://t.me/thewhiteshark_bot?start=${referralId}`;
+  const shareLink = `https://t.me/TheWhiteSharkBot?start=${referralId}`;
 
   const baseURL =
     process.env.NODE_ENV === "development"
