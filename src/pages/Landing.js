@@ -7,7 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
-import Coin from '../assets/pic.jpg'
+import Coin from '../assets/coin.png'
 
 
 const Landing = () => {
@@ -44,108 +44,101 @@ const Landing = () => {
     setGameStarted(true); // Start the game
   };
 
- useEffect(() => {
-   if (isIntroDone && gameStarted) {
-     const handleOrientation = (event) => {
-       const { gamma } = event; // Device tilt angle
-       if (gamma) {
-         const screenWidth = Math.min(window.innerWidth, 400); // Mobile screen width (max 400px)
-         const rocketWidth = 100; // Rocket width in pixels
-         const maxLeft = screenWidth - rocketWidth*2; // Maximum allowed left position
-         const newLeft = position + gamma / 2; // Adjust position based on tilt
-
-         // Keep rocket within screen bounds
-         setPosition(Math.max(0, Math.min(newLeft, maxLeft)));
-       }
-     };
-
-     window.addEventListener("deviceorientation", handleOrientation);
-
-     return () =>
-       window.removeEventListener("deviceorientation", handleOrientation);
-   }
- }, [position, isIntroDone, gameStarted]);
-
-  useEffect(() => {
+useEffect(() => {
     if (isIntroDone && gameStarted) {
       const handleOrientation = (event) => {
-        const { gamma } = event;
+        const { gamma } = event; // Device tilt angle
         if (gamma) {
-          // const screenWidth = Math.min(window.innerWidth, 400);
-          const screenWidth = window.innerWidth; // Represents 100vw
-          const newLeft = Math.max(
-            Math.min(position + gamma / 2, screenWidth),
-            0
-          );
-          setPosition(newLeft);
+          const screenWidth = window.innerWidth; // Mobile screen width
+          const rocketElement = document.querySelector(".rocket");
+          const rocketWidth = rocketElement?.offsetWidth || 100; // Default to 100px if not found
+          const maxLeft = screenWidth - rocketWidth; // Maximum allowed left position
+          const newLeft = position + gamma * 2; // Adjust position based on tilt
+
+          // Keep the rocket within screen bounds
+          setPosition(Math.max(0, Math.min(newLeft, maxLeft)));
         }
       };
 
       window.addEventListener("deviceorientation", handleOrientation);
 
-      return () =>
-        window.removeEventListener("deviceorientation", handleOrientation);
+      return () => window.removeEventListener("deviceorientation", handleOrientation);
     }
   }, [position, isIntroDone, gameStarted]);
 
-  useEffect(() => {
-    if (gameStarted) {
-      const interval = setInterval(() => {
-        if (!gameOver && timeLeft > 3) {
-          const randomCoin = {
-            id: Date.now(),
-            left: Math.random() * 100,
-            top: 0,
-            value: Math.floor(Math.random() * 100) + 10,
-            size: "small",
-            collected: false,
-          };
+ useEffect(() => {
+  if (gameStarted) {
+    const interval = setInterval(() => {
+      if (!gameOver && timeLeft > 3) {
+        const randomCoin = {
+          id: Date.now(),
+          left: Math.random() * 100,
+          top: 0,
+          value: Math.floor(Math.random() * 100) + 10,
+          size: "small",
+          collected: false,
+        };
 
-          // const screenWidth = Math.min(window.innerWidth, 400);
-          const screenWidth = window.innerWidth; // Represents 100vw
-          randomCoin.left = (randomCoin.left * screenWidth) / 100;
+        // Get screen width
+        const screenWidth = window.innerWidth;
 
-          setCoins((prevCoins) => [...prevCoins, randomCoin]);
-        }
-      }, 1000);
+        // Coin width (for small and large coins)
+        const coinWidth = randomCoin.size === "large" ? 80 : 40;
 
-      return () => clearInterval(interval);
-    }
-  }, [gameOver, gameStarted, timeLeft]);
+        // Ensure coin does not go beyond the right side of the screen
+        randomCoin.left = Math.max(
+          Math.min((randomCoin.left * screenWidth) / 100, screenWidth - coinWidth),
+          0
+        );
 
-  useEffect(() => {
-    if (gameStarted) {
-      const interval = setInterval(() => {
-        if (!gameOver) {
-          setCoins((prevCoins) =>
-            prevCoins
-              .map((coin) => ({ ...coin, top: coin.top + 5 }))
-              .filter((coin) => coin.top <= 100)
-          );
-        }
-      }, 200);
+        setCoins((prevCoins) => [...prevCoins, randomCoin]);
+      }
+    }, 1000);
 
-      return () => clearInterval(interval);
-    }
-  }, [gameOver, gameStarted]);
+    return () => clearInterval(interval);
+  }
+}, [gameOver, gameStarted, timeLeft]);
 
-  useEffect(() => {
-    if (gameStarted && (timeLeft === 18 || timeLeft === 5)) {
-      const bigCoin = {
-        id: `big-${Date.now()}`,
-        left: Math.random() * 100,
-        top: 0,
-        value: timeLeft === 18 ? 1000 : 2500,
-        size: "large",
-        collected: false,
-      };
+useEffect(() => {
+  if (gameStarted) {
+    const interval = setInterval(() => {
+      if (!gameOver) {
+        setCoins((prevCoins) =>
+          prevCoins
+            .map((coin) => ({ ...coin, top: coin.top + 5 }))
+            .filter((coin) => coin.top <= 100)
+        );
+      }
+    }, 200);
 
-      const screenWidth = Math.min(window.innerWidth, 400);
-      bigCoin.left = (bigCoin.left * screenWidth) / 100;
+    return () => clearInterval(interval);
+  }
+}, [gameOver, gameStarted]);
 
-      setCoins((prevCoins) => [...prevCoins, bigCoin]);
-    }
-  }, [timeLeft, gameStarted]);
+useEffect(() => {
+  if (gameStarted && (timeLeft === 18 || timeLeft === 5)) {
+    const bigCoin = {
+      id: `big-${Date.now()}`,
+      left: Math.random() * 100,
+      top: 0,
+      value: timeLeft === 18 ? 1000 : 2500,
+      size: "large",
+      collected: false,
+    };
+
+    const screenWidth = window.innerWidth; // Full screen width
+    const coinWidth = bigCoin.size === "large" ? 80 : 40; // Coin width
+
+    // Ensure the big coin is within the screen width
+    bigCoin.left = Math.max(
+      Math.min((bigCoin.left * screenWidth) / 100, screenWidth - coinWidth),
+      0
+    );
+
+    setCoins((prevCoins) => [...prevCoins, bigCoin]);
+  }
+}, [timeLeft, gameStarted]);
+
 
   const checkCollision = () => {
     const rocketWidth = 100;
